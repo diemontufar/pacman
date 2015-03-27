@@ -4,6 +4,9 @@ import com.au.unimelb.comp90020.actors.Button.ButtonSize;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
  * We were trying to apply MVC model, thus this class is the VIEW part whereas
@@ -21,11 +24,15 @@ public class WorldRenderer {
 
 	static final float FRUSTUM_WIDTH = 320;
 	static final float FRUSTUM_HEIGHT = 480;
+
 	World world;
 	OrthographicCamera cam;
+	OrthogonalTiledMapRenderer mapRenderer;
+	
 	SpriteBatch batch;
 	String scoreLabel;
-	int randomTime;
+	TiledMap map;
+
 
 	/**
 	 * Initialise the camera's position on the center of the FRUSTRUM.
@@ -39,6 +46,12 @@ public class WorldRenderer {
 		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
 		this.batch = batch;
+		this.map = new TmxMapLoader().load("pacman.tmx");
+		int mapWidth = 28;
+		int mapHeight = 31;
+		int tileWidth = 16;
+		int tileHeight = 16;
+		mapRenderer = new OrthogonalTiledMapRenderer(map,FRUSTUM_WIDTH / (tileWidth * mapWidth));
 	}
 
 	/**
@@ -57,8 +70,8 @@ public class WorldRenderer {
 	public void renderBackground() {
 		batch.disableBlending();
 		batch.begin();
-		batch.draw(Assets.gameBackground, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2,
-				FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+		mapRenderer.setView(cam);
+		mapRenderer.render();
 		batch.end();
 	}
 
@@ -141,12 +154,12 @@ public class WorldRenderer {
 	}
 
 	private void renderScore() {
-		Assets.font.setScale(0.5f, 0.5f);
+		//Assets.font.setScale(0.5f, 0.5f);
 		//Assets.font.draw(batch, "SCORE: " + world.score, 5, World.WORLD_HEIGHT - 5);
 	}
 
 	private void renderLevelNumber() {
-		Assets.font.setScale(0.5f, 0.5f);
+		//Assets.font.setScale(0.5f, 0.5f);
 		// TODO: Review String object creation
 		//Assets.font.draw(batch, "LEVEL: " + world.level, World.WORLD_WIDTH - 80, World.WORLD_HEIGHT - 5);
 	}
@@ -157,7 +170,7 @@ public class WorldRenderer {
 		int buttonWidth = ButtonSize.SMALL_SQUARE.getButtonWidth();
 		int buttonHeight = ButtonSize.SMALL_SQUARE.getButtonHeight();
 
-		Assets.font.setScale(0.5f, 0.5f);
+		//Assets.font.setScale(0.5f, 0.5f);
 //		Assets.font.draw(batch, "LIVES: ", 5, World.WORLD_HEIGHT - 20);
 //
 //		List<Button> lives = world.lives;

@@ -11,11 +11,8 @@ public class World {
 	public final WorldListener listener;
 
 	@SuppressWarnings("static-access")
-	public World(WorldListener listener, int gameLevel) {
-		
+	public World(WorldListener listener) {
 		this.listener = listener;
-
-
 	}
 
 	/**
@@ -29,10 +26,8 @@ public class World {
 	 * Updates every actor within it based on the elapsed time
 	 * 
 	 * @param deltaTime
-	 * @param accelX
-	 * @param touchX
 	 */
-	public void update(float deltaTime, float accelX, float touchX) {
+	public void update(float deltaTime) {
 
 	}
 
