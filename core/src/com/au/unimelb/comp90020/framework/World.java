@@ -1,5 +1,10 @@
 package com.au.unimelb.comp90020.framework;
 
+import com.au.unimelb.comp90020.actors.Pacman;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
+
 
 /**
  * Represents the world where the game is performed. It updates the states of
@@ -9,10 +14,14 @@ package com.au.unimelb.comp90020.framework;
 public class World {
 
 	public final WorldListener listener;
-
+	
+	Pacman pacman;
+	TiledMap map;
+	
 	@SuppressWarnings("static-access")
 	public World(WorldListener listener) {
 		this.listener = listener;
+		pacman = new Pacman(16, 16, 8);
 	}
 
 	/**
@@ -28,7 +37,6 @@ public class World {
 	 * @param deltaTime
 	 */
 	public void update(float deltaTime) {
-
 	}
 
 	/**
@@ -59,6 +67,29 @@ public class World {
 	 */
 	private void checkCollisions() {
 
+	}
+
+	public void movePacmanRight() {
+		float x = pacman.position.x;
+		float y = pacman.position.y;
+		
+		
+		pacman.moveRight();
+	}
+
+	public void movePacmanLeft() {
+		pacman.moveLeft();
+		
+	}
+	public void movePacmanUp() {
+		pacman.moveUp();
+	}
+	public void movePacmanDown() {
+		pacman.moveDown();
+	}
+
+	public void setMap(TiledMap map) {
+		this.map = map;
 	}
 
 	

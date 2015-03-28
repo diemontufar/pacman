@@ -26,4 +26,18 @@ public class Pacman extends DynamicGameObject {
 	public void update(float deltaTime, float accelX, float touchX) {
 
 	}
+
+	public void moveRight() {
+		position.add(2f, 0f);
+	}
+	public void moveLeft() {
+		position.add(-2f, 0f);
+	}
+	public void moveUp() {
+		position.add(0f, 2f);
+	}
+	public void moveDown() {
+		position.add(0f, -2f);
+	}
+
 }

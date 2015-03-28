@@ -21,7 +21,8 @@ public class Assets {
 	/* Textures - there must be less possible */
 	public static TextureRegion gameBackground;
 	public static Texture defaultBackground;
-	public static Texture items; //Main Texture with game sprites
+	//public static Texture items; //Main Texture with game sprites
+	public static Texture itemsPacman; //Main Texture with game sprites
 
 	/*Message Screens*/
 	public static TextureRegion errorMessage;
@@ -35,8 +36,8 @@ public class Assets {
 	public static TextureRegion pauseMenu;
 	
 	/*Here declare game Textures*/
-	public static TextureRegion red_pacman;
-	public static TextureRegion yellow_pacman;
+	public static TextureRegion close_right_pacman;
+	public static TextureRegion open_right_pacman;
 	public static TextureRegion green_pacman;
 	public static TextureRegion blinky,pinky,inky,clyde;
 	
@@ -107,8 +108,8 @@ public class Assets {
 	public static void load() {
 		
 		/*Here declare screen backgrounds*/
-		defaultBackground = loadTexture("backgrounds/screens/default_background.png");
-		defaultScreen = new TextureRegion(defaultBackground, 0, 0, 800, 1280);
+		//defaultBackground = loadTexture("backgrounds/screens/default_background.png");
+		//defaultScreen = new TextureRegion(defaultBackground, 0, 0, 800, 1280);
 		
 //		menuBackground = loadTexture("backgrounds/screens/screen_menu.png");
 //		menuScreen = new TextureRegion(menuBackground, 0, 0, 800, 1280);
@@ -127,8 +128,10 @@ public class Assets {
 		
 		
 		/*Here you should put all textures that comes from items.png*/
-		items = loadTexture("textures/items.png");
-//		red_pacman = new TextureRegion(items, 0, 128, 128, 128);
+//		items = loadTexture("textures/items.png");
+		itemsPacman = loadTexture("textures/ChomperSprites.png");
+		close_right_pacman = new TextureRegion(itemsPacman, 320, 0, 30, 30);
+		open_right_pacman = new TextureRegion(itemsPacman, 350, 0, 30, 30);
 //		yellow_pacman = 
 //		green_pacman = 
 //		blinky =
@@ -139,7 +142,7 @@ public class Assets {
 
 		
 		/*Here you should put all textures that comes from itemsButtons.png*/
-		musicOn = new TextureRegion(items, 0, 512, 128, 128);
+		/*musicOn = new TextureRegion(items, 0, 512, 128, 128);
 		musicOff = new TextureRegion(items, 128, 512, 128, 128);
 		soundOn = new TextureRegion(items, 384, 512, 128, 128);
 		soundOff = new TextureRegion(items, 512, 512, 128, 128);
@@ -152,10 +155,10 @@ public class Assets {
 
 		soundGameOff = new TextureRegion(items, 128, 769, 128, 128);
 		soundGameOn = new TextureRegion(items, 256, 769, 128, 128);
-		pauseGame = new TextureRegion(items, 384, 769, 128, 128);
+		pauseGame = new TextureRegion(items, 384, 769, 128, 128);*/
 		
 		/*Here load Transparent Textures*/
-		Texture defaultNotificationR = loadTransparentTexture(320, 480, "backgrounds/default_notification.png");
+		/*Texture defaultNotificationR = loadTransparentTexture(320, 480, "backgrounds/default_notification.png");
 		defaultNotification = new TextureRegion(defaultNotificationR, 0, 0, 320, 480);
 
 		Texture readyR = loadTransparentTexture(320, 480, "backgrounds/ready.png");
@@ -168,10 +171,10 @@ public class Assets {
 		gameOver = new TextureRegion(gameOverR, 0, 0, 800, 1280);
 
 		Texture pauseMenuR = loadTransparentTexture(800, 1280, "backgrounds/pausemenu.png");
-		pauseMenu = new TextureRegion(pauseMenuR, 0, 0, 800, 1280);		
+		pauseMenu = new TextureRegion(pauseMenuR, 0, 0, 800, 1280);*/		
 		
 		/* BitmapFont*/
-		 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+		/* FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 		 Gdx.files.internal("fonts/font.ttf"));
 		 FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		 parameter.size = 40;
@@ -195,7 +198,7 @@ public class Assets {
 		lifeBonusSound = Gdx.audio.newSound(Gdx.files.internal("sound/getLifeBonus.ogg"));
 		coinBonusSound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("sound/click.wav"));
-		toggleSound = Gdx.audio.newSound(Gdx.files.internal("sound/toggle.ogg"));
+		toggleSound = Gdx.audio.newSound(Gdx.files.internal("sound/toggle.ogg"));*/
 	}
 
 	/**

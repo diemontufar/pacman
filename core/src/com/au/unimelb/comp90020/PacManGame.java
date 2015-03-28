@@ -3,6 +3,7 @@ package com.au.unimelb.comp90020;
 import com.au.unimelb.comp90020.framework.World;
 import com.au.unimelb.comp90020.framework.WorldListener;
 import com.au.unimelb.comp90020.framework.WorldRenderer;
+import com.au.unimelb.comp90020.framework.util.Assets;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -24,6 +25,7 @@ public class PacManGame extends Game {
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batch = new SpriteBatch();
+		Assets.load();
 		WorldListener listener = new WorldListener(){};
 		worldController = new World(listener);
 		
@@ -36,6 +38,7 @@ public class PacManGame extends Game {
 		worldController.update(Gdx.graphics.getDeltaTime());
 		Gdx.gl.glClearColor(139, 139, 137, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		worldRenderer.render();
 	}
 

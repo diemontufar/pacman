@@ -1,7 +1,10 @@
 package com.au.unimelb.comp90020.framework;
 
 import com.au.unimelb.comp90020.actors.Button.ButtonSize;
+import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.framework.util.Assets;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -42,6 +45,7 @@ public class WorldRenderer {
 	 */
 	public WorldRenderer(SpriteBatch batch, World world) {
 		this.world = world;
+		world.setMap(map);
 		//this.randomTime = (int) world.timeCounter;
 		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
@@ -60,6 +64,19 @@ public class WorldRenderer {
 	public void render() {
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+			world.movePacmanRight();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+			world.movePacmanLeft();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+			world.movePacmanUp();
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+			world.movePacmanDown();
+		}
+		
 		renderBackground();
 		renderObjects();
 	}
@@ -116,9 +133,9 @@ public class WorldRenderer {
 
 	private void renderPacman() {
 
-//		Pacman pacman = world.pacman;
-//		batch.draw(Assets.yellow_pacman, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
-//				Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+		Pacman pacman = world.pacman;
+		batch.draw(Assets.close_right_pacman, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+				Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
 	}
 
 	private void renderGhosts() {
