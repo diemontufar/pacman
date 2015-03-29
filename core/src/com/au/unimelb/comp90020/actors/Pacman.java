@@ -10,10 +10,10 @@ import com.au.unimelb.comp90020.framework.DynamicGameObject;
  */
 public class Pacman extends DynamicGameObject {
 	
-	public static final float PACMAN_HEIGHT = 16;
-	public static final float PACMAN_WIDTH = 16;
+	public static final float PACMAN_HEIGHT = 14;
+	public static final float PACMAN_WIDTH = 14;
 
-	public Pacman(float x, float y, float width) {
+	public Pacman(float x, float y) {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 

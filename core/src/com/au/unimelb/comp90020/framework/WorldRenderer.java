@@ -45,7 +45,7 @@ public class WorldRenderer {
 	 */
 	public WorldRenderer(SpriteBatch batch, World world) {
 		this.world = world;
-		world.setMap(map);
+		
 		//this.randomTime = (int) world.timeCounter;
 		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
@@ -56,6 +56,7 @@ public class WorldRenderer {
 		int tileWidth = 16;
 		int tileHeight = 16;
 		mapRenderer = new OrthogonalTiledMapRenderer(map,FRUSTUM_WIDTH / (tileWidth * mapWidth));
+		world.setMap(map);
 	}
 
 	/**
