@@ -23,7 +23,7 @@ public class Pacman extends DynamicGameObject {
 	 * Updates the velocity, position and bounds of the pacman according to the
 	 * acceleration on X axis and the elapsed time.
 	 */
-	public void update(float deltaTime, float accelX, float touchX) {
+	public void update(float deltaTime) {		
 
 	}
 

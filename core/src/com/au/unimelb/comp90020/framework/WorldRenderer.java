@@ -4,37 +4,29 @@ import com.au.unimelb.comp90020.actors.Button.ButtonSize;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
  * We were trying to apply MVC model, thus this class is the VIEW part whereas
- * the World is a kind of CONTROLLER. libGDX concepts like FRUSTRUM and
+ * the World is a kind of CONTROLLER. libGDX concepts like
  * Orthographic camera are managed within this class. We made the dimensions of
  * the World and the dimensions of the TARGET device coincide only for reasons
  * of convenience.
- * 
- * FRUSTRUM: it is like a layout where the world is projected through the
- * camera. VIEWPORT: it is the section of the device where the FRUSTRUM is
- * displayed.
- * 
  */
 public class WorldRenderer {
-
-	static final float FRUSTUM_WIDTH = 320;
-	static final float FRUSTUM_HEIGHT = 480;
 
 	World world;
 	OrthographicCamera cam;
 	OrthogonalTiledMapRenderer mapRenderer;
 	
 	SpriteBatch batch;
-	String scoreLabel;
 	TiledMap map;
+	TiledMapRenderer tiledMapRenderer;
 
 
 	/**
@@ -44,52 +36,36 @@ public class WorldRenderer {
 	 * @param world
 	 */
 	public WorldRenderer(SpriteBatch batch, World world) {
-		this.world = world;
-		
-		//this.randomTime = (int) world.timeCounter;
-		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
-		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
+		this.world = world;		
+		float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        this.cam = new OrthographicCamera();
+        this.cam.setToOrtho(false,w,h);
+        this.cam.update();
 		this.batch = batch;
 		this.map = new TmxMapLoader().load("pacman.tmx");
-		int mapWidth = 28;
-		int mapHeight = 31;
-		int tileWidth = 16;
-		int tileHeight = 16;
-		mapRenderer = new OrthogonalTiledMapRenderer(map,FRUSTUM_WIDTH / (tileWidth * mapWidth));
-		world.setMap(map);
+        this.tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
 	}
 
 	/**
 	 * Render background and world objects by separate.
 	 */
 	public void render() {
-		cam.update();
-		batch.setProjectionMatrix(cam.combined);
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			world.movePacmanRight();
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			world.movePacmanLeft();
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-			world.movePacmanUp();
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-			world.movePacmanDown();
-		}
 		
-		renderBackground();
+		cam.update();	
+		batch.setProjectionMatrix(cam.combined);
+		renderMap();
 		renderObjects();
 	}
 
 	/**
 	 * Render the background with blending deactivated (no transparency).
 	 */
-	public void renderBackground() {
+	public void renderMap() {
 		batch.disableBlending();
 		batch.begin();
-		mapRenderer.setView(cam);
-		mapRenderer.render();
+		tiledMapRenderer.setView(cam);
+        tiledMapRenderer.render();
 		batch.end();
 	}
 
@@ -100,15 +76,15 @@ public class WorldRenderer {
 	public void renderObjects() {
 		batch.enableBlending();
 		batch.begin();
-		renderPacdots();
+//		renderPacdots();
 		renderPacman();
-		renderGhosts();
-		renderPacBonuses();
-		renderScore();
-		renderSoundButton();
-		renderPauseButton();
-		renderLives();
-		renderLevelNumber();
+//		renderGhosts();
+//		renderPacBonuses();
+//		renderScore();
+//		renderSoundButton();
+//		renderPauseButton();
+//		renderLives();
+//		renderLevelNumber();
 		batch.end();
 	}
 
