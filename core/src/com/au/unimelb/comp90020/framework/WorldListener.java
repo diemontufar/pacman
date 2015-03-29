@@ -10,5 +10,6 @@ package com.au.unimelb.comp90020.framework;
 
 public interface WorldListener {
 
-
+	public void playWuaca();
+	
 }

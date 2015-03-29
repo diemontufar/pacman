@@ -199,6 +199,8 @@ public class Assets {
 		coinBonusSound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("sound/click.wav"));
 		toggleSound = Gdx.audio.newSound(Gdx.files.internal("sound/toggle.ogg"));*/
+		
+		wuacaSound = Gdx.audio.newSound(Gdx.files.internal("sounds/wuaca.mp3"));
 	}
 
 	/**

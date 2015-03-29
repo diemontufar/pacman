@@ -1,9 +1,7 @@
 package com.au.unimelb.comp90020.framework;
 
 import com.au.unimelb.comp90020.actors.Pacman;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Vector2;
 
 
 /**
@@ -13,22 +11,24 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class World {
 
+	public static final int WORLD_STATE_RUNNING = 0;
+	public static final int WORLD_STATE_LEVEL_END = 1;
+	public static final int WORLD_STATE_GAME_OVER = 2;
+	public static final int WORLD_STATE_GAME_LOST_LIFE = 3;
+	
 	public final WorldListener listener;
+	public int score;
+	public int lives;
+	public int game_state;
 	
-	Pacman pacman;
-	TiledMap map;
+	public Pacman pacman;
 	
-	@SuppressWarnings("static-access")
 	public World(WorldListener listener) {
 		this.listener = listener;
-		pacman = new Pacman(16, 16, 8);
-	}
-
-	/**
-	 * 
-	 */
-	private void generateLevel() {
-
+		this.pacman = new Pacman(0,0); //Create PacMan with initial position in 0,0
+		this.score = 0;
+		this.lives = 0;
+		this.game_state = WORLD_STATE_RUNNING;
 	}
 
 	/**
@@ -37,6 +37,9 @@ public class World {
 	 * @param deltaTime
 	 */
 	public void update(float deltaTime) {
+		
+		updatePacman(deltaTime);
+		
 	}
 
 	/**
@@ -68,29 +71,9 @@ public class World {
 	private void checkCollisions() {
 
 	}
-
-	public void movePacmanRight() {
-		float x = pacman.position.x;
-		float y = pacman.position.y;
-		
-		
-		pacman.moveRight();
+	
+	private void updatePacman(float deltaTime) {
+		pacman.update(deltaTime);
 	}
-
-	public void movePacmanLeft() {
-		pacman.moveLeft();
-		
-	}
-	public void movePacmanUp() {
-		pacman.moveUp();
-	}
-	public void movePacmanDown() {
-		pacman.moveDown();
-	}
-
-	public void setMap(TiledMap map) {
-		this.map = map;
-	}
-
 	
 }
