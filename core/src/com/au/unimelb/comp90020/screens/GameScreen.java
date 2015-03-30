@@ -1,6 +1,7 @@
 package com.au.unimelb.comp90020.screens;
 
 import com.au.unimelb.comp90020.PacManGame;
+import com.au.unimelb.comp90020.actors.Pacman.Movement;
 import com.au.unimelb.comp90020.framework.World;
 import com.au.unimelb.comp90020.framework.WorldListener;
 import com.au.unimelb.comp90020.framework.WorldRenderer;
@@ -111,10 +112,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 * state changes to GAME_RUNNING.
 	 */
 	private void updateReady() {
-		//if (Gdx.input.isButtonPressed(Input.Keys.SPACE)) {
-			//Gdx.app.log("Message", "User pressed Enter");
+//		if (Gdx.input.isButtonPressed(Input.Keys.SPACE)) {
+//			Gdx.app.log("Message", "User pressed Enter");
 			state = GAME_RUNNING;
-		//}
+//		}
 	}
 
 	/**
@@ -125,20 +126,22 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 */
 	private void updateRunning(float deltaTime) {
 
-		float accel = 0;
+		Movement move = Movement.NONE;
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			world.movePacmanRight();
+			move = Movement.RIGTH;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			world.movePacmanLeft();
+			move = Movement.LEFT;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-			world.movePacmanUp();
+			move = Movement.UP;
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-			world.movePacmanDown();
+			move = Movement.DOWN;
 		}
+		
+		world.update(deltaTime,move);
 	}
 
 

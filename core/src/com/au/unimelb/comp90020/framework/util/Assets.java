@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -68,7 +69,7 @@ public class Assets {
 	public static BitmapFont font;
 
 	/* Animations */
-	
+	public static Animation pacman;
 	
 	/* Sounds & Music */
 	public static Music music;
@@ -139,7 +140,8 @@ public class Assets {
 //		inky =
 //		clyde =
 		
-
+		pacman = new Animation(0.2f, new TextureRegion(itemsPacman, 128, 32, 32, 32), new TextureRegion(itemsPacman, 160, 32, 32, 32),
+				new TextureRegion(itemsPacman, 192, 32, 32, 32), new TextureRegion(itemsPacman, 160, 32, 32, 32));
 		
 		/*Here you should put all textures that comes from itemsButtons.png*/
 		/*musicOn = new TextureRegion(items, 0, 512, 128, 128);

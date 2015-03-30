@@ -1,5 +1,9 @@
 package com.au.unimelb.comp90020.framework;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.au.unimelb.comp90020.actors.Button.ButtonSize;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.framework.util.Assets;
@@ -10,8 +14,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * We were trying to apply MVC model, thus this class is the VIEW part whereas
@@ -27,10 +37,12 @@ public class WorldRenderer {
 	OrthogonalTiledMapRenderer mapRenderer;
 	
 	SpriteBatch batch;
-	TiledMap map;
 	TiledMapRenderer tiledMapRenderer;
-	ShapeRenderer shapeRenderer;
-
+	
+	TiledMapTileSet tileset;
+	ArrayList<TiledMapTileLayer.Cell> eyesCellsInScene;
+    Map<String,TiledMapTile> eyesTiles;
+	float elapsedSinceAnimation = 0.0f;
 
 	/**
 	 * Initialise the camera's position on the center of the FRUSTRUM.
@@ -46,11 +58,37 @@ public class WorldRenderer {
         this.cam.setToOrtho(false,w,h);
         this.cam.update();
 		this.batch = batch;
-		this.shapeRenderer = new ShapeRenderer();
-		
-		this.map = new TmxMapLoader().load("pacman.tmx");
-        this.tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
-        world.setMap(map);
+        this.tiledMapRenderer = new OrthogonalTiledMapRenderer(this.world.map);
+        
+        
+        // We created a second set of tiles for Water animations
+        // For the record, this is bad for performance, use a single tileset if you can help it
+        // Get a reference to the tileset named "PacMan"
+        this.tileset =  this.world.map.getTileSets().getTileSet("PacMan");
+        
+        this.eyesTiles = new HashMap<String,TiledMapTile>();
+        for(TiledMapTile tile:tileset){
+            Object property = tile.getProperties().get("GhostEyes");
+            if(property != null) {
+                eyesTiles.put((String)property,tile);
+            }
+        }
+        
+        this.eyesCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
+        
+        TiledMapTileLayer layer = (TiledMapTileLayer) this.world.map.getLayers().get("Walls");
+        for(int x = 0; x < layer.getWidth();x++){
+            for(int y = 0; y < layer.getHeight();y++){
+                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+                Gdx.app.log("Current Position", "X: " + x + "; Y: " + y );
+                if (cell != null){
+		            Object property = cell.getTile().getProperties().get("GhostEyes");
+		            if(property != null){
+		            	this.eyesCellsInScene.add(cell);
+		            }
+                }
+            }
+        }
 	}
 
 	/**
@@ -72,19 +110,35 @@ public class WorldRenderer {
 		batch.begin();
 		tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
-        //this.shapeRenderer.setProjectionMatrix(cam.combined);
-        shapeRenderer.begin(ShapeType.Line);
-        int mapWidth = 280;
-        int mapHeight = 310;
-        int tileWidth = 16;
-        int tileHeight = 16;
-        for(int x = 0; x < mapWidth; x += tileWidth)
-        	shapeRenderer.line(x, 0, x, mapHeight);
-        for(int y = 0; y < mapHeight; y += tileHeight)
-        	shapeRenderer.line(0, y, mapWidth, y);
-        shapeRenderer.end();
+        
+        // Wait for half a second to elapse then call updateWaterAnimations
+        // This could certainly be handled using an Action if you are using Scene2D
+        elapsedSinceAnimation += Gdx.graphics.getDeltaTime();
+        if(elapsedSinceAnimation > 0.5f){
+            updateWaterAnimations();
+            elapsedSinceAnimation = 0.0f;
+        }
+        
 		batch.end();
 	}
+	
+	// This is the function called every half a second to update the animated water tiles
+    // Loop through all of the cells containing water.  Find the current frame and increment it
+    // then update the cell's tile accordingly
+    // NOTE!  This code depends on WaterFrame values being sequential in Tiled
+    private void updateWaterAnimations(){
+        for(TiledMapTileLayer.Cell cell : eyesCellsInScene){
+            String property = (String) cell.getTile().getProperties().get("GhostEyes");
+            Integer currentAnimationFrame = Integer.parseInt(property);
+ 
+            currentAnimationFrame++;
+            if(currentAnimationFrame > eyesTiles.size())
+                currentAnimationFrame = 1;
+ 
+            TiledMapTile newTile = eyesTiles.get(currentAnimationFrame.toString());
+            cell.setTile(newTile);
+        }
+    }
 
 	/**
 	 * Render the world objects with blending activated (transparency is

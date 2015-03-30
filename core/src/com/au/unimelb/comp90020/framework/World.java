@@ -1,16 +1,10 @@
 package com.au.unimelb.comp90020.framework;
 
 import com.au.unimelb.comp90020.actors.Pacman;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.au.unimelb.comp90020.actors.Pacman.Movement;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 
 /**
@@ -29,24 +23,18 @@ public class World {
 
 	public Pacman pacman;
 	TiledMap map;
+	TiledMapTileLayer wallsLayer;
+	TiledMapTileLayer objectsLayer;
+	
 	public int score;
 	public int lives;
 	public int game_state;
-	
-	private Array<Rectangle> tiles = new Array<Rectangle>();
-
-	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
-		@Override
-		protected Rectangle newObject () {
-			return new Rectangle();
-		}
-	};
-
 
 	public World(WorldListener listener) {
 		this.listener = listener;
-		this.pacman = new Pacman(24,24); //Create PacMan with initial position in 0,0
-		
+		this.map = new TmxMapLoader().load("pacman.tmx");
+		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
+		this.pacman = new Pacman(200,218,wallsLayer); //Create PacMan with initial position in 200,200
 		this.score = 0;
 		this.lives = 0;
 		this.game_state = WORLD_STATE_RUNNING;
@@ -57,9 +45,9 @@ public class World {
 	 * 
 	 * @param deltaTime
 	 */
-	public void update(float deltaTime) {
+	public void update(float deltaTime,Movement move) {
 		
-		updatePacman(deltaTime);
+		updatePacman(deltaTime,move);
 		
 	}
 
@@ -93,152 +81,8 @@ public class World {
 
 	}
 
-
-	public void movePacmanRight() {
-		float x = pacman.position.x;
-		float y = pacman.position.y;
-
-		Rectangle pacmanRect = rectPool.obtain();
-		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-		
-		Vector2 newPos = new Vector2(pacman.position);
-		newPos.add(Pacman.VELOCITY, 0f);
-		
-		int startX, startY, endX, endY;
-		startX = (int) x;
-		startY = (int) y;
-		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
-		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
-		getTiles(startX, startY, endX, endY, tiles);
-		
-		boolean collides = false;
-		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-		for (Rectangle tile : tiles) {
-			if (pacmanRect.overlaps(tile)) {
-				collides = true;
-				break;
-			}
-		}
-		if (!collides)
-		   pacman.moveRight();
-	}
-
-	public void movePacmanLeft() {
-		float x = pacman.position.x;
-		float y = pacman.position.y;
-
-		Rectangle pacmanRect = rectPool.obtain();
-		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-
-		Vector2 newPos = new Vector2(pacman.position);
-		newPos.add(-Pacman.VELOCITY, 0f);
-		
-		int startX, startY, endX, endY;
-		startX = (int) x;
-		startY = (int) y;
-		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
-		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
-		getTiles(startX, startY, endX, endY, tiles);
-
-			
-		boolean collides = false;
-		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-		
-		for (Rectangle tile : tiles) {
-			if (pacmanRect.overlaps(tile)) {
-				collides = true;
-				break;
-			}
-		}
-		if (!collides)
-		   pacman.moveLeft();
-	}
-	public void movePacmanUp() {
-		float x = pacman.position.x;
-		float y = pacman.position.y;
-
-		Rectangle pacmanRect = rectPool.obtain();
-		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-
-		Vector2 newPos = new Vector2(pacman.position);
-		newPos.add(0f, Pacman.VELOCITY);
-		
-		int startX, startY, endX, endY;
-		startX = (int) x;
-		startY = (int) y;
-		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
-		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
-		getTiles(startX, startY, endX, endY, tiles);
-
-		
-		
-		boolean collides = false;
-		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-		
-		for (Rectangle tile : tiles) {
-			if (pacmanRect.overlaps(tile)) {
-				collides = true;
-				break;
-			}
-		}
-		if (!collides)
-		   pacman.moveUp();
-	}
-	public void movePacmanDown() {
-		float x = pacman.position.x;
-		float y = pacman.position.y;
-
-		Rectangle pacmanRect = rectPool.obtain();
-		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-
-		Vector2 newPos = new Vector2(pacman.position);
-		newPos.add(0f, -Pacman.VELOCITY);
-		
-		int startX, startY, endX, endY;
-		startX = (int) x;
-		startY = (int) y;
-		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
-		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
-		getTiles(startX, startY, endX, endY, tiles);
-
-		
-		
-		boolean collides = false;
-		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-		
-		for (Rectangle tile : tiles) {
-			if (pacmanRect.overlaps(tile)) {
-				collides = true;
-				break;
-			}
-		}
-		if (!collides)
-		   pacman.moveDown();
-	}
-
-	public void setMap(TiledMap map) {
-		this.map = map;
-	}
-
-	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
-		TiledMapTileLayer layer = (TiledMapTileLayer)map.getLayers().get("Walls");
-		rectPool.freeAll(tiles);
-		tiles.clear();
-		for (int y = startY; y <= endY; y++) {
-			for (int x = startX; x <= endX; x++) {
-				Cell cell = layer.getCell(x, y);
-				if (cell != null) {
-					Rectangle rect = rectPool.obtain();
-					rect.set(x, y, 1, 1);
-					tiles.add(rect);
-				}
-			}
-		}
-	}
-
-	
-	private void updatePacman(float deltaTime) {
-		pacman.update(deltaTime);
+	private void updatePacman(float deltaTime,Movement move) {
+		pacman.update(deltaTime,move);
 	}
 
 	
