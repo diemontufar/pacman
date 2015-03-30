@@ -12,6 +12,7 @@ public class Pacman extends DynamicGameObject {
 	
 	public static final float PACMAN_HEIGHT = 14;
 	public static final float PACMAN_WIDTH = 14;
+	public static final float VELOCITY = 4f;
 
 	public Pacman(float x, float y) {
 
@@ -28,16 +29,16 @@ public class Pacman extends DynamicGameObject {
 	}
 
 	public void moveRight() {
-		position.add(2f, 0f);
+		position.add(VELOCITY, 0f);
 	}
 	public void moveLeft() {
-		position.add(-2f, 0f);
+		position.add(-VELOCITY, 0f);
 	}
 	public void moveUp() {
-		position.add(0f, 2f);
+		position.add(0f, VELOCITY);
 	}
 	public void moveDown() {
-		position.add(0f, -2f);
+		position.add(0f, -VELOCITY);
 	}
 
 }

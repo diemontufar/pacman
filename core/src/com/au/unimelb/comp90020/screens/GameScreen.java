@@ -111,10 +111,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 * state changes to GAME_RUNNING.
 	 */
 	private void updateReady() {
-		if (Gdx.input.isButtonPressed(Input.Keys.SPACE)) {
-			Gdx.app.log("Message", "User pressed Enter");
+		//if (Gdx.input.isButtonPressed(Input.Keys.SPACE)) {
+			//Gdx.app.log("Message", "User pressed Enter");
 			state = GAME_RUNNING;
-		}
+		//}
 	}
 
 	/**
@@ -128,16 +128,16 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 		float accel = 0;
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-			world.pacman.moveRight();
+			world.movePacmanRight();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-			world.pacman.moveLeft();
+			world.movePacmanLeft();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-			world.pacman.moveUp();
+			world.movePacmanUp();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-			world.pacman.moveDown();
+			world.movePacmanDown();
 		}
 	}
 

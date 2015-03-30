@@ -1,6 +1,9 @@
 package com.au.unimelb.comp90020.framework;
 
 import com.au.unimelb.comp90020.actors.Pacman;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -42,7 +45,8 @@ public class World {
 
 	public World(WorldListener listener) {
 		this.listener = listener;
-		this.pacman = new Pacman(0,0); //Create PacMan with initial position in 0,0
+		this.pacman = new Pacman(24,24); //Create PacMan with initial position in 0,0
+		
 		this.score = 0;
 		this.lives = 0;
 		this.game_state = WORLD_STATE_RUNNING;
@@ -97,17 +101,18 @@ public class World {
 		Rectangle pacmanRect = rectPool.obtain();
 		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
 		
+		Vector2 newPos = new Vector2(pacman.position);
+		newPos.add(Pacman.VELOCITY, 0f);
+		
 		int startX, startY, endX, endY;
 		startX = (int) x;
 		startY = (int) y;
-		endX = (int) (x+pacman.PACMAN_WIDTH + 2);
-		endY = (int) (y + Pacman.PACMAN_HEIGHT);
+		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
+		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
 		getTiles(startX, startY, endX, endY, tiles);
 		
 		boolean collides = false;
-		
-		pacmanRect.x += pacman.PACMAN_WIDTH + 2;
-		
+		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
 		for (Rectangle tile : tiles) {
 			if (pacmanRect.overlaps(tile)) {
 				collides = true;
@@ -124,16 +129,21 @@ public class World {
 
 		Rectangle pacmanRect = rectPool.obtain();
 		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+
+		Vector2 newPos = new Vector2(pacman.position);
+		newPos.add(-Pacman.VELOCITY, 0f);
 		
 		int startX, startY, endX, endY;
-		startX = (int) (x - 2 - Pacman.PACMAN_WIDTH);
+		startX = (int) x;
 		startY = (int) y;
-		endX = (int) (x);
-		endY = (int) (y + Pacman.PACMAN_HEIGHT);
+		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
+		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
 		getTiles(startX, startY, endX, endY, tiles);
-		
+
+			
 		boolean collides = false;
-		pacmanRect.x -= pacman.PACMAN_WIDTH - 2;
+		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+		
 		for (Rectangle tile : tiles) {
 			if (pacmanRect.overlaps(tile)) {
 				collides = true;
@@ -149,16 +159,22 @@ public class World {
 
 		Rectangle pacmanRect = rectPool.obtain();
 		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+
+		Vector2 newPos = new Vector2(pacman.position);
+		newPos.add(0f, Pacman.VELOCITY);
 		
 		int startX, startY, endX, endY;
-		startX = (int) (x);
-		startY = (int) (y - Pacman.PACMAN_HEIGHT - 2);
-		endX = (int) (x + Pacman.PACMAN_WIDTH);
-		endY = (int) (y);
+		startX = (int) x;
+		startY = (int) y;
+		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
+		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
 		getTiles(startX, startY, endX, endY, tiles);
+
+		
 		
 		boolean collides = false;
-		pacmanRect.y -= pacman.PACMAN_HEIGHT - 2;
+		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+		
 		for (Rectangle tile : tiles) {
 			if (pacmanRect.overlaps(tile)) {
 				collides = true;
@@ -174,16 +190,22 @@ public class World {
 
 		Rectangle pacmanRect = rectPool.obtain();
 		pacmanRect.set(x, y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+
+		Vector2 newPos = new Vector2(pacman.position);
+		newPos.add(0f, -Pacman.VELOCITY);
 		
 		int startX, startY, endX, endY;
-		startX = (int) (x);
-		startY = (int) (y);
-		endX = (int) (x + Pacman.PACMAN_WIDTH);
-		endY = (int) (y + Pacman.PACMAN_HEIGHT + 2);
+		startX = (int) x;
+		startY = (int) y;
+		endX = (int) (newPos.x+Pacman.PACMAN_WIDTH);
+		endY = (int) (newPos.y+Pacman.PACMAN_HEIGHT);
 		getTiles(startX, startY, endX, endY, tiles);
+
+		
 		
 		boolean collides = false;
-		pacmanRect.x += pacman.PACMAN_HEIGHT + 2;
+		pacmanRect.set(newPos.x, newPos.y, Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
+		
 		for (Rectangle tile : tiles) {
 			if (pacmanRect.overlaps(tile)) {
 				collides = true;
@@ -218,5 +240,6 @@ public class World {
 	private void updatePacman(float deltaTime) {
 		pacman.update(deltaTime);
 	}
+
 	
 }

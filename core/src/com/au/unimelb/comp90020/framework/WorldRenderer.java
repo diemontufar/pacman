@@ -6,6 +6,8 @@ import com.au.unimelb.comp90020.framework.util.Assets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -27,6 +29,7 @@ public class WorldRenderer {
 	SpriteBatch batch;
 	TiledMap map;
 	TiledMapRenderer tiledMapRenderer;
+	ShapeRenderer shapeRenderer;
 
 
 	/**
@@ -43,8 +46,11 @@ public class WorldRenderer {
         this.cam.setToOrtho(false,w,h);
         this.cam.update();
 		this.batch = batch;
+		this.shapeRenderer = new ShapeRenderer();
+		
 		this.map = new TmxMapLoader().load("pacman.tmx");
         this.tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+        world.setMap(map);
 	}
 
 	/**
@@ -66,6 +72,17 @@ public class WorldRenderer {
 		batch.begin();
 		tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
+        //this.shapeRenderer.setProjectionMatrix(cam.combined);
+        shapeRenderer.begin(ShapeType.Line);
+        int mapWidth = 280;
+        int mapHeight = 310;
+        int tileWidth = 16;
+        int tileHeight = 16;
+        for(int x = 0; x < mapWidth; x += tileWidth)
+        	shapeRenderer.line(x, 0, x, mapHeight);
+        for(int y = 0; y < mapHeight; y += tileHeight)
+        	shapeRenderer.line(0, y, mapWidth, y);
+        shapeRenderer.end();
 		batch.end();
 	}
 
