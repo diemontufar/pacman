@@ -56,6 +56,7 @@ public class Pacman extends DynamicGameObject {
 		if(collisionX) {
 			Gdx.app.log("Info:", "Collision x");
 			position.x = oldX;
+			position.y = oldY;
 			velocity.x = 0;
 		}
 		
@@ -71,6 +72,7 @@ public class Pacman extends DynamicGameObject {
 		// react to y collision
 		if(collisionY) {
 			Gdx.app.log("Info:", "Collision y");
+			position.x = oldX;
 			position.y = oldY;
 			velocity.y = 0;
 		}

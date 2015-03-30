@@ -2,6 +2,7 @@ package com.au.unimelb.comp90020.framework;
 
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -22,9 +23,11 @@ public class World {
 	public final WorldListener listener;
 
 	public Pacman pacman;
-	TiledMap map;
-	TiledMapTileLayer wallsLayer;
-	TiledMapTileLayer objectsLayer;
+	public TiledMap map;
+	public TiledMapTileLayer wallsLayer;
+	public TiledMapTileLayer pacdotsLayer;
+	public MapObjects objectsLayer;
+	public int[] wallsLayerIndex = new int[]{0}, objectsLayerIndex = new int[]{1}, collectablesLayerIndex = new int[]{2};
 	
 	public int score;
 	public int lives;
@@ -34,6 +37,8 @@ public class World {
 		this.listener = listener;
 		this.map = new TmxMapLoader().load("pacman.tmx");
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
+		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
+		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
 		this.pacman = new Pacman(200,218,wallsLayer); //Create PacMan with initial position in 200,200
 		this.score = 0;
 		this.lives = 0;

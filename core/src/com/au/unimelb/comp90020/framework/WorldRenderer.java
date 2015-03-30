@@ -75,7 +75,6 @@ public class WorldRenderer {
         }
         
         this.eyesCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
-        
         TiledMapTileLayer layer = (TiledMapTileLayer) this.world.map.getLayers().get("Walls");
         for(int x = 0; x < layer.getWidth();x++){
             for(int y = 0; y < layer.getHeight();y++){
@@ -98,18 +97,21 @@ public class WorldRenderer {
 		
 		cam.update();	
 		batch.setProjectionMatrix(cam.combined);
-		renderMap();
+		renderLayers();
 		renderObjects();
 	}
-
+	
 	/**
 	 * Render the background with blending deactivated (no transparency).
 	 */
-	public void renderMap() {
+	public void renderLayers() {
 		batch.disableBlending();
 		batch.begin();
 		tiledMapRenderer.setView(cam);
-        tiledMapRenderer.render();
+//        tiledMapRenderer.render();
+		tiledMapRenderer.render(this.world.wallsLayerIndex);
+        tiledMapRenderer.render(this.world.objectsLayerIndex);
+        tiledMapRenderer.render(this.world.collectablesLayerIndex);
         
         // Wait for half a second to elapse then call updateWaterAnimations
         // This could certainly be handled using an Action if you are using Scene2D
@@ -147,7 +149,7 @@ public class WorldRenderer {
 	public void renderObjects() {
 		batch.enableBlending();
 		batch.begin();
-//		renderPacdots();
+		renderPacdots();
 		renderPacman();
 //		renderGhosts();
 //		renderPacBonuses();
@@ -176,7 +178,7 @@ public class WorldRenderer {
 	}
 	
 	private void renderPacdots() {
-		//See how we rendered bricks in breakbreaker
+		
 	}
 
 	private void renderPacman() {

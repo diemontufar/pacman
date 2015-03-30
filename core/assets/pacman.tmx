@@ -28,12 +28,12 @@
    eJzFVl1vAjEMyxiwDXYItvEpjVf+/z+klS7Cipw2LWNE8gMhjXuur7mpiMwa8Z7w1rFunrCS9lgmDB3r1sD3kjAZ8UpymEc+r4b1Q77c43PEQHI2H6mxOeTbJuxG7EnO5iM1Nod8/xGR8/PO0juz6Pmx58dz0v91vfar1bfouRxhYxD+Pnh5jcx3SDgazIFvK/H3YQ/5Kel7KuxD+zLdmD91P8rX4kPkUz0vgXWoZy+frv+Q2z2oob8XpN7jsxqjzqhbab/oca1nvjgWeng9W/+zwfag/sT3N8KH9cyf3vOx8/sWf679kPp7/RKJv+SL3J8RvqwzauP5M3J/1vzZ+z0xCL9Xa/HM7wnVC+9A1LB1vuvdW5tHtZkSDebtzLeRsla9851p/pXwK75W9853q/lZyv70fFia7yXfev7EeR2d7ztSH/Gnd0ZRfzI88/vTm4uPQL4nrzL7GM0=
   </data>
  </layer>
- <layer name="Collectables" width="28" height="31" visible="0" opacity="0.93">
+ <layer name="Collectables" width="28" height="31" opacity="0.93">
   <data encoding="base64" compression="zlib">
    eJxjYKA/kCYRU0MfNjfgchsparCJydDBPhkC8rT0H6nxQC4mxT2EAKXm0do+UtI9qeLo8oTcSyogR++ofaP2jdo3ah819A739sRAtF9ICSty1BBqI1GrvsWnl1720bt+JyWvDVV99MADAQA7lRnB
   </data>
  </layer>
- <objectgroup name="Objects" visible="0">
+ <objectgroup name="Objects">
   <object id="1" name="InkySpawnPoint" x="176" y="224" width="32" height="16"/>
   <object id="2" name="PinkySpawnPoint" x="208" y="224" width="32" height="16"/>
   <object id="3" name="ClydeSpawnPoint" x="240" y="224" width="32" height="16"/>

@@ -87,7 +87,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 			updateRunning(deltaTime);
 			break;
 		case GAME_PAUSED:
-//			updatePaused();
+			updatePaused();
 			break;
 		case GAME_LEVEL_END:
 //			updateLevelEnd();
@@ -116,6 +116,15 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 //			Gdx.app.log("Message", "User pressed Enter");
 			state = GAME_RUNNING;
 //		}
+	}
+	
+	/**
+	 * Method called when the state of the game is GAME_PAUSED. Resumes the game
+	 * or returns to the MenuScreen depending on which button was pressed.
+	 */
+	private void updatePaused() {
+		//TODO: Handle this better
+		state = GAME_RUNNING;
 	}
 
 	/**
@@ -200,7 +209,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	}
 
 	private void presentPaused() {
-
+		
 	}
 
 	private void presentLostLife() {
