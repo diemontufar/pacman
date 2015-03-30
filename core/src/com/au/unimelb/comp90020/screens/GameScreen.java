@@ -42,6 +42,8 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	boolean toggleSound;
 	int lastScore;
 	String scoreString;
+	
+	float elapsedSinceAnimation = 0.0f;
 
 	public GameScreen(PacManGame game) {
 
@@ -136,18 +138,35 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	private void updateRunning(float deltaTime) {
 
 		Movement move = Movement.NONE;
+		this.elapsedSinceAnimation += deltaTime;
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 			move = Movement.RIGTH;
+			if (this.elapsedSinceAnimation > 0.7f){
+				this.worldListener.playWuaca();
+				this.elapsedSinceAnimation = 0.0f;
+			}
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 			move = Movement.LEFT;
+			if (this.elapsedSinceAnimation > 0.7f){
+				this.worldListener.playWuaca();
+				this.elapsedSinceAnimation = 0.0f;
+			}
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)){
 			move = Movement.UP;
+			if (this.elapsedSinceAnimation > 0.7f){
+				this.worldListener.playWuaca();
+				this.elapsedSinceAnimation = 0.0f;
+			}
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
 			move = Movement.DOWN;
+			if (this.elapsedSinceAnimation > 0.7f){
+				this.worldListener.playWuaca();
+				this.elapsedSinceAnimation = 0.0f;
+			}
 		}
 		
 		world.update(deltaTime,move);
@@ -162,10 +181,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 
 		/* Render Objects in screen */
 		GL20 gl = Gdx.gl;
-
-//		gl.glViewport((int) game.viewport.x, (int) game.viewport.y, (int) game.viewport.width,
-//				(int) game.viewport.height);
-
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		

@@ -1,7 +1,6 @@
 package com.au.unimelb.comp90020.actors;
 
 import com.au.unimelb.comp90020.framework.DynamicGameObject;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
@@ -17,7 +16,9 @@ public class Pacman extends DynamicGameObject {
 	
 	public static final float PACMAN_HEIGHT = 18;
 	public static final float PACMAN_WIDTH = 18;
+	public Movement currentSate;
 	private float speed = 60 * 2;
+	float stateTime;
 	private TiledMapTileLayer collisionLayer;
 	
 	//To check when pacman collides with a wall
@@ -27,6 +28,8 @@ public class Pacman extends DynamicGameObject {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 		this.collisionLayer = collisionLayer;
+		this.currentSate = Movement.NONE;
+		this.stateTime = 0.0f;
 
 	}
 
@@ -38,6 +41,8 @@ public class Pacman extends DynamicGameObject {
 		
 		float newX = speed * deltaTime;
 		float newY = speed * deltaTime;
+		setCurrentSate(move);
+		stateTime += deltaTime;
 		
 		// save old position
 		float oldX = position.x, oldY = position.y;
@@ -54,7 +59,7 @@ public class Pacman extends DynamicGameObject {
 		
 		// react to x collision
 		if(collisionX) {
-			Gdx.app.log("Info:", "Collision x");
+//			Gdx.app.log("Info:", "Collision x");
 			position.x = oldX;
 			position.y = oldY;
 			velocity.x = 0;
@@ -71,14 +76,14 @@ public class Pacman extends DynamicGameObject {
 		
 		// react to y collision
 		if(collisionY) {
-			Gdx.app.log("Info:", "Collision y");
+//			Gdx.app.log("Info:", "Collision y");
 			position.x = oldX;
 			position.y = oldY;
 			velocity.y = 0;
 		}
-		
+
 	}
-	
+
 	public boolean collidesRight() {
 		if(isCellBlocked(position.x + PACMAN_WIDTH/2, position.y))
 			return true;
@@ -107,5 +112,21 @@ public class Pacman extends DynamicGameObject {
 	private boolean isCellBlocked(float x, float y) {
 		Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
+	}
+	
+	public float getStateTime() {
+		return stateTime;
+	}
+
+	public void setStateTime(float stateTime) {
+		this.stateTime = stateTime;
+	}
+	
+	public Movement getCurrentSate() {
+		return currentSate;
+	}
+
+	public void setCurrentSate(Movement currentSate) {
+		this.currentSate = currentSate;
 	}
 }

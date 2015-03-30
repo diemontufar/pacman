@@ -39,6 +39,12 @@ public class Assets {
 	/*Here declare game Textures*/
 	public static TextureRegion close_right_pacman;
 	public static TextureRegion open_right_pacman;
+	public static TextureRegion close_left_pacman;
+	public static TextureRegion open_left_pacman;
+	public static TextureRegion close_up_pacman;
+	public static TextureRegion open_up_pacman;
+	public static TextureRegion close_down_pacman;
+	public static TextureRegion open_down_pacman;
 	public static TextureRegion green_pacman;
 	public static TextureRegion blinky,pinky,inky,clyde;
 	
@@ -69,7 +75,10 @@ public class Assets {
 	public static BitmapFont font;
 
 	/* Animations */
-	public static Animation pacman;
+	public static Animation pacmanRight;
+	public static Animation pacmanLeft;
+	public static Animation pacmanUp;
+	public static Animation pacmanDown;
 	
 	/* Sounds & Music */
 	public static Music music;
@@ -133,15 +142,25 @@ public class Assets {
 		itemsPacman = loadTexture("textures/ChomperSprites.png");
 		close_right_pacman = new TextureRegion(itemsPacman, 320, 0, 30, 30);
 		open_right_pacman = new TextureRegion(itemsPacman, 350, 0, 30, 30);
+		close_down_pacman = new TextureRegion(itemsPacman, 320, 30, 30, 30);
+		open_down_pacman = new TextureRegion(itemsPacman, 350, 30, 30, 30);
+		close_left_pacman = new TextureRegion(itemsPacman, 320, 60, 30, 30);
+		open_left_pacman = new TextureRegion(itemsPacman, 350, 60, 30, 30);
+		close_up_pacman = new TextureRegion(itemsPacman, 320, 90, 30, 30);
+		open_up_pacman = new TextureRegion(itemsPacman, 350, 90, 30, 30);
+		
+		pacmanRight = new Animation(0.05f, close_right_pacman, open_right_pacman);
+		pacmanLeft = new Animation(0.05f, close_left_pacman, open_left_pacman);
+		pacmanUp = new Animation(0.05f, close_up_pacman, open_up_pacman);
+		pacmanDown = new Animation(0.05f, close_down_pacman, open_down_pacman);
+		
 //		yellow_pacman = 
 //		green_pacman = 
 //		blinky =
 //		pinky =
 //		inky =
 //		clyde =
-		
-		pacman = new Animation(0.2f, new TextureRegion(itemsPacman, 128, 32, 32, 32), new TextureRegion(itemsPacman, 160, 32, 32, 32),
-				new TextureRegion(itemsPacman, 192, 32, 32, 32), new TextureRegion(itemsPacman, 160, 32, 32, 32));
+
 		
 		/*Here you should put all textures that comes from itemsButtons.png*/
 		/*musicOn = new TextureRegion(items, 0, 512, 128, 128);
