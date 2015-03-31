@@ -16,7 +16,7 @@ public class Pacman extends DynamicGameObject {
 	
 	public static final float PACMAN_HEIGHT = 18;
 	public static final float PACMAN_WIDTH = 18;
-	public Movement currentSate;
+	public Movement currentState;
 	private float speed = 60 * 2;
 	float stateTime;
 	private TiledMapTileLayer collisionLayer;
@@ -28,7 +28,7 @@ public class Pacman extends DynamicGameObject {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 		this.collisionLayer = collisionLayer;
-		this.currentSate = Movement.NONE;
+		this.currentState = Movement.NONE;
 		this.stateTime = 0.0f;
 
 	}
@@ -41,7 +41,7 @@ public class Pacman extends DynamicGameObject {
 		
 		float newX = speed * deltaTime;
 		float newY = speed * deltaTime;
-		setCurrentSate(move);
+		
 		stateTime += deltaTime;
 		
 		// save old position
@@ -64,6 +64,9 @@ public class Pacman extends DynamicGameObject {
 			position.y = oldY;
 			velocity.x = 0;
 		}
+		else if(move == Movement.RIGTH || move == Movement.LEFT){
+			setCurrentState(move);
+		}
 		
 		if (move == Movement.UP){
 			position.add(0f, newY);
@@ -80,6 +83,9 @@ public class Pacman extends DynamicGameObject {
 			position.x = oldX;
 			position.y = oldY;
 			velocity.y = 0;
+		}
+		else if(move == Movement.UP || move == Movement.DOWN){
+			setCurrentState(move);
 		}
 
 	}
@@ -122,11 +128,11 @@ public class Pacman extends DynamicGameObject {
 		this.stateTime = stateTime;
 	}
 	
-	public Movement getCurrentSate() {
-		return currentSate;
+	public Movement getCurrentState() {
+		return currentState;
 	}
 
-	public void setCurrentSate(Movement currentSate) {
-		this.currentSate = currentSate;
+	public void setCurrentState(Movement currentSate) {
+		this.currentState = currentSate;
 	}
 }

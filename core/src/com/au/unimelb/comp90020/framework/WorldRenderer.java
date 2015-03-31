@@ -91,7 +91,7 @@ public class WorldRenderer {
 		Pacman pacman = world.pacman;
 		TextureRegion keyFrame = null;
 		
-		if (pacman.getCurrentSate() == Movement.RIGTH){
+		if (pacman.getCurrentState() == Movement.RIGTH){
 //			Gdx.app.log("Hey", "State Time: " + Float.toString(pacman.getStateTime()));
 			if (pacman.getStateTime() > 0.05f){
 				keyFrame = Assets.pacmanRight.getKeyFrame(pacman.getStateTime(), true);	
@@ -101,7 +101,7 @@ public class WorldRenderer {
 			}
 		}
 		
-		if (pacman.getCurrentSate() == Movement.LEFT){
+		if (pacman.getCurrentState() == Movement.LEFT){
 			if (pacman.getStateTime() > 0.05f){
 				keyFrame = Assets.pacmanLeft.getKeyFrame(pacman.getStateTime(), true);	
 				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
@@ -110,7 +110,7 @@ public class WorldRenderer {
 			}
 		}
 		
-		if (pacman.getCurrentSate() == Movement.UP){
+		if (pacman.getCurrentState() == Movement.UP){
 			if (pacman.getStateTime() > 0.05f){
 				keyFrame = Assets.pacmanUp.getKeyFrame(pacman.getStateTime(), true);	
 				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
@@ -119,7 +119,7 @@ public class WorldRenderer {
 			}
 		}
 		
-		if (pacman.getCurrentSate() == Movement.DOWN){
+		if (pacman.getCurrentState() == Movement.DOWN){
 			if (pacman.getStateTime() > 0.05f){
 				keyFrame = Assets.pacmanDown.getKeyFrame(pacman.getStateTime(), true);	
 				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
@@ -128,7 +128,7 @@ public class WorldRenderer {
 			}
 		}
 		
-		if (pacman.getCurrentSate() == Movement.NONE){
+		if (pacman.getCurrentState() == Movement.NONE){
 			batch.draw(Assets.close_right_pacman, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 					Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
 		}
