@@ -56,7 +56,7 @@ public class World {
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
-		this.pacman = new Pacman(225,120,wallsLayer); //Create PacMan with initial position in 200,200
+		this.pacman = new Pacman(225,120,wallsLayer,pacdotsLayer); //Create PacMan with initial position in 200,200
 		createDots();
 		createEyes(); //just for fun
 		this.score = 0;
@@ -136,11 +136,9 @@ public class World {
 	 * 
 	 * @param deltaTime
 	 */
-	public void update(float deltaTime,Movement move) {
-		
+	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
 		updateEyes(deltaTime);
-		
 	}
 
 	/**
@@ -174,7 +172,7 @@ public class World {
 	}
 
 	private void updatePacman(float deltaTime,Movement move) {
-		pacman.update(deltaTime,move);
+		   pacman.update(deltaTime,move);
 	}
 	
 	private void updateEyes(float deltaTime) {

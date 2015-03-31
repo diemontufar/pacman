@@ -140,6 +140,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 		Movement move = Movement.NONE;
 		this.elapsedSinceAnimation += deltaTime;
 
+		//Check Pacman movement
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 			move = Movement.RIGTH;
 			if (this.elapsedSinceAnimation > 0.7f){
@@ -168,7 +169,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 				this.elapsedSinceAnimation = 0.0f;
 			}
 		}
-		
 		world.update(deltaTime,move);
 	}
 

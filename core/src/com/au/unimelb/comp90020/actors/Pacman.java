@@ -20,14 +20,16 @@ public class Pacman extends DynamicGameObject {
 	private float speed = 60 * 2;
 	float stateTime;
 	private TiledMapTileLayer collisionLayer;
+	private TiledMapTileLayer foodLayer;
 	
 	//To check when pacman collides with a wall
 	boolean collisionWallX = false, collisionWallY = false;
 
-	public Pacman(float x, float y,TiledMapTileLayer collisionLayer) {
+	public Pacman(float x, float y,TiledMapTileLayer collisionLayer,TiledMapTileLayer foodLayer) {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 		this.collisionLayer = collisionLayer;
+		this.foodLayer = foodLayer;
 		this.currentState = Movement.NONE;
 		this.stateTime = 0.0f;
 
@@ -65,6 +67,7 @@ public class Pacman extends DynamicGameObject {
 			velocity.x = 0;
 		}
 		else if(move == Movement.RIGTH || move == Movement.LEFT){
+			checkEaten(oldX,oldY);
 			setCurrentState(move);
 		}
 		
@@ -85,9 +88,17 @@ public class Pacman extends DynamicGameObject {
 			velocity.y = 0;
 		}
 		else if(move == Movement.UP || move == Movement.DOWN){
+			checkEaten(oldX,oldY);
 			setCurrentState(move);
 		}
 
+	}
+
+	private void checkEaten(float oldX, float oldY) {
+		if (isCellFood(position.x, position.y)){
+			//world.updateScore()
+			removeFood(position.x, position.y);
+		}
 	}
 
 	public boolean collidesRight() {
@@ -114,6 +125,20 @@ public class Pacman extends DynamicGameObject {
 			return true;
 		return false;
 	}
+
+	private boolean removeFood(float x, float y) {
+		Cell cell = foodLayer.getCell((int) (x / foodLayer.getTileWidth()), (int) (y / foodLayer.getTileHeight()));
+		cell.setTile(null);
+		
+		return cell != null && cell.getTile() != null && cell.getTile()!=null;
+	}
+
+	
+	private boolean isCellFood(float x, float y) {
+		Cell cell = foodLayer.getCell((int) (x / foodLayer.getTileWidth()), (int) (y / foodLayer.getTileHeight()));
+		return cell != null && cell.getTile() != null && cell.getTile()!=null;
+	}
+
 	
 	private boolean isCellBlocked(float x, float y) {
 		Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
