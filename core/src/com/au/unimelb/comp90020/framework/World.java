@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.au.unimelb.comp90020.actors.Ghost;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -29,6 +31,11 @@ public class World {
 	public final WorldListener listener;
 
 	public Pacman pacman;
+	public Ghost inky;
+	public Ghost blinky;
+	public Ghost pinky;
+	public Ghost clyde;
+	
 	public TiledMap map;
 	public TiledMapTileLayer wallsLayer;
 	public TiledMapTileLayer pacdotsLayer;
@@ -57,6 +64,7 @@ public class World {
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
 		this.pacman = new Pacman(225,120,wallsLayer,pacdotsLayer); //Create PacMan with initial position in 200,200
+		createGhosts();
 		createDots();
 		createEyes(); //just for fun
 		this.score = 0;
@@ -64,6 +72,19 @@ public class World {
 		this.game_state = WORLD_STATE_RUNNING;
 	}
 	
+	private void createGhosts() {
+		//Find the spot and create the ghosts
+		MapObject obj = this.objectsLayer.get("InkySpawnPoint");
+		inky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));	
+		obj = this.objectsLayer.get("PinkySpawnPoint");
+		pinky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
+		obj = this.objectsLayer.get("ClydeSpawnPoint");
+		clyde = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
+		obj = this.objectsLayer.get("BlinkySpawnPoint");
+		blinky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
+
+	}
+
 	/*
 	 * Here we are creating pacdots and pacdotbonuses so that then you can access them by 
 	 * looping over the ArrayLists dotCellsInScene and dotBonusCellsInScene and do something like

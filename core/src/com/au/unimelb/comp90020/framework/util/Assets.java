@@ -154,12 +154,14 @@ public class Assets {
 		pacmanUp = new Animation(0.05f, close_up_pacman, open_up_pacman);
 		pacmanDown = new Animation(0.05f, close_down_pacman, open_down_pacman);
 		
+		
+		
 //		yellow_pacman = 
 //		green_pacman = 
-//		blinky =
-//		pinky =
-//		inky =
-//		clyde =
+		blinky = new TextureRegion(itemsPacman, 0, 0, 30, 30);
+		pinky = new TextureRegion(itemsPacman, 60, 0, 30, 30);
+		inky = new TextureRegion(itemsPacman, 125, 0, 30, 30);
+		clyde = new TextureRegion(itemsPacman, 190, 0, 30, 30);
 
 		
 		/*Here you should put all textures that comes from itemsButtons.png*/
