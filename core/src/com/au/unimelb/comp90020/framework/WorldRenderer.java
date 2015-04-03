@@ -138,13 +138,13 @@ public class WorldRenderer {
 
 	private void renderGhosts() {
 		//See how we rendered bricks in breakbreaker
-		batch.draw(Assets.blinky, world.blinky.position.x - world.blinky.GHOST_WIDTH / 2, world.blinky.position.y - Ghost.GHOST_HEIGHT / 2,
+		batch.draw(Assets.blinky, world.blinky.position.x - Ghost.GHOST_WIDTH / 2, world.blinky.position.y - Ghost.GHOST_HEIGHT / 2,
 					Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
-		batch.draw(Assets.inky, world.inky.position.x - world.inky.GHOST_WIDTH / 2, world.inky.position.y - Ghost.GHOST_HEIGHT / 2,
+		batch.draw(Assets.inky, world.inky.position.x - Ghost.GHOST_WIDTH / 2, world.inky.position.y - Ghost.GHOST_HEIGHT / 2,
 				Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
-		batch.draw(Assets.clyde, world.clyde.position.x - world.clyde.GHOST_WIDTH / 2, world.clyde.position.y - Ghost.GHOST_HEIGHT / 2,
+		batch.draw(Assets.clyde, world.clyde.position.x - Ghost.GHOST_WIDTH / 2, world.clyde.position.y - Ghost.GHOST_HEIGHT / 2,
 				Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
-		batch.draw(Assets.pinky, world.pinky.position.x - world.pinky.GHOST_WIDTH / 2, world.pinky.position.y - Ghost.GHOST_HEIGHT / 2,
+		batch.draw(Assets.pinky, world.pinky.position.x - Ghost.GHOST_WIDTH / 2, world.pinky.position.y - Ghost.GHOST_HEIGHT / 2,
 				Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
 	}
 

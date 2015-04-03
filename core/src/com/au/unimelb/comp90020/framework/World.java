@@ -75,14 +75,25 @@ public class World {
 	private void createGhosts() {
 		//Find the spot and create the ghosts
 		MapObject obj = this.objectsLayer.get("InkySpawnPoint");
-		inky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));	
+		float x = (Float)obj.getProperties().get("x");
+		float y = (Float)obj.getProperties().get("y");
+		float width = (Float)obj.getProperties().get("width");		
+		inky = new Ghost( x, y, 0, 0 ,width, wallsLayer );	
 		obj = this.objectsLayer.get("PinkySpawnPoint");
-		pinky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
+		x = (Float)obj.getProperties().get("x");
+		y = (Float)obj.getProperties().get("y");
+		width = (Float)obj.getProperties().get("width");
+		pinky = new Ghost( x, y, 27, 0, width, wallsLayer);
 		obj = this.objectsLayer.get("ClydeSpawnPoint");
-		clyde = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
+		x = (Float)obj.getProperties().get("x");
+		y = (Float)obj.getProperties().get("y");
+		width = (Float)obj.getProperties().get("width");
+		clyde = new Ghost( x, y, 27, 0 ,width, wallsLayer );
 		obj = this.objectsLayer.get("BlinkySpawnPoint");
-		blinky = new Ghost( (Float) ( obj.getProperties().get("x")), (Float)(obj.getProperties().get("y")), (Float)(obj.getProperties().get("width")));
-
+		x = (Float)obj.getProperties().get("x");
+		y = (Float)obj.getProperties().get("y");
+		width = (Float)obj.getProperties().get("width");
+		blinky = new Ghost( x, y, 27, 27, width, wallsLayer);
 	}
 
 	/*
@@ -159,6 +170,7 @@ public class World {
 	 */
 	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
+		updateGhosts(deltaTime);
 		updateEyes(deltaTime);
 	}
 
@@ -194,6 +206,12 @@ public class World {
 
 	private void updatePacman(float deltaTime,Movement move) {
 		   pacman.update(deltaTime,move);
+	}
+	private void updateGhosts(float deltaTime) {
+		   this.blinky.update(deltaTime);
+		   this.pinky.update(deltaTime);
+		   this.clyde.update(deltaTime);
+		   this.inky.update(deltaTime);
 	}
 	
 	private void updateEyes(float deltaTime) {
