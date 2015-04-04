@@ -35,7 +35,7 @@
  </tileset>
  <layer name="Walls" width="28" height="31">
   <data encoding="base64" compression="zlib">
-   eJzFVl1vAjEMyxiwDXYItvEpjVf+/z+klS7Cipw2LWNE8gMhjXuur7mpiMwa8Z7w1rFunrCS9lgmDB3r1sD3kjAZ8UpymEc+r4b1Q77c43PEQHI2H6mxOeTbJuxG7EnO5iM1Nod8/xGR8/PO0juz6Pmx58dz0v91vfar1bfouRxhYxD+Pnh5jcx3SDgazIFvK/H3YQ/5Kel7KuxD+zLdmD91P8rX4kPkUz0vgXWoZy+frv+Q2z2oob8XpN7jsxqjzqhbab/oca1nvjgWeng9W/+zwfag/sT3N8KH9cyf3vOx8/sWf679kPp7/RKJv+SL3J8RvqwzauP5M3J/1vzZ+z0xCL9Xa/HM7wnVC+9A1LB1vuvdW5tHtZkSDebtzLeRsla9851p/pXwK75W9853q/lZyv70fFia7yXfev7EeR2d7ztSH/Gnd0ZRfzI88/vTm4uPQL4nrzL7GM0=
+   eJzFVu1uwjAM9FjHProiBmsZSOz9H3OJVIuTdU6ddBuW7gfG8aWXa9xORJ4q8ZLw3LBum7CT+ugThoZ1e+B7SNjMeCQ5zCOfV8P6IV/u8T5jIDmbj9TYHPKNCdOME8nZfKTG5pDvPyJyft5ZemcWPT/2/HhO+r+u135L9TV69jNsDMLfBy+vkfm+Es4GW+AbJf4+nCDfkb6Xwj60L9ON+VP3o3w1PkQ+pqcXqGcrn65/lds9qKG/30i9x2c1Rp1Rt9J+0eNaz3xxLvTwetb+Z4PtQf2J72+ED+uZP73nY+d3FH+ufZL6tX6JxG/yRe7PCF/WGbXx/Bm5P5f82fo9MUjdPaBxz+8J1QvvQNSwdr7r3bs0j5ZmSjSYtzPfh5S1ap3vTPNDwlV8rdbOd6v5t5T96fmwNN9LvvX8ifM6Ot8nUh/xp3dGUX8y3PP705uLf4F8T/4A47UYpg==
   </data>
  </layer>
  <layer name="Collectables" width="28" height="31" opacity="0.93">
@@ -50,5 +50,6 @@
   <object name="PacManSpawnPoint" x="208" y="368" width="32" height="16"/>
   <object name="BlinkySpawnPoint" x="225" y="176" width="32" height="16"/>
   <object name="FruitSpawnPoint" x="208" y="272" width="32" height="16"/>
+  <object name="HouseDoor" x="168" y="198" width="112" height="67"/>
  </objectgroup>
 </map>

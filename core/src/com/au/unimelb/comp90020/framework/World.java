@@ -66,7 +66,7 @@ public class World {
 		this.pacman = new Pacman(225,120,wallsLayer,pacdotsLayer); //Create PacMan with initial position in 200,200
 		createGhosts();
 		createDots();
-		createEyes(); //just for fun
+		//createEyes(); //just for fun
 		this.score = 0;
 		this.lives = 0;
 		this.game_state = WORLD_STATE_RUNNING;
@@ -74,26 +74,30 @@ public class World {
 	
 	private void createGhosts() {
 		//Find the spot and create the ghosts
-		MapObject obj = this.objectsLayer.get("InkySpawnPoint");
-		float x = (Float)obj.getProperties().get("x");
-		float y = (Float)obj.getProperties().get("y");
-		float width = (Float)obj.getProperties().get("width");		
-		inky = new Ghost( x, y, 0, 0 ,width, wallsLayer );	
+		float x,y,width;
+		MapObject obj;
+		MapObject houseDoor = this.objectsLayer.get("HouseDoor");
+		obj = this.objectsLayer.get("InkySpawnPoint");
+		x = (Float)obj.getProperties().get("x");
+		y = (Float)obj.getProperties().get("y");
+		width = (Float)obj.getProperties().get("width");		
+		inky = new Ghost( x, y, 1, 1 ,width, wallsLayer, houseDoor );	
 		obj = this.objectsLayer.get("PinkySpawnPoint");
 		x = (Float)obj.getProperties().get("x");
 		y = (Float)obj.getProperties().get("y");
 		width = (Float)obj.getProperties().get("width");
-		pinky = new Ghost( x, y, 27, 0, width, wallsLayer);
+		pinky = new Ghost( x, y, 300, 1, width, wallsLayer, houseDoor);
 		obj = this.objectsLayer.get("ClydeSpawnPoint");
 		x = (Float)obj.getProperties().get("x");
 		y = (Float)obj.getProperties().get("y");
 		width = (Float)obj.getProperties().get("width");
-		clyde = new Ghost( x, y, 27, 0 ,width, wallsLayer );
+		clyde = new Ghost( x, y, 1, 300 ,width, wallsLayer, houseDoor );
 		obj = this.objectsLayer.get("BlinkySpawnPoint");
 		x = (Float)obj.getProperties().get("x");
 		y = (Float)obj.getProperties().get("y");
 		width = (Float)obj.getProperties().get("width");
-		blinky = new Ghost( x, y, 27, 27, width, wallsLayer);
+		blinky = new Ghost( x, y, 300, 300, width, wallsLayer, houseDoor );
+		
 	}
 
 	/*
@@ -171,7 +175,7 @@ public class World {
 	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
 		updateGhosts(deltaTime);
-		updateEyes(deltaTime);
+		//updateEyes(deltaTime);
 	}
 
 	/**
@@ -208,10 +212,10 @@ public class World {
 		   pacman.update(deltaTime,move);
 	}
 	private void updateGhosts(float deltaTime) {
-		   this.blinky.update(deltaTime);
-		   this.pinky.update(deltaTime);
-		   this.clyde.update(deltaTime);
-		   this.inky.update(deltaTime);
+		  this.blinky.update(deltaTime);
+		  this.pinky.update(deltaTime);
+		  this.clyde.update(deltaTime);
+		  this.inky.update(deltaTime);
 	}
 	
 	private void updateEyes(float deltaTime) {
