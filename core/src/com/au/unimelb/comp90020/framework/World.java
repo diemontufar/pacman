@@ -212,10 +212,10 @@ public class World {
 		   pacman.update(deltaTime,move);
 	}
 	private void updateGhosts(float deltaTime) {
-		  this.blinky.update(deltaTime);
-		  this.pinky.update(deltaTime);
-		  this.clyde.update(deltaTime);
-		  this.inky.update(deltaTime);
+		  this.blinky.update(deltaTime,pacman.position.x, pacman.position.y);
+		  this.pinky.update(deltaTime,pacman.position.x, pacman.position.y);
+		  this.clyde.update(deltaTime,pacman.position.x, pacman.position.y);
+		  this.inky.update(deltaTime,pacman.position.x, pacman.position.y);
 	}
 	
 	private void updateEyes(float deltaTime) {

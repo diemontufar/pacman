@@ -22,8 +22,9 @@ public class Ghost extends DynamicGameObject {
 	
 	private boolean isInHouse;
 	
-	private enum MODE {MINIMIZE, MAXIMIZE, CHASE}
+	private enum MODE {SCATTER, CHASE}
 	private MODE mode;
+	private long timeLastChange;
 	
 	public Movement currentDirection;
 	public Movement lastDirection;
@@ -38,6 +39,7 @@ public class Ghost extends DynamicGameObject {
 
 	public Ghost(float x, float y, float targetX, float targetY, float width, TiledMapTileLayer collisionLayer, MapObject houseDoor) {
 		super(x, y, GHOST_WIDTH, GHOST_HEIGHT);
+		timeLastChange = System.currentTimeMillis();
 		this.collisionLayer = collisionLayer;
 		this.houseDoor = houseDoor;
 		startX = x;
@@ -45,7 +47,7 @@ public class Ghost extends DynamicGameObject {
 		isInHouse = true;
 		this.targetX = targetX;
 		this.targetY = targetY;
-		this.mode = MODE.MINIMIZE;
+		this.mode = MODE.SCATTER;
 		float xh = (Float)houseDoor.getProperties().get("x");
 		float yh = (Float)houseDoor.getProperties().get("y");
 		float hh = (Float)houseDoor.getProperties().get("height");
@@ -60,8 +62,10 @@ public class Ghost extends DynamicGameObject {
 	/**
 	 * Updates the velocity, position and bounds of the ghost according to the
 	 * acceleration on X axis and the elapsed time.
+	 * @param pacmanY 
+	 * @param pacmanX 
 	 */
-	public void update(float deltaTime) {
+	public void update(float deltaTime, float pacmanX, float pacmanY) {
 		float targetX, targetY;
 		
 		//Check if the ghost is out of the house
@@ -69,119 +73,33 @@ public class Ghost extends DynamicGameObject {
 			isInHouse = false;
 			currentDirection = Movement.RIGTH;
 		}
+		else if(!isInHouse && System.currentTimeMillis()-timeLastChange>10000){
+			this.mode = this.mode==MODE.CHASE?MODE.SCATTER:MODE.CHASE;
+			System.out.println("CHANGING MODE: "+this.mode);
+			timeLastChange = System.currentTimeMillis();			
+		}
 
 		if (isInHouse){//Get the ghost out of the house
 			targetX = (Float) this.houseDoor.getProperties().get("x")+(Float) this.houseDoor.getProperties().get("width")/2;
 			targetY = (Float) this.houseDoor.getProperties().get("y") + (Float) this.houseDoor.getProperties().get("height") + 4*Ghost.GHOST_HEIGHT;
 		}
-		else{
+		else if (mode == MODE.SCATTER){
+			speed = 60;
 			targetX = this.targetX;
 			targetY = this.targetY;
 		}
+		else{//Pacmannnn
+			speed = 120;
+			targetX = pacmanX;
+			targetY = pacmanY;			
+		}
+
 		float newX = speed * deltaTime;
 		float newY = speed * deltaTime;
 		float oldX = position.x, oldY = position.y;
 		boolean collisionX = false, collisionY = false;
-		if (!isInHouse && this.currentDirection == Movement.UP){
-			position.add(0f, newY);
-			collisionY = collidesTop();
-		}
-		if (!isInHouse && this.currentDirection == Movement.DOWN){
-			position.add(0f, -newY);
-			collisionY = collidesBottom();
-		}
-		if (!isInHouse && this.currentDirection == Movement.RIGTH){
-			position.add(newX, 0f);
-			collisionX = collidesRight();		
-		}
-		if (!isInHouse && this.currentDirection == Movement.LEFT){
-			position.add(-newX, 0f);
-			collisionX = collidesLeft();		
-		}
-		if ( isInHouse || collisionX || collisionY ){
-			position.x = oldX;
-			position.y = oldY;
-			boolean collision[] = new boolean[4];
-			//double currDistance = Math.sqrt(Math.pow(targetX-position.x,2)+Math.pow(targetY-position.y,2));
-			double distance[] = new double[4];
-			float x[] = new float[4];
-			float y[] = new float[4];
-
-			//Try to move toward the target direction
-			position.add(0f, newY);
-			collision[0] = collidesTop();
-			//distance[0] = Math.sqrt(Math.pow(targetX-position.x,2)+Math.pow(targetY-position.y,2));
-			distance[0] = Math.abs(position.x - targetX)+Math.abs(position.y-targetY);
-			x[0] = position.x;
-			y[0] = position.y;
-			position.x = oldX;
-			position.y = oldY;
-
-			position.add(0f, -newY);
-			collision[1] = collidesBottom();			
-			distance[1] = Math.abs(position.x - targetX)+Math.abs(position.y-targetY);
-			x[1] = position.x;
-			y[1] = position.y;
-			position.x = oldX;
-			position.y = oldY;
-
-			position.add(newX, 0f);
-			collision[2] = collidesRight();
-			distance[2] = Math.abs(position.x - targetX)+Math.abs(position.y-targetY);
-			x[2] = position.x;
-			y[2] = position.y;		
-			position.x = oldX;
-			position.y = oldY;
-
-			position.add(-newX, 0f);
-			collision[3] = collidesLeft();
-			distance[3] = Math.abs(position.x - targetX)+Math.abs(position.y-targetY);
-			x[3] = position.x;
-			y[3] = position.y;
-			position.x = oldX;
-			position.y = oldY;
-
-			int step = -1;
-			this.mode = MODE.MINIMIZE;
-			step = getNextStep(collision, distance, step);
-			
-			
-			if ( step!=-1 ){
-				if ((lastX!=x[step] && lastY!=y[step])||isInHouse){
-			    lastX = position.x;
-				lastY = position.y;
-				position.x = x[step];
-				position.y = y[step];
-				switch(step){
-				case 0: this.currentDirection = Movement.UP;break;
-				case 1: this.currentDirection = Movement.DOWN;break;
-				case 2: this.currentDirection = Movement.RIGTH;break;
-				case 3: this.currentDirection = Movement.LEFT;break;
-				}
-				}
-				else{
-					for (int i = 0; i < 4;i++){
-						if (!collision[i] && step!=i){
-						    lastX = position.x;
-							lastY = position.y;
-							position.x = x[i];
-							position.y = y[i];
-							switch(i){
-							case 0: this.currentDirection = Movement.UP;break;
-							case 1: this.currentDirection = Movement.DOWN;break;
-							case 2: this.currentDirection = Movement.RIGTH;break;
-							case 3: this.currentDirection = Movement.LEFT;break;
-							}					
-						}
-					}
-					
-				}
-			}
-			
-		}
-		/*
-		double r = Math.random();
-
+		position.x = oldX;
+		position.y = oldY;
 		boolean collision[] = new boolean[4];
 		//double currDistance = Math.sqrt(Math.pow(targetX-position.x,2)+Math.pow(targetY-position.y,2));
 		double distance[] = new double[4];
@@ -221,72 +139,91 @@ public class Ghost extends DynamicGameObject {
 		y[3] = position.y;
 		position.x = oldX;
 		position.y = oldY;
-
-		int step = -1;
-		this.mode = MODE.MINIMIZE;
-		step = getNextStep(collision, distance, step);
+		int isIntersection = (!collision[0]?1:0)+(!collision[1]?1:0)+(!collision[2]?1:0)+(!collision[3]?1:0);
 		
-		
-		if ( step!=-1 && (lastX!=x[step] || lastY!=y[step])){
-		    lastX = position.x;
-			lastY = position.y;
-			position.x = x[step];
-			position.y = y[step];
+		if (!isInHouse && this.currentDirection == Movement.UP){
+			position.add(0f, newY);
+			collisionY = collidesTop();
 		}
-		else if (step!=-1){
+		if (!isInHouse && this.currentDirection == Movement.DOWN){
+			position.add(0f, -newY);
+			collisionY = collidesBottom();
+		}
+		if (!isInHouse && this.currentDirection == Movement.RIGTH){
+			position.add(newX, 0f);
+			collisionX = collidesRight();		
+		}
+		if (!isInHouse && this.currentDirection == Movement.LEFT){
+			position.add(-newX, 0f);
+			collisionX = collidesLeft();		
+		}
+		if ( isInHouse || collisionX || collisionY ){
+			position.x = oldX;
+			position.y = oldY;
+
 			
-			for (int i = 0; i < 4; i++){			
-					if ( !collision[i] && i!=step ){
-					    lastX = position.x;
-						lastY = position.y;
+			int step = -1;
+			step = getNextStep(collision, distance, step);
+			
+			
+			if ( step!=-1 ){
+				Movement nextDirection = Movement.UP;
+				switch(step){
+				case 0: nextDirection = Movement.UP;break;
+				case 1: nextDirection = Movement.DOWN;break;
+				case 2: nextDirection = Movement.RIGTH;break;
+				case 3: nextDirection = Movement.LEFT;break;
+				}
 
-						position.x = x[i];
-						position.y = y[i];
-						break;
+				if (isInHouse || nextDirection==Movement.UP && currentDirection!=Movement.DOWN ||
+						nextDirection==Movement.DOWN && currentDirection!=Movement.UP ||
+						nextDirection==Movement.RIGTH && currentDirection!=Movement.LEFT ||
+						nextDirection==Movement.LEFT && currentDirection!=Movement.RIGTH){
+				   position.x = x[step];
+				   position.y = y[step];
+				   currentDirection = nextDirection;
+				}
+				else{
+					for (int i = 0; i < 4;i++){
+						nextDirection = Movement.UP;
+						switch(i){
+						case 0: nextDirection = Movement.UP;break;
+						case 1: nextDirection = Movement.DOWN;break;
+						case 2: nextDirection = Movement.RIGTH;break;
+						case 3: nextDirection = Movement.LEFT;break;
+						}
+
+						if (!collision[i] && step!=i && (nextDirection==Movement.UP && currentDirection!=Movement.DOWN ||
+								nextDirection==Movement.DOWN && currentDirection!=Movement.UP ||
+								nextDirection==Movement.RIGTH && currentDirection!=Movement.LEFT ||
+								nextDirection==Movement.LEFT && currentDirection!=Movement.RIGTH)){
+							position.x = x[i];
+							position.y = y[i];
+							switch(i){
+							case 0: this.currentDirection = Movement.UP;break;
+							case 1: this.currentDirection = Movement.DOWN;break;
+							case 2: this.currentDirection = Movement.RIGTH;break;
+							case 3: this.currentDirection = Movement.LEFT;break;
+							}
+							i = 4;
+						}
 					}
-				}			
+					
+				}
+			}
+			
 		}
-		else{			//Try to move randomly then		
-			this.mode = this.mode==MODE.MINIMIZE?MODE.MAXIMIZE:MODE.MINIMIZE;
-			if (r < 0.25){
-				position.add(0f, newY);
-				collisionY = collidesTop();
-			}
-			else if (r < 0.5){
-				position.add(0f, -newY);
-				collisionY = collidesBottom();			
-			}
-			else if (r < 0.75){
-				position.add(newX, 0f);
-				collisionX = collidesRight();
-			}
-			else{
-				position.add(-newX, 0f);
-				collisionX = collidesLeft();
-			}
-			if ( collisionX || collisionY ){
-				position.x = oldX;
-				position.y = oldY;
-			}
-		}*/
 	}
 
 	private int getNextStep(boolean[] collision, double[] distance, int step) {
 		double oldDistance = 10000;
 		for (int i = 0; i < 4; i++){
-			if (mode == MODE.MINIMIZE){
+
 				
 				if ( !collision[i] && oldDistance > distance[i] ){
 					step = i;
 					oldDistance = distance[i];
 				}
-			}
-			if (mode == MODE.MAXIMIZE){
-				if ( !collision[i] && oldDistance < distance[i] ){
-					step = i;
-					oldDistance = distance[i];
-				}				
-			}
 		}
 		return step;
 	}
@@ -311,7 +248,7 @@ public class Ghost extends DynamicGameObject {
 	}
 
 	public boolean collidesBottom() {
-		if(isCellBlocked(position.x, position.y - GHOST_HEIGHT/2) || (!this.isInHouse && this.house.contains(position.x, position.y)))
+		if(isCellBlocked(position.x, position.y - GHOST_HEIGHT/2) || (!this.isInHouse && this.house.contains(position.x, position.y-20)))
 			return true;
 		return false;
 	}
