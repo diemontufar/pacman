@@ -1,12 +1,12 @@
 package com.au.unimelb.comp90020.framework.util;
 
+import com.au.unimelb.comp90020.framework.Animation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -37,14 +37,14 @@ public class Assets {
 	public static TextureRegion pauseMenu;
 	
 	/*Here declare game Textures*/
-	public static TextureRegion close_right_pacman;
-	public static TextureRegion open_right_pacman;
-	public static TextureRegion close_left_pacman;
-	public static TextureRegion open_left_pacman;
-	public static TextureRegion close_up_pacman;
-	public static TextureRegion open_up_pacman;
-	public static TextureRegion close_down_pacman;
-	public static TextureRegion open_down_pacman;
+	public static TextureRegion pacman_looking_right_open;
+	public static TextureRegion pacman_looking_right_close;
+	public static TextureRegion pacman_looking_left_open;
+	public static TextureRegion pacman_looking_left_close;
+	public static TextureRegion pacman_looking_up_open;
+	public static TextureRegion pacman_looking_up_close;
+	public static TextureRegion pacman_looking_down_open;
+	public static TextureRegion pacman_looking_down_close;
 	public static TextureRegion green_pacman;
 	public static TextureRegion blinky,pinky,inky,clyde;
 	
@@ -140,19 +140,19 @@ public class Assets {
 		/*Here you should put all textures that comes from items.png*/
 //		items = loadTexture("textures/items.png");
 		itemsPacman = loadTexture("textures/ChomperSprites.png");
-		close_right_pacman = new TextureRegion(itemsPacman, 320, 0, 30, 30);
-		open_right_pacman = new TextureRegion(itemsPacman, 350, 0, 30, 30);
-		close_down_pacman = new TextureRegion(itemsPacman, 320, 30, 30, 30);
-		open_down_pacman = new TextureRegion(itemsPacman, 350, 30, 30, 30);
-		close_left_pacman = new TextureRegion(itemsPacman, 320, 60, 30, 30);
-		open_left_pacman = new TextureRegion(itemsPacman, 350, 60, 30, 30);
-		close_up_pacman = new TextureRegion(itemsPacman, 320, 90, 30, 30);
-		open_up_pacman = new TextureRegion(itemsPacman, 350, 90, 30, 30);
+		pacman_looking_right_open = new TextureRegion(itemsPacman, 320, 0, 30, 30);
+		pacman_looking_right_close = new TextureRegion(itemsPacman, 350, 0, 30, 30);
+		pacman_looking_down_open = new TextureRegion(itemsPacman, 320, 30, 30, 30);
+		pacman_looking_down_close = new TextureRegion(itemsPacman, 350, 30, 30, 30);
+		pacman_looking_left_open = new TextureRegion(itemsPacman, 320, 65, 30, 30);
+		pacman_looking_left_close = new TextureRegion(itemsPacman, 350, 65, 30, 30);
+		pacman_looking_up_open = new TextureRegion(itemsPacman, 320, 95, 30, 30);
+		pacman_looking_up_close = new TextureRegion(itemsPacman, 350, 95, 30, 30);
 		
-		pacmanRight = new Animation(0.05f, close_right_pacman, open_right_pacman);
-		pacmanLeft = new Animation(0.05f, close_left_pacman, open_left_pacman);
-		pacmanUp = new Animation(0.05f, close_up_pacman, open_up_pacman);
-		pacmanDown = new Animation(0.05f, close_down_pacman, open_down_pacman);
+		pacmanRight = new Animation(1/3f, pacman_looking_right_open, pacman_looking_right_close);
+		pacmanLeft = new Animation(1/3f, pacman_looking_left_open, pacman_looking_left_close);
+		pacmanUp = new Animation(1/3f, pacman_looking_up_open, pacman_looking_up_close);
+		pacmanDown = new Animation(1/3f, pacman_looking_down_open, pacman_looking_down_close);
 		
 		
 		
@@ -197,14 +197,14 @@ public class Assets {
 		pauseMenu = new TextureRegion(pauseMenuR, 0, 0, 800, 1280);*/		
 		
 		/* BitmapFont*/
-		/* FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+		 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 		 Gdx.files.internal("fonts/font.ttf"));
 		 FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-		 parameter.size = 40;
+		 parameter.size = 50;
 		 font = generator.generateFont(parameter); 
-		 font.setColor(new Color(Color.PURPLE));
+		 font.setColor(new Color(Color.GRAY));
 		 generator.dispose();
-		
+		/*
 		music = Gdx.audio.newMusic(Gdx.files.internal("music/music.mp3"));
 		music.setLooping(true);
 		music.setVolume(0.5f);

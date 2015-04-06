@@ -7,6 +7,8 @@ import java.util.Map;
 import com.au.unimelb.comp90020.actors.Ghost;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
+import com.au.unimelb.comp90020.framework.util.Settings;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 
 /**
@@ -63,12 +66,12 @@ public class World {
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
-		this.pacman = new Pacman(225,120,wallsLayer,pacdotsLayer); //Create PacMan with initial position in 200,200
+		this.pacman = new Pacman(225,120,wallsLayer); //Create PacMan with initial position in 200,200
 		createGhosts();
 		createDots();
 		//createEyes(); //just for fun
 		this.score = 0;
-		this.lives = 0;
+		this.lives = Settings.MAX_LIVES;
 		this.game_state = WORLD_STATE_RUNNING;
 	}
 	
@@ -176,6 +179,9 @@ public class World {
 		updatePacman(deltaTime,move);
 		updateGhosts(deltaTime);
 		//updateEyes(deltaTime);
+		
+		checkCollisions();
+		//checkLostLife();
 	}
 
 	/**
@@ -205,7 +211,41 @@ public class World {
 	 * Check every possible collision event within the world.
 	 */
 	private void checkCollisions() {
+		
+		checkDotsCollisions();
 
+	}
+	
+	private void checkDotsCollisions() {
+		
+		Movement currentPacmanState = this.pacman.getCurrentState();
+		float currentX =  this.pacman.position.x, currentY =  this.pacman.position.y;
+		
+		if(currentPacmanState == Movement.RIGTH || currentPacmanState == Movement.LEFT || 
+				currentPacmanState == Movement.UP || currentPacmanState == Movement.DOWN){
+			checkEaten(currentX,currentY);
+		}
+
+	}
+	
+	private void checkEaten(float currentX, float currentY) {
+		if (isCellFood(currentX, currentY)){
+			Gdx.app.log("Hey", "That was food!");
+			removeFood(currentX, currentY);
+		}
+	}
+	
+	private boolean isCellFood(float x, float y) {
+		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
+		return cell != null && cell.getTile() != null && cell.getTile()!=null;
+	}
+	
+	private boolean removeFood(float x, float y) {
+		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
+		cell.setTile(null);
+		this.score++;
+		
+		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
 	private void updatePacman(float deltaTime,Movement move) {

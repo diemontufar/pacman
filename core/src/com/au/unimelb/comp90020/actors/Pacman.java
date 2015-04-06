@@ -20,18 +20,19 @@ public class Pacman extends DynamicGameObject {
 	private float speed = 60 * 2;
 	float stateTime;
 	private TiledMapTileLayer collisionLayer;
-	private TiledMapTileLayer foodLayer;
+	private float oldX, oldY;
 	
 	//To check when pacman collides with a wall
 	boolean collisionWallX = false, collisionWallY = false;
 
-	public Pacman(float x, float y,TiledMapTileLayer collisionLayer,TiledMapTileLayer foodLayer) {
+	public Pacman(float x, float y,TiledMapTileLayer collisionLayer) {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 		this.collisionLayer = collisionLayer;
-		this.foodLayer = foodLayer;
 		this.currentState = Movement.NONE;
 		this.stateTime = 0.0f;
+		this.oldX = x;
+		this.oldY = y;
 
 	}
 
@@ -44,10 +45,9 @@ public class Pacman extends DynamicGameObject {
 		float newX = speed * deltaTime;
 		float newY = speed * deltaTime;
 		
-		stateTime += deltaTime;
-		
 		// save old position
-		float oldX = position.x, oldY = position.y;
+		this.setOldX(position.x);
+		this.setOldY(position.y);
 		boolean collisionX = false, collisionY = false;
 		
 		if (move == Movement.RIGTH){
@@ -61,14 +61,9 @@ public class Pacman extends DynamicGameObject {
 		
 		// react to x collision
 		if(collisionX) {
-//			Gdx.app.log("Info:", "Collision x");
-			position.x = oldX;
-			position.y = oldY;
-			velocity.x = 0;
-		}
-		else if(move == Movement.RIGTH || move == Movement.LEFT){
-			checkEaten(oldX,oldY);
-			setCurrentState(move);
+			position.x = this.getOldX();
+			position.y = this.getOldY();
+			stopMoving();
 		}
 		
 		if (move == Movement.UP){
@@ -82,23 +77,24 @@ public class Pacman extends DynamicGameObject {
 		
 		// react to y collision
 		if(collisionY) {
-//			Gdx.app.log("Info:", "Collision y");
-			position.x = oldX;
-			position.y = oldY;
-			velocity.y = 0;
+			position.x = this.getOldX();
+			position.y = this.getOldY();
+			stopMoving();
 		}
-		else if(move == Movement.UP || move == Movement.DOWN){
-			checkEaten(oldX,oldY);
-			setCurrentState(move);
+		
+		if (move == Movement.NONE){
+			stopMoving();
 		}
+		
+		setCurrentState(move);
+		
+		stateTime += deltaTime;
 
 	}
-
-	private void checkEaten(float oldX, float oldY) {
-		if (isCellFood(position.x, position.y)){
-			//world.updateScore()
-			removeFood(position.x, position.y);
-		}
+	
+	private void stopMoving(){
+		this.velocity.x = 0;
+		this.velocity.y = 0;
 	}
 
 	public boolean collidesRight() {
@@ -108,7 +104,7 @@ public class Pacman extends DynamicGameObject {
 	}
 
 	public boolean collidesLeft() {
-		if(isCellBlocked(position.x - PACMAN_WIDTH/2 , position.y))
+		if(isCellBlocked(position.x - PACMAN_WIDTH/2, position.y))
 			return true;
 		return false;
 	}
@@ -125,20 +121,6 @@ public class Pacman extends DynamicGameObject {
 			return true;
 		return false;
 	}
-
-	private boolean removeFood(float x, float y) {
-		Cell cell = foodLayer.getCell((int) (x / foodLayer.getTileWidth()), (int) (y / foodLayer.getTileHeight()));
-		cell.setTile(null);
-		
-		return cell != null && cell.getTile() != null && cell.getTile()!=null;
-	}
-
-	
-	private boolean isCellFood(float x, float y) {
-		Cell cell = foodLayer.getCell((int) (x / foodLayer.getTileWidth()), (int) (y / foodLayer.getTileHeight()));
-		return cell != null && cell.getTile() != null && cell.getTile()!=null;
-	}
-
 	
 	private boolean isCellBlocked(float x, float y) {
 		Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
@@ -159,5 +141,29 @@ public class Pacman extends DynamicGameObject {
 
 	public void setCurrentState(Movement currentSate) {
 		this.currentState = currentSate;
+	}
+	
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+
+	public float getOldX() {
+		return oldX;
+	}
+
+	public void setOldX(float oldX) {
+		this.oldX = oldX;
+	}
+
+	public float getOldY() {
+		return oldY;
+	}
+
+	public void setOldY(float oldY) {
+		this.oldY = oldY;
 	}
 }

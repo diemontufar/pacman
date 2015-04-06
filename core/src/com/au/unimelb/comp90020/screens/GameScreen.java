@@ -40,8 +40,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	WorldRenderer renderer;
 	Rectangle resumeBounds, quitBounds, continueWin, playAgainGameOver, quitGameOver;
 	boolean toggleSound;
-	int lastScore;
-	String scoreString;
 	
 	float elapsedSinceAnimation = 0.0f;
 
@@ -66,8 +64,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 
 		world = new World(worldListener);
 		renderer = new WorldRenderer(game.batcher, world);
-
-		scoreString = "SCORE: 0";
 
 	}
 
@@ -137,7 +133,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 */
 	private void updateRunning(float deltaTime) {
 
-		Movement move = Movement.NONE;
+		Movement move = Movement.NONE; //If you want pacman to move alone do not initialize move variable :)
 		this.elapsedSinceAnimation += deltaTime;
 
 		//Check Pacman movement
@@ -169,6 +165,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 				this.elapsedSinceAnimation = 0.0f;
 			}
 		}
+		
 		world.update(deltaTime,move);
 	}
 

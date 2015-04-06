@@ -5,6 +5,7 @@ import com.au.unimelb.comp90020.actors.Ghost;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
 import com.au.unimelb.comp90020.framework.util.Assets;
+import com.au.unimelb.comp90020.framework.util.Settings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +26,7 @@ public class WorldRenderer {
 	OrthographicCamera cam;
 	SpriteBatch batch;
 	TiledMapRenderer tiledMapRenderer;
+	TextureRegion oldPacmanDirection;
 	
 
 	/**
@@ -42,6 +44,7 @@ public class WorldRenderer {
         this.cam.update();
 		this.batch = batch;
         this.tiledMapRenderer = new OrthogonalTiledMapRenderer(this.world.map);
+        this.oldPacmanDirection = Assets.pacman_looking_right_open;
 	}
 
 	/**
@@ -79,10 +82,10 @@ public class WorldRenderer {
 		renderPacman();
 		renderGhosts();
 //		renderPacBonuses();
-//		renderScore();
+		renderScore();
 //		renderSoundButton();
 //		renderPauseButton();
-//		renderLives();
+		renderLives();
 //		renderLevelNumber();
 		batch.end();
 	}
@@ -90,47 +93,47 @@ public class WorldRenderer {
 	private void renderPacman() {
 
 		Pacman pacman = world.pacman;
-		TextureRegion keyFrame = null;
 		
+		TextureRegion currentKeyFrame;
+
 		if (pacman.getCurrentState() == Movement.RIGTH){
-//			Gdx.app.log("Hey", "State Time: " + Float.toString(pacman.getStateTime()));
-			if (pacman.getStateTime() > 0.05f){
-				keyFrame = Assets.pacmanRight.getKeyFrame(pacman.getStateTime(), true);	
-				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			if (pacman.getStateTime() > 0.5f){
+				currentKeyFrame = Assets.pacmanRight.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-				pacman.setStateTime(0.0f);
 			}
+			oldPacmanDirection = Assets.pacman_looking_right_open;
 		}
 		
 		if (pacman.getCurrentState() == Movement.LEFT){
-			if (pacman.getStateTime() > 0.05f){
-				keyFrame = Assets.pacmanLeft.getKeyFrame(pacman.getStateTime(), true);	
-				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			if (pacman.getStateTime() > 0.5f){
+				currentKeyFrame = Assets.pacmanLeft.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-				pacman.setStateTime(0.0f);
 			}
+			oldPacmanDirection = Assets.pacman_looking_left_open;
 		}
 		
 		if (pacman.getCurrentState() == Movement.UP){
-			if (pacman.getStateTime() > 0.05f){
-				keyFrame = Assets.pacmanUp.getKeyFrame(pacman.getStateTime(), true);	
-				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			if (pacman.getStateTime() > 0.5f){
+				currentKeyFrame = Assets.pacmanUp.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-				pacman.setStateTime(0.0f);
 			}
+			oldPacmanDirection = Assets.pacman_looking_up_open;
 		}
 		
 		if (pacman.getCurrentState() == Movement.DOWN){
-			if (pacman.getStateTime() > 0.05f){
-				keyFrame = Assets.pacmanDown.getKeyFrame(pacman.getStateTime(), true);	
-				batch.draw(keyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			if (pacman.getStateTime() > 0.5f){
+				currentKeyFrame = Assets.pacmanDown.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
-				pacman.setStateTime(0.0f);
 			}
+			oldPacmanDirection = Assets.pacman_looking_down_open;
 		}
 		
 		if (pacman.getCurrentState() == Movement.NONE){
-			batch.draw(Assets.close_right_pacman, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			batch.draw(oldPacmanDirection, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 					Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT);
 		}
 		
@@ -177,8 +180,8 @@ public class WorldRenderer {
 	}
 
 	private void renderScore() {
-		//Assets.font.setScale(0.5f, 0.5f);
-		//Assets.font.draw(batch, "SCORE: " + world.score, 5, World.WORLD_HEIGHT - 5);
+		Assets.font.setScale(0.5f, 0.5f);
+		Assets.font.draw(batch, "SCORE: " + world.score, 10, Settings.TARGET_HEIGHT - 20);
 	}
 
 	private void renderLevelNumber() {
@@ -190,18 +193,8 @@ public class WorldRenderer {
 
 	private void renderLives() {
 
-		int buttonWidth = ButtonSize.SMALL_SQUARE.getButtonWidth();
-		int buttonHeight = ButtonSize.SMALL_SQUARE.getButtonHeight();
+		Assets.font.setScale(0.5f, 0.5f);
+		Assets.font.draw(batch, "LIVES: " + world.lives, Settings.TARGET_WIDTH - 90, Settings.TARGET_HEIGHT - 20);
 
-		//Assets.font.setScale(0.5f, 0.5f);
-//		Assets.font.draw(batch, "LIVES: ", 5, World.WORLD_HEIGHT - 20);
-//
-//		List<Button> lives = world.lives;
-//		int len = lives.size();
-//
-//		for (int i = 0; i < len; i++) {
-//			batch.draw(Assets.lives, lives.get(i).position.x - buttonWidth / 2, lives.get(i).position.y - buttonHeight
-//					/ 2, buttonWidth, buttonHeight);
-//		}
 	}
 }
