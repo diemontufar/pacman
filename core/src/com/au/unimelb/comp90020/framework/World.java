@@ -25,11 +25,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
  * 
  */
 public class World {
-
-	public static final int WORLD_STATE_RUNNING = 0;
-	public static final int WORLD_STATE_LEVEL_END = 1;
-	public static final int WORLD_STATE_GAME_OVER = 2;
-	public static final int WORLD_STATE_GAME_LOST_LIFE = 3;
 	
 	public final WorldListener listener;
 
@@ -57,7 +52,7 @@ public class World {
 	
 	public int score;
 	public int lives;
-	public int game_state;
+	public int dots_eaten;
 
 	public World(WorldListener listener) {
 		this.listener = listener;
@@ -66,13 +61,12 @@ public class World {
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
-		this.pacman = new Pacman(225,120,wallsLayer); //Create PacMan with initial position in 200,200
+		this.pacman = new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer); 
 		createGhosts();
 		createDots();
-		//createEyes(); //just for fun
 		this.score = 0;
 		this.lives = Settings.MAX_LIVES;
-		this.game_state = WORLD_STATE_RUNNING;
+		this.dots_eaten = 0;
 	}
 	
 	private void createGhosts() {
@@ -143,32 +137,6 @@ public class World {
             }
         }
 	}
-	
-	private void createEyes(){
-		
-        this.eyesTiles = new HashMap<String,TiledMapTile>();
-        for(TiledMapTile tile:this.pacmanTileSet){
-            Object property = tile.getProperties().get("GhostEyes");
-            if(property != null) {
-                eyesTiles.put((String)property,tile);
-            }
-        }
-        
-        this.eyesCellsInScene = new ArrayList<TiledMapTileLayer.Cell>();
-        TiledMapTileLayer layer = this.wallsLayer;
-        for(int x = 0; x < layer.getWidth();x++){
-            for(int y = 0; y < layer.getHeight();y++){
-                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
-                if (cell != null){
-		            Object property = cell.getTile().getProperties().get("GhostEyes");
-		            if(property != null){
-		            	this.eyesCellsInScene.add(cell);
-		            }
-                }
-            }
-        }
-		
-	}
 
 	/**
 	 * Updates every actor within it based on the elapsed time
@@ -178,34 +146,10 @@ public class World {
 	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
 		updateGhosts(deltaTime);
-		//updateEyes(deltaTime);
-		
+
 		checkCollisions();
-		//checkLostLife();
 	}
-
-	/**
-	 * Update the state of the world to WORLD_STATE_LEVEL_END, level score,
-	 * total score and rankings (which also updates the next score to beat).
-	 */
-	private void checkNextLevel() {
-
-	}
-
-	/**
-	 * Update the state of the world to either WORLD_STATE_GAME_LOST_LIFE or
-	 * WORLD_STATE_GAME_OVER depending on the remaining lives.
-	 */
-	private void checkLostLife() {
-
-	}
-
-	/**
-	 * Update the state of the world to WORLD_STATE_GAME_OVER.
-	 */
-	private void checkGameOver() {
-
-	}
+	
 
 	/**
 	 * Check every possible collision event within the world.
@@ -213,6 +157,7 @@ public class World {
 	private void checkCollisions() {
 		
 		checkDotsCollisions();
+		checkGhostsCollisions();
 
 	}
 	
@@ -230,7 +175,6 @@ public class World {
 	
 	private void checkEaten(float currentX, float currentY) {
 		if (isCellFood(currentX, currentY)){
-			Gdx.app.log("Hey", "That was food!");
 			removeFood(currentX, currentY);
 		}
 	}
@@ -244,41 +188,44 @@ public class World {
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
 		cell.setTile(null);
 		this.score++;
-		
+		this.dots_eaten++;
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
+	
+	private void checkGhostsCollisions() {
+				
+		if (this.pacman.bounds.overlaps(this.inky.bounds) 
+				|| this.pacman.bounds.overlaps(this.blinky.bounds) 
+				|| this.pacman.bounds.overlaps(this.pinky.bounds) 
+				|| this.pacman.bounds.overlaps(this.clyde.bounds)) {
+			this.lives--;
+			this.listener.playLifeLost();
+			resetPositions();
+		}
+
+	}
+	
+	private void resetPositions(){
+		
+		//Pacman go back to the starting point!
+		this.pacman.position.x = Settings.PAC_INITIAL_POS_X;
+		this.pacman.position.y = Settings.PAC_INITIAL_POS_Y;
+		this.pacman.bounds.x = this.pacman.position.x - this.pacman.bounds.width / 2;
+		this.pacman.bounds.y = this.pacman.position.y - this.pacman.bounds.height / 2;
+		this.pacman.setCurrentState(Movement.NONE);
+
+	}
+	
 
 	private void updatePacman(float deltaTime,Movement move) {
 		   pacman.update(deltaTime,move);
 	}
+	
 	private void updateGhosts(float deltaTime) {
 		  this.blinky.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.pinky.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.clyde.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.inky.update(deltaTime,pacman.position.x, pacman.position.y);
-	}
-	
-	private void updateEyes(float deltaTime) {
-		
-		this.elapsedSinceAnimation += deltaTime;
-		if (this.elapsedSinceAnimation > 0.5f) {
-			
-			for (TiledMapTileLayer.Cell cell : eyesCellsInScene) {
-				String property = (String) cell.getTile().getProperties()
-						.get("GhostEyes");
-				Integer currentAnimationFrame = Integer.parseInt(property);
-
-				currentAnimationFrame++;
-				if (currentAnimationFrame > eyesTiles.size())
-					currentAnimationFrame = 1;
-
-				TiledMapTile newTile = eyesTiles.get(currentAnimationFrame
-						.toString());
-				cell.setTile(newTile);
-			}
-			
-			this.elapsedSinceAnimation = 0.0f;
-		}
 	}
 
 }

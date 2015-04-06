@@ -12,4 +12,10 @@ public interface WorldListener {
 
 	public void playWuaca();
 	
+	public void playLifeLost();
+	
+	public void playOpening();
+	
+	public void playGameOver();
+	
 }
