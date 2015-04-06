@@ -7,12 +7,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Rectangle;
 
-/**
- * Paddle class... what a surprise!. However, it has a customisable width
- * through its constructor. It is particularly useful when generating levels
- * from an XML file.
- * 
- */
 public class Ghost extends DynamicGameObject {
 
 	public static final float GHOST_HEIGHT = 16;
@@ -213,6 +207,9 @@ public class Ghost extends DynamicGameObject {
 			}
 			
 		}
+		
+		bounds.x = position.x - bounds.width / 2;
+		bounds.y = position.y - bounds.height / 2;
 	}
 
 	private int getNextStep(boolean[] collision, double[] distance, int step) {

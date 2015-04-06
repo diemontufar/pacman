@@ -9,6 +9,7 @@ import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,7 +29,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
-	static final int GAME_LIFE_LOST = 5;
 
 	PacManGame game;
 	
@@ -60,6 +60,21 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 				Assets.playSound(Assets.wuacaSound);
 			}
 
+			@Override
+			public void playLifeLost() {
+				Assets.playSound(Assets.lifeLostSound);
+			}
+
+			@Override
+			public void playOpening() {
+				Assets.playSound(Assets.openingSound);
+			}
+
+			@Override
+			public void playGameOver() {
+				Assets.playSound(Assets.gameOverSound);
+			}
+
 		};
 
 		world = new World(worldListener);
@@ -88,10 +103,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 			updatePaused();
 			break;
 		case GAME_LEVEL_END:
-//			updateLevelEnd();
+			checkLevelEnd();
 			break;
 		case GAME_OVER:
-//			updateGameOver();
+			checkGameOver();
 			break;
 		}
 	}
@@ -110,10 +125,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 * state changes to GAME_RUNNING.
 	 */
 	private void updateReady() {
-//		if (Gdx.input.isButtonPressed(Input.Keys.SPACE)) {
-//			Gdx.app.log("Message", "User pressed Enter");
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)){
+			this.worldListener.playOpening();
 			state = GAME_RUNNING;
-//		}
+		}
 	}
 	
 	/**
@@ -121,9 +136,21 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 * or returns to the MenuScreen depending on which button was pressed.
 	 */
 	private void updatePaused() {
-		//TODO: Handle this better
-		state = GAME_RUNNING;
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER))
+			state = GAME_RUNNING;
 	}
+	
+	private void checkLevelEnd(){
+		if (this.world.dots_eaten == Settings.MAX_NUM_DOTS)
+		state = GAME_LEVEL_END;
+	}
+	
+	private void checkGameOver(){
+		if (this.world.lives == 0){
+			state = GAME_OVER;
+		}
+	}
+
 
 	/**
 	 * Updates the World objects based on the input of the player and the
@@ -167,6 +194,9 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 		}
 		
 		world.update(deltaTime,move);
+		
+		checkLevelEnd();
+		checkGameOver();
 	}
 
 
@@ -192,14 +222,8 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 		case GAME_READY:
 			presentReady();
 			break;
-		case GAME_RUNNING:
-			presentRunning();
-			break;
 		case GAME_PAUSED:
 			presentPaused();
-			break;
-		case GAME_LIFE_LOST:
-			presentLostLife();
 			break;
 		case GAME_LEVEL_END:
 			presentLevelEnd();
@@ -213,26 +237,23 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	}
 
 	private void presentReady() {
-
-	}
-
-	private void presentRunning() {
-
+		game.batcher.draw(Assets.readyMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
 	private void presentPaused() {
-		
-	}
-
-	private void presentLostLife() {
-
+		game.batcher.draw(Assets.pauseMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
 	private void presentLevelEnd() {
+		game.batcher.draw(Assets.endOfLevelMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
 	private void presentGameOver() {
-	
+		game.batcher.draw(Assets.gameOverMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
+		if (this.elapsedSinceAnimation > 0.5f){
+			this.worldListener.playGameOver();
+			this.elapsedSinceAnimation = 0.0f;
+		}
 	}
 
 
@@ -250,8 +271,8 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 
 	@Override
 	public void canceled() {
-		// TODO Auto-generated method stub
-		
+		if (state == GAME_RUNNING)
+			state = GAME_OVER;
 	}
 
 }

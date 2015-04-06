@@ -22,12 +22,21 @@ public class Assets {
 	/* Textures - there must be less possible */
 	public static TextureRegion gameBackground;
 	public static Texture defaultBackground;
+	public static Texture readyBackground;
+	public static Texture pauseBackground;
+	public static Texture gameOverBackground;
+	public static Texture endOfLevelBackground;
 	//public static Texture items; //Main Texture with game sprites
 	public static Texture itemsPacman; //Main Texture with game sprites
+	public static Texture itemsPacman2; //Main Texture with game sprites
 
 	/*Message Screens*/
 	public static TextureRegion errorMessage;
 	public static TextureRegion infoMessage;
+	public static TextureRegion gameOverMessage;
+	public static TextureRegion readyMessage;
+	public static TextureRegion pauseMessage;
+	public static TextureRegion endOfLevelMessage;
 	
 	/* Transparent Screens*/
 	public static TextureRegion defaultNotification;
@@ -37,14 +46,18 @@ public class Assets {
 	public static TextureRegion pauseMenu;
 	
 	/*Here declare game Textures*/
-	public static TextureRegion pacman_looking_right_open;
-	public static TextureRegion pacman_looking_right_close;
-	public static TextureRegion pacman_looking_left_open;
-	public static TextureRegion pacman_looking_left_close;
-	public static TextureRegion pacman_looking_up_open;
-	public static TextureRegion pacman_looking_up_close;
-	public static TextureRegion pacman_looking_down_open;
-	public static TextureRegion pacman_looking_down_close;
+	public static TextureRegion pacman_looking_right_1;
+	public static TextureRegion pacman_looking_right_2;
+	public static TextureRegion pacman_looking_right_3;
+	public static TextureRegion pacman_looking_left_1;
+	public static TextureRegion pacman_looking_left_2;
+	public static TextureRegion pacman_looking_left_3;
+	public static TextureRegion pacman_looking_up_1;
+	public static TextureRegion pacman_looking_up_2;
+	public static TextureRegion pacman_looking_up_3;
+	public static TextureRegion pacman_looking_down_1;
+	public static TextureRegion pacman_looking_down_2;
+	public static TextureRegion pacman_looking_down_3;
 	public static TextureRegion green_pacman;
 	public static TextureRegion blinky,pinky,inky,clyde;
 	
@@ -83,17 +96,11 @@ public class Assets {
 	/* Sounds & Music */
 	public static Music music;
 
+	public static Sound openingSound;
 	public static Sound wuacaSound;
-	public static Sound bonusSound;
-	public static Sound dieSound;
 	public static Sound lifeLostSound;
 	public static Sound gameOverSound;
 	public static Sound winnerSound;
-	public static Sound lifeBonusSound;
-	public static Sound coinBonusSound;
-	public static Sound badBonusSound;
-	public static Sound clickSound;
-	public static Sound toggleSound;
 
 	public static Texture loadTexture(String file) {
 		return new Texture(Gdx.files.internal(file));
@@ -136,23 +143,44 @@ public class Assets {
 //		infoMessageB = loadTexture("backgrounds/infoBackground.png");
 //		infoMessage = new TextureRegion(infoMessageB, 0, 0, 800, 1280);
 		
+		readyBackground = loadTexture("backgrounds/ready.png");
+		readyMessage = new TextureRegion(readyBackground, 0, 0, 896, 1080);
 		
+		pauseBackground = loadTexture("backgrounds/pause.png");
+		pauseMessage = new TextureRegion(pauseBackground, 0, 0, 896, 1080);
+		
+		endOfLevelBackground = loadTexture("backgrounds/completed.png");
+		endOfLevelMessage = new TextureRegion(endOfLevelBackground, 0, 0, 896, 1080);
+		
+		gameOverBackground = loadTexture("backgrounds/gameover.png");
+		gameOverMessage = new TextureRegion(gameOverBackground, 0, 0, 896, 1080);
+		
+
 		/*Here you should put all textures that comes from items.png*/
-//		items = loadTexture("textures/items.png");
 		itemsPacman = loadTexture("textures/ChomperSprites.png");
-		pacman_looking_right_open = new TextureRegion(itemsPacman, 320, 0, 30, 30);
-		pacman_looking_right_close = new TextureRegion(itemsPacman, 350, 0, 30, 30);
-		pacman_looking_down_open = new TextureRegion(itemsPacman, 320, 30, 30, 30);
-		pacman_looking_down_close = new TextureRegion(itemsPacman, 350, 30, 30, 30);
-		pacman_looking_left_open = new TextureRegion(itemsPacman, 320, 65, 30, 30);
-		pacman_looking_left_close = new TextureRegion(itemsPacman, 350, 65, 30, 30);
-		pacman_looking_up_open = new TextureRegion(itemsPacman, 320, 95, 30, 30);
-		pacman_looking_up_close = new TextureRegion(itemsPacman, 350, 95, 30, 30);
+		itemsPacman2 = loadTexture("PacMan.png");
 		
-		pacmanRight = new Animation(1/3f, pacman_looking_right_open, pacman_looking_right_close);
-		pacmanLeft = new Animation(1/3f, pacman_looking_left_open, pacman_looking_left_close);
-		pacmanUp = new Animation(1/3f, pacman_looking_up_open, pacman_looking_up_close);
-		pacmanDown = new Animation(1/3f, pacman_looking_down_open, pacman_looking_down_close);
+		pacman_looking_right_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
+		pacman_looking_right_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		pacman_looking_right_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		
+		pacman_looking_left_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
+		pacman_looking_left_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		pacman_looking_left_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		
+		pacman_looking_up_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
+		pacman_looking_up_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		pacman_looking_up_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		
+		pacman_looking_down_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
+		pacman_looking_down_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		pacman_looking_down_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		
+
+		pacmanRight = new Animation(1/3f, pacman_looking_right_1, pacman_looking_right_2, pacman_looking_right_3);
+		pacmanLeft = new Animation(1/3f, pacman_looking_left_1, pacman_looking_left_2,pacman_looking_left_3);
+		pacmanUp = new Animation(1/3f, pacman_looking_up_1, pacman_looking_up_2,pacman_looking_up_3);
+		pacmanDown = new Animation(1/3f, pacman_looking_down_1, pacman_looking_down_2,pacman_looking_down_3);
 		
 		
 		
@@ -224,6 +252,9 @@ public class Assets {
 		toggleSound = Gdx.audio.newSound(Gdx.files.internal("sound/toggle.ogg"));*/
 		
 		wuacaSound = Gdx.audio.newSound(Gdx.files.internal("sounds/wuaca.mp3"));
+		lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("sounds/lifelost.mp3"));
+		openingSound = Gdx.audio.newSound(Gdx.files.internal("sounds/opening.mp3"));
+		gameOverSound = Gdx.audio.newSound(Gdx.files.internal("sounds/gameover.mp3"));
 	}
 
 	/**

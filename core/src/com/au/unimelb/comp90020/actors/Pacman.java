@@ -86,6 +86,9 @@ public class Pacman extends DynamicGameObject {
 			stopMoving();
 		}
 		
+		bounds.x = position.x - bounds.width / 2;
+		bounds.y = position.y - bounds.height / 2;
+		
 		setCurrentState(move);
 		
 		stateTime += deltaTime;
