@@ -141,23 +141,23 @@ public class Ghost extends DynamicGameObject {
 		position.y = oldY;
 		int isIntersection = (!collision[0]?1:0)+(!collision[1]?1:0)+(!collision[2]?1:0)+(!collision[3]?1:0);
 		
-		if (!isInHouse && this.currentDirection == Movement.UP){
+		if (!isInHouse && this.currentDirection == Movement.UP && mode!=MODE.CHASE){
 			position.add(0f, newY);
 			collisionY = collidesTop();
 		}
-		if (!isInHouse && this.currentDirection == Movement.DOWN){
+		if (!isInHouse && this.currentDirection == Movement.DOWN && mode!=MODE.CHASE){
 			position.add(0f, -newY);
 			collisionY = collidesBottom();
 		}
-		if (!isInHouse && this.currentDirection == Movement.RIGTH){
+		if (!isInHouse && this.currentDirection == Movement.RIGTH && mode!=MODE.CHASE){
 			position.add(newX, 0f);
 			collisionX = collidesRight();		
 		}
-		if (!isInHouse && this.currentDirection == Movement.LEFT){
+		if (!isInHouse && this.currentDirection == Movement.LEFT && mode!=MODE.CHASE){
 			position.add(-newX, 0f);
 			collisionX = collidesLeft();		
 		}
-		if ( isInHouse || collisionX || collisionY ){
+		if ( isInHouse || collisionX || collisionY || mode==MODE.CHASE){
 			position.x = oldX;
 			position.y = oldY;
 
