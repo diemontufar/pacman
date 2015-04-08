@@ -1,6 +1,9 @@
 package com.au.unimelb.comp90020;
 
+import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.framework.util.Assets;
+import com.au.unimelb.comp90020.multiplayer.networking.GameClient;
+import com.au.unimelb.comp90020.multiplayer.networking.GameServer;
 import com.au.unimelb.comp90020.screens.GameScreen;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -10,13 +13,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PacManGame extends Game {
 	
+	public enum MultiplayerMode {none, server, client};
+
 	public SpriteBatch batcher;
+	private MultiplayerMode mode;
 	
+	public PacManGame(MultiplayerMode mode) {
+		this.mode = mode;
+	}
+
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batcher = new SpriteBatch();
 		Assets.load();
 		setScreen(new GameScreen(PacManGame.this));
+		////
+		if (mode == MultiplayerMode.server){
+			GameServer server =  new GameServer();
+			server.start();
+		}
+		if (mode == MultiplayerMode.client){
+			GameClient client =  new GameClient();
+			client.start();
+		}
+
+		////
 	}
 }
