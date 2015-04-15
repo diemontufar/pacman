@@ -15,5 +15,10 @@ public class Settings {
 	/* Set here default game properties */
 	public static boolean musicEnabled = true;
 	public static boolean soundEnabled = true;
-
+	
+	public static long getPID() {
+	    String processName =
+	      java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+	    return Long.parseLong(processName.split("@")[0]);
+	  }
 }

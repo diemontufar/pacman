@@ -5,6 +5,7 @@ package com.au.unimelb.comp90020.multiplayer.networking;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -13,12 +14,12 @@ import java.util.Map;
  */
 public class MultiPlayerProperties {
 	private int numberOfPlayers;
-	private Map<String, Integer> players;
+	private Map<String, Long> players;
 	
 	public MultiPlayerProperties(){
 		this.numberOfPlayers = 1;
-		this.players = new HashMap<String, Integer>();
-		players.put("localhost", 1);
+		this.players = new HashMap<String, Long>();
+		players.put("localhost", (long) 1);
 	}
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
@@ -26,11 +27,28 @@ public class MultiPlayerProperties {
 	public void setNumberOfPlayers(int numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 	}
-	public Map<String, Integer> getPlayers() {
+	public Map<String, Long> getPlayers() {
 		return players;
 	}
-	public void setPlayers(Map<String, Integer> players) {
+	public Set<String> getPlayerAdresses() {
+		return players.keySet();
+	}
+
+	public void setPlayers(Map<String, Long> players) {
 		this.players = players;
+	}
+	public void addPlayer(String address, Long pid) {
+		players.put(address, pid);
+		numberOfPlayers++;
+	}
+	public String getPlayerIds() {
+		StringBuffer sb = new StringBuffer();
+		for (String key : this.players.keySet()){
+			sb.append(players.get(key));
+			sb.append(",");
+		}
+		sb.deleteCharAt(sb.length()-1);
+		return sb.toString();
 	}
 	
 }

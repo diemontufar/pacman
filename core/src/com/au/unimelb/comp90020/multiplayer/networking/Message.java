@@ -41,4 +41,14 @@ public class Message {
 	public String toString(){
 		return address+" ,"+type+","+body;
 	}
+
+	public String toProtocolString() {
+		return type+","+body;
+	}
+
+	public String getAddress() {
+		// TODO Auto-generated method stub
+		return address;
+	}
+
 }

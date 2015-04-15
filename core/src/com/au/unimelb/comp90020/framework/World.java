@@ -2,6 +2,7 @@ package com.au.unimelb.comp90020.framework;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.au.unimelb.comp90020.actors.Ghost;
@@ -28,7 +29,7 @@ public class World {
 	
 	public final WorldListener listener;
 
-	public Pacman pacman;
+	public List<Pacman> pacmans;
 	public Ghost inky;
 	public Ghost blinky;
 	public Ghost pinky;
@@ -53,6 +54,8 @@ public class World {
 	public int score;
 	public int lives;
 	public int dots_eaten;
+
+	private int controlledPacman;
 		
 	public World(WorldListener listener) {
 		this.listener = listener;
@@ -61,12 +64,14 @@ public class World {
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
-		this.pacman = new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer); 
+		this.pacmans = new ArrayList<Pacman>();
+		this.pacmans.add(new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
 		createGhosts();
 		createDots();
 		this.score = 0;
 		this.lives = Settings.MAX_LIVES;
 		this.dots_eaten = 0;
+		this.controlledPacman = 0;
 	}
 	
 	private void createGhosts() {
@@ -162,9 +167,9 @@ public class World {
 	}
 	
 	private void checkDotsCollisions() {
-		
-		Movement currentPacmanState = this.pacman.getCurrentState();
-		float currentX =  this.pacman.position.x, currentY =  this.pacman.position.y;
+		Pacman pacman = this.pacmans.get(this.controlledPacman);
+		Movement currentPacmanState = pacman.getCurrentState();
+		float currentX = pacman.position.x, currentY =  pacman.position.y;
 		
 		if(currentPacmanState == Movement.RIGTH || currentPacmanState == Movement.LEFT || 
 				currentPacmanState == Movement.UP || currentPacmanState == Movement.DOWN){
@@ -193,11 +198,11 @@ public class World {
 	}
 	
 	private void checkGhostsCollisions() {
-				
-		if (this.pacman.bounds.overlaps(this.inky.bounds) 
-				|| this.pacman.bounds.overlaps(this.blinky.bounds) 
-				|| this.pacman.bounds.overlaps(this.pinky.bounds) 
-				|| this.pacman.bounds.overlaps(this.clyde.bounds)) {
+		Pacman pacman = this.pacmans.get(this.controlledPacman);
+		if (pacman.bounds.overlaps(this.inky.bounds) 
+				|| pacman.bounds.overlaps(this.blinky.bounds) 
+				|| pacman.bounds.overlaps(this.pinky.bounds) 
+				|| pacman.bounds.overlaps(this.clyde.bounds)) {
 			this.lives--;
 			this.listener.playLifeLost();
 			resetPositions();
@@ -206,26 +211,38 @@ public class World {
 	}
 	
 	private void resetPositions(){
-		
+		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		//Pacman go back to the starting point!
-		this.pacman.position.x = Settings.PAC_INITIAL_POS_X;
-		this.pacman.position.y = Settings.PAC_INITIAL_POS_Y;
-		this.pacman.bounds.x = this.pacman.position.x - this.pacman.bounds.width / 2;
-		this.pacman.bounds.y = this.pacman.position.y - this.pacman.bounds.height / 2;
-		this.pacman.setCurrentState(Movement.NONE);
+		pacman.position.x = Settings.PAC_INITIAL_POS_X;
+		pacman.position.y = Settings.PAC_INITIAL_POS_Y;
+		pacman.bounds.x = pacman.position.x - pacman.bounds.width / 2;
+		pacman.bounds.y = pacman.position.y - pacman.bounds.height / 2;
+		pacman.setCurrentState(Movement.NONE);
 
 	}
 	
 
 	private void updatePacman(float deltaTime,Movement move) {
+		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		   pacman.update(deltaTime,move);
 	}
 	
 	private void updateGhosts(float deltaTime) {
+		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		  this.blinky.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.pinky.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.clyde.update(deltaTime,pacman.position.x, pacman.position.y);
 		  this.inky.update(deltaTime,pacman.position.x, pacman.position.y);
+	}
+
+	public void addPacman() {
+		int x = (this.pacmans.size())*20;
+		this.pacmans.add(new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
+	}
+
+	public void setControlledPacman(int pacmanIdx) {
+		this.controlledPacman = pacmanIdx;
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.au.unimelb.comp90020.screens;
 
 import com.au.unimelb.comp90020.PacManGame;
+import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
 import com.au.unimelb.comp90020.framework.World;
 import com.au.unimelb.comp90020.framework.WorldListener;
@@ -8,6 +9,7 @@ import com.au.unimelb.comp90020.framework.WorldRenderer;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
+import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
 import com.au.unimelb.comp90020.multiplayer.networking.MultiPlayerProperties;
 import com.badlogic.gdx.Gdx;
@@ -169,8 +171,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	 * @param deltaTime
 	 */
 	private void updateRunning(float deltaTime) {
-		System.out.println("Starting game with: "+mp.getNumberOfPlayers()+" players");
-
 		Movement move = Movement.NONE; //If you want pacman to move alone do not initialize move variable :)
 		this.elapsedSinceAnimation += deltaTime;
 
@@ -288,8 +288,30 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 	@Override
 	public void listen(Message m) {
-		if (state == GAME_READY){
-			mp.setNumberOfPlayers(mp.getNumberOfPlayers()+1);
+		if (state == GAME_READY){									
+			if (this.game.mode == MultiplayerMode.server){
+				world.addPacman();
+				//Communicate the new player the current players
+				this.game.server.sendMessage(m.getAddress(),new Message("localhost",mp.getPlayerIds(),MessageType.JOIN));
+				//Add the new player
+				mp.addPlayer(m.getAddress(),Long.valueOf(m.getBody()));	
+				//Communicate all the players the new join
+				for ( String address:mp.getPlayerAdresses() ){
+					if (!address.equals("localhost") && !address.equals(m.getAddress()))
+						this.game.server.sendMessage(address,new Message("localhost",m.getBody(),MessageType.JOIN));
+				}
+			}
+			else{
+				String[] pids = m.getBody().split(",");
+				int i = 0;
+				for(String pid : pids){
+					System.out.println("PID: "+pid);
+					world.addPacman();
+					mp.addPlayer(m.getAddress(), Long.valueOf(pid));
+					i++;
+				}
+				world.setControlledPacman(i);
+			}
 		}
 	}
 }

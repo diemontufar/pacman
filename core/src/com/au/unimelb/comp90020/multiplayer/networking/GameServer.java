@@ -26,9 +26,11 @@ import com.badlogic.gdx.net.Socket;
 public class GameServer extends Thread{
 	ServerSocket serverSocket;
 	private Map<MessageType, ArrayList<MessageListener>> listeners;
+	private Map<String,Socket> clients;
 		
 	public GameServer(){
 		this.listeners = new HashMap<MessageType, ArrayList<MessageListener>>();
+		this.clients = new HashMap<String,Socket>();
 	}
 	public void init(){
 		ServerSocketHints serverSocketHint = new ServerSocketHints();
@@ -49,8 +51,8 @@ public class GameServer extends Thread{
 			Socket socket = serverSocket.accept(null);
 			 // Read data from the socket into a BufferedReader
             BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-            
-            try {
+            clients.put(socket.getRemoteAddress(),socket);
+            try {            	
             	String line = buffer.readLine();
                 System.out.println(socket.getRemoteAddress()+" Says "+line);
                 processMessage(socket.getRemoteAddress(),line);
@@ -59,13 +61,24 @@ public class GameServer extends Thread{
             }
 		}
 	}
+	public void sendMessage(String address, Message message){
+		String msg = message.toProtocolString();
+		
+		Socket socket = clients.get(address);
+		try {
+			socket.getOutputStream().write((msg+"\n").getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	private void processMessage(String address, String line) {
 		System.out.println("Processing message"+line);
-		String[] parts = line.split(",");
-		String mType = parts[0];
-		System.out.println("Processing message"+mType);
+		
+		String mType = line.substring(0, line.indexOf(","));
+		String body = line.substring(line.indexOf(",")+1);
+		//System.out.println("Processing message"+mType+"/"+body);
 		if ( mType.equals("JOIN") ){
-			Message message = new Message(address, parts[1], MessageType.JOIN);
+			Message message = new Message(address, body, MessageType.JOIN);
 			for ( MessageListener m : listeners.get(MessageType.JOIN) ){
 				m.listen(message);
 			}
