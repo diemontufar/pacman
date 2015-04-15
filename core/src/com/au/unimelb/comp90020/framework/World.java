@@ -53,7 +53,7 @@ public class World {
 	public int score;
 	public int lives;
 	public int dots_eaten;
-
+		
 	public World(WorldListener listener) {
 		this.listener = listener;
 		this.map = new TmxMapLoader().load("pacman.tmx");

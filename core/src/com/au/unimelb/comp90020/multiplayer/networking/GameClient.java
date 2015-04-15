@@ -25,8 +25,8 @@ public class GameClient extends Thread{
 	    Socket socket = Gdx.net.newClientSocket(Protocol.TCP, "localhost", 3030, socketHints);
 	    try {
 	        // write our entered message to the stream
-	    	System.out.println("Sending messageeee");
-	        socket.getOutputStream().write("Pruebaaaa\n".getBytes());
+	    	System.out.println("CLIENT > JOIN");
+	        socket.getOutputStream().write("JOIN,ABC\n".getBytes());
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }

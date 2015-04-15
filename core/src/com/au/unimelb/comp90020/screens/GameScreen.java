@@ -7,6 +7,9 @@ import com.au.unimelb.comp90020.framework.WorldListener;
 import com.au.unimelb.comp90020.framework.WorldRenderer;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
+import com.au.unimelb.comp90020.multiplayer.networking.Message;
+import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
+import com.au.unimelb.comp90020.multiplayer.networking.MultiPlayerProperties;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -22,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
  * communicates it to the World.
  * 
  */
-public class GameScreen extends ScreenAdapter implements TextInputListener {
+public class GameScreen extends ScreenAdapter implements TextInputListener, MessageListener {
 
 	static final int GAME_READY = 0;
 	static final int GAME_RUNNING = 1;
@@ -42,6 +45,9 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	boolean toggleSound;
 	
 	float elapsedSinceAnimation = 0.0f;
+	///
+	MultiPlayerProperties mp;
+	///
 
 	public GameScreen(PacManGame game) {
 
@@ -52,6 +58,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 		guiCam.position.set(Settings.TARGET_WIDTH / 2, Settings.TARGET_HEIGHT / 2, 0);
 
 		touchPoint = new Vector3();
+		
+		///
+		mp = new MultiPlayerProperties();
+		///
 
 		worldListener = new WorldListener() {
 
@@ -159,6 +169,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 	 * @param deltaTime
 	 */
 	private void updateRunning(float deltaTime) {
+		System.out.println("Starting game with: "+mp.getNumberOfPlayers()+" players");
 
 		Movement move = Movement.NONE; //If you want pacman to move alone do not initialize move variable :)
 		this.elapsedSinceAnimation += deltaTime;
@@ -275,4 +286,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener {
 			state = GAME_OVER;
 	}
 
+	@Override
+	public void listen(Message m) {
+		if (state == GAME_READY){
+			mp.setNumberOfPlayers(mp.getNumberOfPlayers()+1);
+		}
+	}
 }

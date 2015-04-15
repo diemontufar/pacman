@@ -79,17 +79,18 @@ public class WorldRenderer {
 	public void renderObjects() {
 		batch.enableBlending();
 		batch.begin();
-		renderPacman();
+		renderPacmans();
 		renderGhosts();
 		renderScore();
 		renderLives();
 		batch.end();
 	}
 	
-	private void renderPacman() {
+	private void renderPacmans() {
+			renderPacman(world.pacman);
+	}
 
-		Pacman pacman = world.pacman;
-		
+	private void renderPacman(Pacman pacman){
 		TextureRegion currentKeyFrame;
 
 		if (pacman.getCurrentState() == Movement.RIGTH){
@@ -143,9 +144,7 @@ public class WorldRenderer {
 					Pacman.PACMAN_WIDTH, 
 					Pacman.PACMAN_HEIGHT);
 		}
-		
 	}
-
 	private void renderGhosts() {
 		batch.draw(Assets.blinky, world.blinky.position.x - Ghost.GHOST_WIDTH / 2, world.blinky.position.y - Ghost.GHOST_HEIGHT / 2,
 					Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
