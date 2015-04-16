@@ -298,6 +298,8 @@ public class World implements MessageListener {
 
 			g.position.x = x;
 			g.position.y = y;
+			g.bounds.x = g.position.x - g.bounds.width / 2;
+			g.bounds.y = g.position.y - g.bounds.height / 2;
 		}
 	}
 
