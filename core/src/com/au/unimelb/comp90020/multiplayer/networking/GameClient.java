@@ -69,11 +69,26 @@ public class GameClient extends Thread{
 				m.listen(message);
 			}
 		}
+		if ( mType.equals("PACMAN_MOVEMENT")){
+			Message message = new Message(address, body, MessageType.PACMAN_MOVEMENT);
+			for ( MessageListener m : listeners.get(MessageType.PACMAN_MOVEMENT) ){
+				m.listen(message);
+			}
+		}
 	}
 	public void registerListener(MessageType type, MessageListener ml){
 		if (this.listeners.get(type)==null){
 			this.listeners.put(type, new ArrayList<MessageListener>());
 		}
 		this.listeners.get(type).add(ml);
+	}
+	public void sendMessage(Message m) {
+        try {
+        	String msg = m.toProtocolString();
+        	System.out.println("CLIENT > "+msg);
+			socket.getOutputStream().write((msg+"\n").getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

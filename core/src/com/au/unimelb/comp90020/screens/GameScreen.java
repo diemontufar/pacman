@@ -290,7 +290,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	public void listen(Message m) {
 		if (state == GAME_READY){									
 			if (this.game.mode == MultiplayerMode.server){
-				world.addPacman();
+				world.addPacman(Long.valueOf(m.getBody()));
 				//Communicate the new player the current players
 				this.game.server.sendMessage(m.getAddress(),new Message("localhost",mp.getPlayerIds(),MessageType.JOIN));
 				//Add the new player
@@ -306,11 +306,11 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 				int i = 0;
 				for(String pid : pids){
 					System.out.println("PID: "+pid);
-					world.addPacman();
+					world.addPacman(Long.valueOf(pid));
 					mp.addPlayer(m.getAddress(), Long.valueOf(pid));
 					i++;
 				}
-				world.setControlledPacman(i);
+				//world.setControlledPacman(1L);
 			}
 		}
 	}

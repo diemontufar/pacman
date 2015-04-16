@@ -87,7 +87,7 @@ public class WorldRenderer {
 	}
 	
 	private void renderPacmans() {
-		for (Pacman pacman : world.pacmans ){
+		for (Pacman pacman : world.pacmans.values() ){
 			renderPacman(pacman);
 		}
 	}

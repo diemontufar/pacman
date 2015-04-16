@@ -59,6 +59,7 @@ public class GameServer extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            new GameServerThread(socket,this).start();
 		}
 	}
 	public void sendMessage(String address, Message message){
@@ -71,7 +72,7 @@ public class GameServer extends Thread{
 			e.printStackTrace();
 		}
 	}
-	private void processMessage(String address, String line) {
+	void processMessage(String address, String line) {
 		System.out.println("Processing message"+line);
 		
 		String mType = line.substring(0, line.indexOf(","));
@@ -80,6 +81,12 @@ public class GameServer extends Thread{
 		if ( mType.equals("JOIN") ){
 			Message message = new Message(address, body, MessageType.JOIN);
 			for ( MessageListener m : listeners.get(MessageType.JOIN) ){
+				m.listen(message);
+			}
+		}
+		if ( mType.equals("PACMAN_MOVEMENT") ){
+			Message message = new Message(address, body, MessageType.PACMAN_MOVEMENT);
+			for ( MessageListener m : listeners.get(MessageType.PACMAN_MOVEMENT) ){
 				m.listen(message);
 			}
 		}

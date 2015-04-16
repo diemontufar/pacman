@@ -22,6 +22,7 @@ public class PacManGame extends Game {
 	public MultiplayerMode mode;
 	
 	public GameServer server;
+	public GameClient client;
 	
 	public PacManGame(MultiplayerMode mode) {
 		this.mode = mode;
@@ -38,12 +39,14 @@ public class PacManGame extends Game {
 		if (mode == MultiplayerMode.server){
 			server =  new GameServer();
 			server.registerListener(MessageType.JOIN, gs);
+			server.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 			server.start();
 		}
 		if (mode == MultiplayerMode.client){
-			GameClient client =  new GameClient();
+			client =  new GameClient();
 			client.registerListener(MessageType.JOIN, gs);
 			client.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
+			client.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 			client.start();
 		}
 		////

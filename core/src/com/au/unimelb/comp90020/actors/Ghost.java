@@ -83,7 +83,7 @@ public class Ghost extends DynamicGameObject {
 			targetY = this.targetY;
 		}
 		else{//Pacmannnn
-			speed = 120;
+			speed = 80; //was 120
 			targetX = pacmanX;
 			targetY = pacmanY;			
 		}

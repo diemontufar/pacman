@@ -34,7 +34,7 @@ public class World implements MessageListener {
 
 	public final WorldListener listener;
 
-	public List<Pacman> pacmans;
+	public Map<Long,Pacman> pacmans;
 	public Ghost inky;
 	public Ghost blinky;
 	public Ghost pinky;
@@ -60,7 +60,7 @@ public class World implements MessageListener {
 	public int lives;
 	public int dots_eaten;
 
-	private int controlledPacman;
+	private Long controlledPacman;
 	private GameScreen screen;
 
 	public World(WorldListener listener, GameScreen screen) {
@@ -71,14 +71,14 @@ public class World implements MessageListener {
 		this.wallsLayer = (TiledMapTileLayer) this.map.getLayers().get("Walls");
 		this.pacdotsLayer = (TiledMapTileLayer) this.map.getLayers().get("Collectables");
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
-		this.pacmans = new ArrayList<Pacman>();
-		this.pacmans.add(new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
+		this.pacmans = new HashMap<Long,Pacman>();
+		this.controlledPacman = Settings.getPID();
+		this.pacmans.put(this.controlledPacman,new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
 		createGhosts();
 		createDots();
 		this.score = 0;
 		this.lives = Settings.MAX_LIVES;
-		this.dots_eaten = 0;
-		this.controlledPacman = 0;
+		this.dots_eaten = 0;		
 	}
 
 	private void createGhosts() {
@@ -232,6 +232,21 @@ public class World implements MessageListener {
 	private void updatePacman(float deltaTime,Movement move) {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		pacman.update(deltaTime,move);
+		if ( this.screen.game.mode == MultiplayerMode.server && move!=Movement.NONE ){
+			StringBuilder sb = new StringBuilder();
+			toPositionString(sb,"1",pacman);
+			Message m = new Message("localhost", sb.toString(), MessageType.PACMAN_MOVEMENT);
+			for ( String address:this.screen.mp.getPlayerAdresses() ){
+				if (!address.equals("localhost"))
+					this.screen.game.server.sendMessage(address, m);
+			}
+		}
+		if ( this.screen.game.mode == MultiplayerMode.client && move!=Movement.NONE ){
+			StringBuilder sb = new StringBuilder();
+			toPositionString(sb,String.valueOf(Settings.getPID()),pacman);
+			Message m = new Message("localhost", sb.toString(), MessageType.PACMAN_MOVEMENT);
+			this.screen.game.client.sendMessage(m);
+		}
 	}
 
 	private void updateGhosts(float deltaTime) {
@@ -245,22 +260,22 @@ public class World implements MessageListener {
 		//Update Ghost positions
 		if (this.screen.game.mode == MultiplayerMode.server){			  
 			StringBuilder sb = new StringBuilder();
-			toGhostPositionString(sb,"BLINKY",this.blinky);
+			toPositionString(sb,"BLINKY",this.blinky);
 			sb.append(",");
-			toGhostPositionString(sb,"PINKY",this.pinky);
+			toPositionString(sb,"PINKY",this.pinky);
 			sb.append(",");
-			toGhostPositionString(sb,"CLYDE",this.clyde);
+			toPositionString(sb,"CLYDE",this.clyde);
 			sb.append(",");
-			toGhostPositionString(sb,"INKY",this.inky);
+			toPositionString(sb,"INKY",this.inky);
 			Message m = new Message("localhost", sb.toString(), MessageType.GHOST_MOVEMENT);
 			for ( String address:this.screen.mp.getPlayerAdresses() ){
 				if (!address.equals("localhost"))
-					this.screen.game.server.sendMessage(address,m);
+				   this.screen.game.server.sendMessage(address,m);
 			}
 		}
 	}
 
-	private void toGhostPositionString(StringBuilder sb, String name, Ghost ghost) {
+	private void toPositionString(StringBuilder sb, String name, DynamicGameObject ghost) {
 		sb.append(name);
 		sb.append(",");
 		sb.append(ghost.position.x);
@@ -268,39 +283,61 @@ public class World implements MessageListener {
 		sb.append(ghost.position.y);
 	}
 
-	public void addPacman() {
-		int x = (this.pacmans.size())*20;
-		this.pacmans.add(new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
+	public void addPacman(Long pid) {
+		int x = (this.pacmans.values().size())*20;
+		this.pacmans.put(pid,new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
 	}
 
-	public void setControlledPacman(int pacmanIdx) {
+	public void setControlledPacman(Long pacmanIdx) {
 		this.controlledPacman = pacmanIdx;
 
 	}
 
 	@Override
 	public void listen(Message m) {
-		String body = m.getBody();
-		String[] movements = body.split(",");
-		for (int i = 0; i < movements.length; i+=3){
-			String name = movements[i];
-			float x = Float.valueOf(movements[i+1]);
-			float y = Float.valueOf(movements[i+2]);
-			Ghost g = null;
-			if(name.equals("BLINKY"))
-				g = this.blinky;
-			if(name.equals("PINKY"))
-				g = this.pinky;
-			if(name.equals("INKY"))
-				g = this.inky;
-			if(name.equals("CLYDE"))
-				g = this.clyde;
+		if (m.getType() == MessageType.GHOST_MOVEMENT){
+			String body = m.getBody();
+			String[] movements = body.split(",");
+			for (int i = 0; i < movements.length; i+=3){
+				String name = movements[i];
+				float x = Float.valueOf(movements[i+1]);
+				float y = Float.valueOf(movements[i+2]);
+				Ghost g = null;
+				if(name.equals("BLINKY"))
+					g = this.blinky;
+				if(name.equals("PINKY"))
+					g = this.pinky;
+				if(name.equals("INKY"))
+					g = this.inky;
+				if(name.equals("CLYDE"))
+					g = this.clyde;
 
-			g.position.x = x;
-			g.position.y = y;
-			g.bounds.x = g.position.x - g.bounds.width / 2;
-			g.bounds.y = g.position.y - g.bounds.height / 2;
+				g.position.x = x;
+				g.position.y = y;
+				g.bounds.x = g.position.x - g.bounds.width / 2;
+				g.bounds.y = g.position.y - g.bounds.height / 2;
+			}
 		}
+		if (m.getType() == MessageType.PACMAN_MOVEMENT){			
+			String body = m.getBody();
+			String[] movements = body.split(",");
+			Long pid = Long.valueOf(movements[0]);
+			Pacman pacman = this.pacmans.get(pid);
+			float x = Float.valueOf(movements[1]);
+			float y = Float.valueOf(movements[2]);
+			pacman.position.x = x;
+			pacman.position.y = y;
+			pacman.bounds.x = pacman.position.x - pacman.bounds.width / 2;
+			pacman.bounds.y = pacman.position.y - pacman.bounds.height / 2;
+			if (this.screen.game.mode == MultiplayerMode.server){ //send update to other clients
+				for ( String address:this.screen.mp.getPlayerAdresses() ){
+					if (!address.equals("localhost") && !address.equals(m.getAddress())){
+						this.screen.game.server.sendMessage(address,new Message("localhost",m.getBody(),MessageType.PACMAN_MOVEMENT));
+					}
+				}
+			}
+		}
+
 	}
 
 }
