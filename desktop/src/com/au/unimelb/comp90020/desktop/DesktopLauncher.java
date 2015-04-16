@@ -21,8 +21,11 @@ public class DesktopLauncher {
 			if (mode.equals("client")){
 				new LwjglApplication(new PacManGame(MultiplayerMode.client), config);
 			}
-			else{
+			else if(mode.equals("server")){
 				new LwjglApplication(new PacManGame(MultiplayerMode.server), config);
+			}
+			else if(mode.equals("multicast")){
+				new LwjglApplication(new PacManGame(MultiplayerMode.multicast), config);
 			}
 		}
 		

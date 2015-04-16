@@ -36,7 +36,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	static final int GAME_OVER = 4;
 
 	public PacManGame game;
-	
+
 	int state;
 	OrthographicCamera guiCam;
 	Vector3 touchPoint;
@@ -45,7 +45,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	WorldRenderer renderer;
 	Rectangle resumeBounds, quitBounds, continueWin, playAgainGameOver, quitGameOver;
 	boolean toggleSound;
-	
+
 	float elapsedSinceAnimation = 0.0f;
 	///
 	public MultiPlayerProperties mp;
@@ -60,9 +60,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		guiCam.position.set(Settings.TARGET_WIDTH / 2, Settings.TARGET_HEIGHT / 2, 0);
 
 		touchPoint = new Vector3();
-		
+
 		///
 		mp = new MultiPlayerProperties();
+		mp.addPlayer(String.valueOf(Settings.getPID()), Settings.getPID());
 		///
 
 		worldListener = new WorldListener() {
@@ -122,7 +123,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 			break;
 		}
 	}
-	
+
 	/**
 	 * Method called every frame. It both updates and draw the World objects.
 	 */
@@ -142,7 +143,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 			state = GAME_RUNNING;
 		}
 	}
-	
+
 	/**
 	 * Method called when the state of the game is GAME_PAUSED. Resumes the game
 	 * or returns to the MenuScreen depending on which button was pressed.
@@ -151,12 +152,12 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER))
 			state = GAME_RUNNING;
 	}
-	
+
 	private void checkLevelEnd(){
 		if (this.world.dots_eaten == Settings.MAX_NUM_DOTS)
-		state = GAME_LEVEL_END;
+			state = GAME_LEVEL_END;
 	}
-	
+
 	private void checkGameOver(){
 		if (this.world.lives == 0){
 			state = GAME_OVER;
@@ -203,9 +204,9 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 				this.elapsedSinceAnimation = 0.0f;
 			}
 		}
-		
+
 		world.update(deltaTime,move);
-		
+
 		checkLevelEnd();
 		checkGameOver();
 	}
@@ -221,9 +222,9 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		GL20 gl = Gdx.gl;
 		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
 		renderer.render();
-		
+
 		guiCam.update();
 		game.batcher.setProjectionMatrix(guiCam.combined);
 		game.batcher.enableBlending();
@@ -277,7 +278,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	@Override
 	public void input(String text) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -288,29 +289,36 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 	@Override
 	public void listen(Message m) {
-		if (state == GAME_READY){									
-			if (this.game.mode == MultiplayerMode.server){
-				world.addPacman(Long.valueOf(m.getBody()));
-				//Communicate the new player the current players
-				this.game.server.sendMessage(m.getAddress(),new Message("localhost",mp.getPlayerIds(),MessageType.JOIN));
-				//Add the new player
-				mp.addPlayer(m.getAddress(),Long.valueOf(m.getBody()));	
-				//Communicate all the players the new join
-				for ( String address:mp.getPlayerAdresses() ){
-					if (!address.equals("localhost") && !address.equals(m.getAddress()))
-						this.game.server.sendMessage(address,new Message("localhost",m.getBody(),MessageType.JOIN));
+		if (state == GAME_READY){				
+			if (m.getType() == MessageType.JOIN ){
+				String pid = m.getBody().split(",")[0];
+				System.out.println("PID: "+pid);
+				Long pidL = Long.valueOf(pid);
+				if (pidL!=Settings.getPID() && !mp.getPlayers().values().contains(pidL)){
+					world.addPacman(pidL);
+
+					mp.addPlayer(String.valueOf(pidL), pidL);
+					//Multicast the current table					
+					StringBuilder sb = new StringBuilder();
+					for ( Long value : mp.getPlayers().values() ){
+						sb.append(value);
+						sb.append(",");
+					}
+					sb.deleteCharAt(sb.length()-1);
+					game.peer.sendMessage(new Message("localhost",sb.toString(),MessageType.PEERS));
 				}
 			}
-			else{
+			//world.setControlledPacman(1L);
+
+			if(m.getType() == MessageType.PEERS){
 				String[] pids = m.getBody().split(",");
-				int i = 0;
 				for(String pid : pids){
-					System.out.println("PID: "+pid);
-					world.addPacman(Long.valueOf(pid));
-					mp.addPlayer(m.getAddress(), Long.valueOf(pid));
-					i++;
-				}
-				//world.setControlledPacman(1L);
+					Long pidL = Long.valueOf(pid);
+					if (pidL!=Settings.getPID() && !mp.getPlayers().values().contains(pidL)){
+						world.addPacman(pidL);
+						mp.addPlayer(String.valueOf(pidL), pidL);
+					}
+				}			
 			}
 		}
 	}

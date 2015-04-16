@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.au.unimelb.comp90020.framework.util.Settings;
+
 
 /**
  * @author achaves
@@ -15,11 +17,14 @@ import java.util.Set;
 public class MultiPlayerProperties {
 	private int numberOfPlayers;
 	private Map<String, Long> players;
+	private Long myId;
+	private Long minId;
 	
 	public MultiPlayerProperties(){
 		this.numberOfPlayers = 1;
 		this.players = new HashMap<String, Long>();
-		players.put("localhost", (long) 1);
+		this.myId = Settings.getPID();
+		this.minId = 1000000L;
 	}
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
@@ -39,6 +44,9 @@ public class MultiPlayerProperties {
 	}
 	public void addPlayer(String address, Long pid) {
 		players.put(address, pid);
+		if (pid<minId){
+			minId = pid;
+		}
 		numberOfPlayers++;
 	}
 	public String getPlayerIds() {
@@ -49,6 +57,13 @@ public class MultiPlayerProperties {
 		}
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();
+	}
+	public boolean isMinPlayerId() {
+		return myId <= minId;
+	}
+	public Long getMyId() {
+		// TODO Auto-generated method stub
+		return myId;
 	}
 	
 }

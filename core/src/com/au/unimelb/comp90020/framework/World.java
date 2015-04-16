@@ -250,7 +250,7 @@ public class World implements MessageListener {
 	}
 
 	private void updateGhosts(float deltaTime) {
-		if (this.screen.game.mode == MultiplayerMode.server || this.screen.game.mode == MultiplayerMode.none){
+		if (this.screen.mp.isMinPlayerId()){
 			Pacman pacman = this.pacmans.get(this.controlledPacman);
 			this.blinky.update(deltaTime,pacman.position.x, pacman.position.y);
 			this.pinky.update(deltaTime,pacman.position.x, pacman.position.y);
@@ -258,8 +258,10 @@ public class World implements MessageListener {
 			this.inky.update(deltaTime,pacman.position.x, pacman.position.y);
 		}
 		//Update Ghost positions
-		if (this.screen.game.mode == MultiplayerMode.server){			  
+		if (this.screen.game.mode == MultiplayerMode.multicast && this.screen.mp.isMinPlayerId()){			  
 			StringBuilder sb = new StringBuilder();
+			sb.append(this.screen.mp.getMyId());
+			sb.append(",");
 			toPositionString(sb,"BLINKY",this.blinky);
 			sb.append(",");
 			toPositionString(sb,"PINKY",this.pinky);
@@ -270,7 +272,7 @@ public class World implements MessageListener {
 			Message m = new Message("localhost", sb.toString(), MessageType.GHOST_MOVEMENT);
 			for ( String address:this.screen.mp.getPlayerAdresses() ){
 				if (!address.equals("localhost"))
-				   this.screen.game.server.sendMessage(address,m);
+				   this.screen.game.peer.sendMessage(m);
 			}
 		}
 	}
@@ -298,24 +300,27 @@ public class World implements MessageListener {
 		if (m.getType() == MessageType.GHOST_MOVEMENT){
 			String body = m.getBody();
 			String[] movements = body.split(",");
-			for (int i = 0; i < movements.length; i+=3){
-				String name = movements[i];
-				float x = Float.valueOf(movements[i+1]);
-				float y = Float.valueOf(movements[i+2]);
-				Ghost g = null;
-				if(name.equals("BLINKY"))
-					g = this.blinky;
-				if(name.equals("PINKY"))
-					g = this.pinky;
-				if(name.equals("INKY"))
-					g = this.inky;
-				if(name.equals("CLYDE"))
-					g = this.clyde;
-
-				g.position.x = x;
-				g.position.y = y;
-				g.bounds.x = g.position.x - g.bounds.width / 2;
-				g.bounds.y = g.position.y - g.bounds.height / 2;
+			Long pid = Long.valueOf(movements[0]);
+			if (pid!=this.screen.mp.getMyId()){
+				for (int i = 1; i < movements.length; i+=3){
+					String name = movements[i];
+					float x = Float.valueOf(movements[i+1]);
+					float y = Float.valueOf(movements[i+2]);
+					Ghost g = null;
+					if(name.equals("BLINKY"))
+						g = this.blinky;
+					if(name.equals("PINKY"))
+						g = this.pinky;
+					if(name.equals("INKY"))
+						g = this.inky;
+					if(name.equals("CLYDE"))
+						g = this.clyde;
+	
+					g.position.x = x;
+					g.position.y = y;
+					g.bounds.x = g.position.x - g.bounds.width / 2;
+					g.bounds.y = g.position.y - g.bounds.height / 2;
+				}
 			}
 		}
 		if (m.getType() == MessageType.PACMAN_MOVEMENT){			

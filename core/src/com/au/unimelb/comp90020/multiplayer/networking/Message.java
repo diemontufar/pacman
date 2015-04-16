@@ -12,7 +12,7 @@ public class Message {
 	private MessageType type;
 	private String body;
 
-	public enum MessageType {JOIN, GHOST_MOVEMENT, PACMAN_MOVEMENT, FOOD_EATEN};
+	public enum MessageType {JOIN, GHOST_MOVEMENT, PACMAN_MOVEMENT, FOOD_EATEN, PEERS};
 	
 	
 	public MessageType getType() {
