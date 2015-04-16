@@ -55,12 +55,17 @@ public class GameClient extends Thread{
 	    }
 	}
 	private void processMessage(String address, String line) {
-		System.out.println("Processing message"+line);
 		String mType = line.substring(0, line.indexOf(","));
 		String body = line.substring(line.indexOf(",")+1);
 		if ( mType.equals("JOIN") ){
 			Message message = new Message(address, body, MessageType.JOIN);
 			for ( MessageListener m : listeners.get(MessageType.JOIN) ){
+				m.listen(message);
+			}
+		}
+		if ( mType.equals("GHOST_MOVEMENT")){
+			Message message = new Message(address, body, MessageType.GHOST_MOVEMENT);
+			for ( MessageListener m : listeners.get(MessageType.GHOST_MOVEMENT) ){
 				m.listen(message);
 			}
 		}

@@ -43,6 +43,7 @@ public class PacManGame extends Game {
 		if (mode == MultiplayerMode.client){
 			GameClient client =  new GameClient();
 			client.registerListener(MessageType.JOIN, gs);
+			client.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
 			client.start();
 		}
 		////

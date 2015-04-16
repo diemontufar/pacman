@@ -35,12 +35,12 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
 
-	PacManGame game;
+	public PacManGame game;
 	
 	int state;
 	OrthographicCamera guiCam;
 	Vector3 touchPoint;
-	World world;
+	public World world;
 	WorldListener worldListener;
 	WorldRenderer renderer;
 	Rectangle resumeBounds, quitBounds, continueWin, playAgainGameOver, quitGameOver;
@@ -48,7 +48,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	
 	float elapsedSinceAnimation = 0.0f;
 	///
-	MultiPlayerProperties mp;
+	public MultiPlayerProperties mp;
 	///
 
 	public GameScreen(PacManGame game) {
@@ -89,7 +89,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 		};
 
-		world = new World(worldListener);
+		world = new World(worldListener, this);
 		renderer = new WorldRenderer(game.batcher, world);
 
 	}

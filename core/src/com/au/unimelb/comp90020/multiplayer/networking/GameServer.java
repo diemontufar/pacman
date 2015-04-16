@@ -63,7 +63,7 @@ public class GameServer extends Thread{
 	}
 	public void sendMessage(String address, Message message){
 		String msg = message.toProtocolString();
-		
+		System.out.println("SERVER>"+address+':'+msg);
 		Socket socket = clients.get(address);
 		try {
 			socket.getOutputStream().write((msg+"\n").getBytes());
