@@ -232,20 +232,11 @@ public class World implements MessageListener {
 	private void updatePacman(float deltaTime,Movement move) {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		pacman.update(deltaTime,move);
-		if ( this.screen.game.mode == MultiplayerMode.server && move!=Movement.NONE ){
+		if ( this.screen.game.mode == MultiplayerMode.multicast && move!=Movement.NONE ){
 			StringBuilder sb = new StringBuilder();
-			toPositionString(sb,"1",pacman);
+			toPositionString(sb,String.valueOf(this.screen.mp.getMyId()),pacman);
 			Message m = new Message("localhost", sb.toString(), MessageType.PACMAN_MOVEMENT);
-			for ( String address:this.screen.mp.getPlayerAdresses() ){
-				if (!address.equals("localhost"))
-					this.screen.game.server.sendMessage(address, m);
-			}
-		}
-		if ( this.screen.game.mode == MultiplayerMode.client && move!=Movement.NONE ){
-			StringBuilder sb = new StringBuilder();
-			toPositionString(sb,String.valueOf(Settings.getPID()),pacman);
-			Message m = new Message("localhost", sb.toString(), MessageType.PACMAN_MOVEMENT);
-			this.screen.game.client.sendMessage(m);
+			this.screen.game.peer.sendMessage(m);
 		}
 	}
 
@@ -324,22 +315,17 @@ public class World implements MessageListener {
 			}
 		}
 		if (m.getType() == MessageType.PACMAN_MOVEMENT){			
-			String body = m.getBody();
-			String[] movements = body.split(",");
-			Long pid = Long.valueOf(movements[0]);
-			Pacman pacman = this.pacmans.get(pid);
-			float x = Float.valueOf(movements[1]);
-			float y = Float.valueOf(movements[2]);
-			pacman.position.x = x;
-			pacman.position.y = y;
-			pacman.bounds.x = pacman.position.x - pacman.bounds.width / 2;
-			pacman.bounds.y = pacman.position.y - pacman.bounds.height / 2;
-			if (this.screen.game.mode == MultiplayerMode.server){ //send update to other clients
-				for ( String address:this.screen.mp.getPlayerAdresses() ){
-					if (!address.equals("localhost") && !address.equals(m.getAddress())){
-						this.screen.game.server.sendMessage(address,new Message("localhost",m.getBody(),MessageType.PACMAN_MOVEMENT));
-					}
-				}
+				String body = m.getBody();
+				String[] movements = body.split(",");
+				Long pid = Long.valueOf(movements[0]);
+				if (pid!=screen.mp.getMyId()){
+				Pacman pacman = this.pacmans.get(pid);
+				float x = Float.valueOf(movements[1]);
+				float y = Float.valueOf(movements[2]);
+				pacman.position.x = x;
+				pacman.position.y = y;
+				pacman.bounds.x = pacman.position.x - pacman.bounds.width / 2;
+				pacman.bounds.y = pacman.position.y - pacman.bounds.height / 2;
 			}
 		}
 

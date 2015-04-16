@@ -89,7 +89,6 @@ public class GameMulticastPeer extends Thread{
 				m.listen(message);
 			}
 		}
-
 		if ( mType.equals("PACMAN_MOVEMENT") ){
 			Message message = new Message(address, body, MessageType.PACMAN_MOVEMENT);
 			for ( MessageListener m : listeners.get(MessageType.PACMAN_MOVEMENT) ){

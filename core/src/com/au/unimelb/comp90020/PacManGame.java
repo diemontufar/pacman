@@ -62,6 +62,7 @@ public class PacManGame extends Game {
 				peer.registerListener(MessageType.JOIN, gs);
 				peer.registerListener(MessageType.PEERS, gs);
 				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
+				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
