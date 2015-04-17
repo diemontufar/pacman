@@ -174,6 +174,7 @@ public class World implements MessageListener {
 	}
 
 	private void checkDotsCollisions() {
+
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		Movement currentPacmanState = pacman.getCurrentState();
 		float currentX = pacman.position.x, currentY =  pacman.position.y;
@@ -188,6 +189,16 @@ public class World implements MessageListener {
 	private void checkEaten(float currentX, float currentY) {
 		if (isCellFood(currentX, currentY)){
 			removeFood(currentX, currentY);
+			if ( this.screen.game.mode == MultiplayerMode.multicast ){
+				StringBuilder sb = new StringBuilder();
+				sb.append(this.screen.mp.getMyId());
+				sb.append(",");
+				sb.append(currentX);
+				sb.append(",");
+				sb.append(currentY);
+				Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);
+				this.screen.game.peer.sendMessage(m);
+			}	
 		}
 	}
 
@@ -197,10 +208,12 @@ public class World implements MessageListener {
 	}
 
 	private boolean removeFood(float x, float y) {
+		screen.game.lock.requestCS();
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
 		cell.setTile(null);
 		this.score++;
 		this.dots_eaten++;
+		screen.game.lock.releaseCS();
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
@@ -263,7 +276,7 @@ public class World implements MessageListener {
 			Message m = new Message("localhost", sb.toString(), MessageType.GHOST_MOVEMENT);
 			for ( String address:this.screen.mp.getPlayerAdresses() ){
 				if (!address.equals("localhost"))
-				   this.screen.game.peer.sendMessage(m);
+				this.screen.game.peer.sendMessage(m);
 			}
 		}
 	}
@@ -306,7 +319,7 @@ public class World implements MessageListener {
 						g = this.inky;
 					if(name.equals("CLYDE"))
 						g = this.clyde;
-	
+
 					g.position.x = x;
 					g.position.y = y;
 					g.bounds.x = g.position.x - g.bounds.width / 2;
@@ -315,10 +328,10 @@ public class World implements MessageListener {
 			}
 		}
 		if (m.getType() == MessageType.PACMAN_MOVEMENT){			
-				String body = m.getBody();
-				String[] movements = body.split(",");
-				Long pid = Long.valueOf(movements[0]);
-				if (pid!=screen.mp.getMyId()){
+			String body = m.getBody();
+			String[] movements = body.split(",");
+			long pid = Long.valueOf(movements[0]).longValue();
+			if (pid!=screen.mp.getMyId()){
 				Pacman pacman = this.pacmans.get(pid);
 				float x = Float.valueOf(movements[1]);
 				float y = Float.valueOf(movements[2]);
@@ -328,6 +341,19 @@ public class World implements MessageListener {
 				pacman.bounds.y = pacman.position.y - pacman.bounds.height / 2;
 			}
 		}
+		if (m.getType() == MessageType.FOOD_EATEN){		
+			String body = m.getBody();
+			String[] movements = body.split(",");
+			long pid = Long.valueOf(movements[0]).longValue();
+			if (pid!=screen.mp.getMyId()){
+				float x = Float.valueOf(movements[1]);
+				float y = Float.valueOf(movements[2]);
+				//I HAVE TO DO THIS TO AVOID LOCK
+				Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
+				if (cell!=null)cell.setTile(null);
+			}
+		}
+
 
 	}
 

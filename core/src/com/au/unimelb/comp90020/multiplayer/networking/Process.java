@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.au.unimelb.comp90020.framework.util.Settings;
+import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 
 
 /**
@@ -20,13 +21,13 @@ public class Process {
 	
 	private int numberOfPlayers;
 	private Map<String, Long> players;
-	private Long myId;
+	protected Long myId;
 	private Long minId;
 	private ProcessState state;
 	GameMulticastPeer peer;
 	
 	public Process(GameMulticastPeer peer){
-		this.numberOfPlayers = 1;
+		this.numberOfPlayers = 0;
 		this.players = new HashMap<String, Long>();
 		this.myId = Settings.getPID();
 		this.minId = 1000000L;
@@ -78,17 +79,21 @@ public class Process {
 	public void setState(ProcessState state) {
 		this.state = state;
 	}
-	public void broadcastMsg(String tag, int msg) {
-/*		for (int i = 0; i < N; i++)
-			if (i != myId)
-				sendMsg(i, tag, msg);*/
+	public void broadcastMsg(MessageType type, int msg) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(myId);
+		sb.append(",");
+		sb.append(msg);
+		Message m = new Message("localhost", sb.toString(), type);
+		peer.sendMessage(m);
 	}
-	public void sendMsg(int destId, String tag, String msg) {
-/*		Util.println("Sending msg to " + destId + ":" + tag + " " + msg);
-		comm.sendMsg(destId, tag, msg);*/
-	}
-	public void sendMsg(int destId, String tag, int msg) {
-		sendMsg(destId, tag, String.valueOf(msg) + " ");
+	public void sendMsg(Long destId, MessageType type, int msg) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(destId);
+		sb.append(",");
+		sb.append(msg);
+		Message m = new Message(String.valueOf(myId), sb.toString(), type);
+		peer.sendMessage(m);
 	}
 
 	public synchronized void myWait() {

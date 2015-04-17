@@ -8,6 +8,7 @@ import com.au.unimelb.comp90020.framework.WorldListener;
 import com.au.unimelb.comp90020.framework.WorldRenderer;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
+import com.au.unimelb.comp90020.multiplayer.concurrency.Lock;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
@@ -62,7 +63,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		touchPoint = new Vector3();
 
 		///
-		mp = new Process();
+		mp = (Process)game.lock;
 		mp.addPlayer(String.valueOf(Settings.getPID()), Settings.getPID());
 		///
 
@@ -139,7 +140,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	 */
 	private void updateReady() {
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER)){
-			this.worldListener.playOpening();
+			this.worldListener.playOpening();			
 			state = GAME_RUNNING;
 		}
 	}
