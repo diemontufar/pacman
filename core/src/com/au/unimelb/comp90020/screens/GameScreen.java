@@ -11,7 +11,7 @@ import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
-import com.au.unimelb.comp90020.multiplayer.networking.MultiPlayerProperties;
+import com.au.unimelb.comp90020.multiplayer.networking.Process;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -48,7 +48,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 	float elapsedSinceAnimation = 0.0f;
 	///
-	public MultiPlayerProperties mp;
+	public Process mp;
 	///
 
 	public GameScreen(PacManGame game) {
@@ -62,7 +62,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		touchPoint = new Vector3();
 
 		///
-		mp = new MultiPlayerProperties();
+		mp = new Process();
 		mp.addPlayer(String.valueOf(Settings.getPID()), Settings.getPID());
 		///
 

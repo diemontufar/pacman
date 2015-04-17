@@ -14,17 +14,23 @@ import com.au.unimelb.comp90020.framework.util.Settings;
  * @author achaves
  *
  */
-public class MultiPlayerProperties {
+public class Process {
+	
+	public enum ProcessState {RELEASED,WANTED,HELD};
+	
 	private int numberOfPlayers;
 	private Map<String, Long> players;
 	private Long myId;
 	private Long minId;
+	private ProcessState state;
+	GameMulticastPeer peer;
 	
-	public MultiPlayerProperties(){
+	public Process(GameMulticastPeer peer){
 		this.numberOfPlayers = 1;
 		this.players = new HashMap<String, Long>();
 		this.myId = Settings.getPID();
 		this.minId = 1000000L;
+		this.peer = peer;
 	}
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
@@ -64,6 +70,33 @@ public class MultiPlayerProperties {
 	public Long getMyId() {
 		// TODO Auto-generated method stub
 		return myId;
+	}
+	public ProcessState getMyState() {
+		return state;
+	}
+
+	public void setState(ProcessState state) {
+		this.state = state;
+	}
+	public void broadcastMsg(String tag, int msg) {
+/*		for (int i = 0; i < N; i++)
+			if (i != myId)
+				sendMsg(i, tag, msg);*/
+	}
+	public void sendMsg(int destId, String tag, String msg) {
+/*		Util.println("Sending msg to " + destId + ":" + tag + " " + msg);
+		comm.sendMsg(destId, tag, msg);*/
+	}
+	public void sendMsg(int destId, String tag, int msg) {
+		sendMsg(destId, tag, String.valueOf(msg) + " ");
+	}
+
+	public synchronized void myWait() {
+		try {
+			wait();
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}
 	}
 	
 }
