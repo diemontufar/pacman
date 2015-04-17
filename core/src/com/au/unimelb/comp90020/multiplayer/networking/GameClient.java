@@ -30,9 +30,9 @@ public class GameClient extends Thread{
 	    //create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 		SocketHints socketHints = new SocketHints();
 	    // Socket will time our in 4 seconds
-	    socketHints.connectTimeout = 4000;
+	    socketHints.connectTimeout = Settings.CONN_TIMEOUT;
 
-		socket = Gdx.net.newClientSocket(Protocol.TCP, "localhost", 3030, socketHints);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, Settings.PORT, socketHints);
 	}
 	@Override
 	public void run() {

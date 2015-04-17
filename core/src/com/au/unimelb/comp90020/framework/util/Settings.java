@@ -16,6 +16,12 @@ public class Settings {
 	public static boolean musicEnabled = true;
 	public static boolean soundEnabled = true;
 	
+	/*Networking configurations */
+	public static final int PORT = 3030;
+	public static final String PEER_ADDRESS = "localhost";
+	public static final String GROUP_ADDRESS = "224.0.0.3";
+	public static final int CONN_TIMEOUT = 4000;
+	
 	public static long getPID() {
 	    String processName =
 	      java.lang.management.ManagementFactory.getRuntimeMXBean().getName();

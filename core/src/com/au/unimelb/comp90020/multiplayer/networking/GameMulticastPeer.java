@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.screens.GameScreen;
 import com.badlogic.gdx.net.Socket;
@@ -23,14 +24,13 @@ public class GameMulticastPeer extends Thread{
 	MulticastSocket socket = null;
 	
 	InetAddress group;
-	int port = 3030;
 	
 	private Map<MessageType, ArrayList<MessageListener>> listeners;
 
 	public GameMulticastPeer() throws IOException{
 		this.listeners = new HashMap<MessageType, ArrayList<MessageListener>>();
-		socket = new MulticastSocket(3030);
-		group = InetAddress.getByName("224.0.0.3");
+		socket = new MulticastSocket(Settings.PORT);
+		group = InetAddress.getByName(Settings.GROUP_ADDRESS);
 		socket.joinGroup(group);
 	}
 	
@@ -57,7 +57,7 @@ public class GameMulticastPeer extends Thread{
 		String msg = message.toProtocolString();
 		System.out.println("SEND>"+msg);
 		byte[] m = (msg).getBytes();
-		DatagramPacket messageOut =  new DatagramPacket(m,  m.length, group, port);
+		DatagramPacket messageOut =  new DatagramPacket(m,  m.length, group, Settings.PORT);
 		try {
 			socket.send(messageOut);
 		} catch (IOException e) {

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -35,7 +36,7 @@ public class GameServer extends Thread{
 	public void init(){
 		ServerSocketHints serverSocketHint = new ServerSocketHints();
 		serverSocketHint.acceptTimeout = 0;
-		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, 3030, serverSocketHint);
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, Settings.PORT, serverSocketHint);
 	}
 	public void registerListener(MessageType type, MessageListener ml){
 		if (this.listeners.get(type)==null){
