@@ -60,7 +60,7 @@ public class GameServer extends Thread{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            new GameServerThread(socket,this).start();
+            //new GameServerThread(socket,this).start();
 		}
 	}
 	public void sendMessage(String address, Message message){

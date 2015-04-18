@@ -15,11 +15,11 @@ import com.badlogic.gdx.net.Socket;
  */
 public class GameServerThread extends Thread {
 	Socket socket;
-	GameServer server;
+	GameMulticastPeer server;
 
-	public GameServerThread(Socket socket, GameServer gs) {
+	public GameServerThread(Socket socket, GameMulticastPeer gameMulticastPeer) {
 		this.socket = socket;
-		this.server = gs;
+		this.server = gameMulticastPeer;
 	}
 
 	@Override

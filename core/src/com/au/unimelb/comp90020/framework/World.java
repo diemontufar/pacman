@@ -245,6 +245,7 @@ public class World implements MessageListener {
 	private void updatePacman(float deltaTime,Movement move) {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		pacman.update(deltaTime,move);
+		
 		if ( this.screen.game.mode == MultiplayerMode.multicast && move!=Movement.NONE ){
 			StringBuilder sb = new StringBuilder();
 			toPositionString(sb,String.valueOf(this.screen.mp.getMyId()),pacman);

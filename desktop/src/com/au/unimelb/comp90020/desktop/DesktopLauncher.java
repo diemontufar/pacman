@@ -12,6 +12,8 @@ public class DesktopLauncher {
 		config.title = "Collaborative PacMan - Distributed Algorithms";
 		config.height = Settings.TARGET_HEIGHT;
 		config.width = Settings.TARGET_WIDTH;
+		config.backgroundFPS = 25;
+		config.foregroundFPS = 25;
 		
 		if (arg.length == 0){
 		      new LwjglApplication(new PacManGame(MultiplayerMode.none), config);
