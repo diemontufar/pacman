@@ -197,6 +197,8 @@ public class World implements MessageListener {
 				sb.append(currentX);
 				sb.append(",");
 				sb.append(currentY);
+				sb.append(",");
+				sb.append(score);
 				Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);
 				this.screen.game.peer.sendMessage(m);
 			}	
@@ -353,6 +355,7 @@ public class World implements MessageListener {
 				//I HAVE TO DO THIS TO AVOID LOCK
 				Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
 				if (cell!=null)cell.setTile(null);
+				score = Integer.valueOf(movements[3]);
 			}
 		}
 
