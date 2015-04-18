@@ -188,6 +188,7 @@ public class World implements MessageListener {
 
 	private void checkEaten(float currentX, float currentY) {
 		if (isCellFood(currentX, currentY)){
+			screen.game.lock.requestCS();
 			removeFood(currentX, currentY);
 			if ( this.screen.game.mode == MultiplayerMode.multicast ){
 				StringBuilder sb = new StringBuilder();
@@ -199,6 +200,7 @@ public class World implements MessageListener {
 				Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);
 				this.screen.game.peer.sendMessage(m);
 			}	
+			screen.game.lock.releaseCS();
 		}
 	}
 
@@ -207,13 +209,12 @@ public class World implements MessageListener {
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
-	private boolean removeFood(float x, float y) {
-		screen.game.lock.requestCS();
+	private boolean removeFood(float x, float y) {		
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
 		cell.setTile(null);
 		this.score++;
 		this.dots_eaten++;
-		screen.game.lock.releaseCS();
+		
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
