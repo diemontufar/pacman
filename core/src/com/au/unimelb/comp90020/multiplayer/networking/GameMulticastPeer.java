@@ -22,6 +22,7 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * @author achaves
@@ -33,28 +34,29 @@ public class GameMulticastPeer extends Thread{
 	
 	InetAddress group;
 
+	int serverPort;
+	int clientPort;
 	private Map<String,Socket> clients;
 	private Map<MessageType, ArrayList<MessageListener>> listeners;
 
-	public GameMulticastPeer() throws IOException{
+	public GameMulticastPeer(int serverPort, int clientPort) throws IOException{
 		this.listeners = new HashMap<MessageType, ArrayList<MessageListener>>();
 		this.clients = new HashMap<String,Socket>();
+		this.serverPort = serverPort;
+		this.clientPort = clientPort;
 	}
 	public void init(){		
-		SocketHints socketHints = new SocketHints();
 		// Socket Server 
 		ServerSocketHints serverSocketHint = new ServerSocketHints();
 		serverSocketHint.acceptTimeout = 0;
-		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, Settings.PORT, serverSocketHint);
-	    // Socket Client
-	    socketHints.connectTimeout = Settings.CONN_TIMEOUT;
-		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, Settings.PORT, socketHints);
+		serverSocket = Gdx.net.newServerSocket(Protocol.TCP, this.serverPort, serverSocketHint);
 	}
 
 	@Override
 	public void run(){
 		init();
 	    	Long pid = Settings.getPID();
+
 	        // write our entered message to the stream
 	        while (true){
 				Socket socket = serverSocket.accept(null);
@@ -71,6 +73,22 @@ public class GameMulticastPeer extends Thread{
 	            new GameServerThread(socket,this).start();
 	        }
 	}
+	public void startClient(){
+	    // Socket Client
+		SocketHints socketHints = new SocketHints();
+	    socketHints.connectTimeout = Settings.CONN_TIMEOUT;
+	    boolean isConnected = false;
+	    while (!isConnected){
+	    	try{	    
+	    		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, clientPort, socketHints);
+	    		isConnected = true;
+	    	}
+	    	catch(GdxRuntimeException e){
+	    		
+	    	}
+	    }
+	}
+
 	public void sendMessage(Message message){
         try {
         	String msg = message.toProtocolString();

@@ -43,10 +43,11 @@ public class PacManGame extends Game {
 		Assets.load();
 		
 		////
-		if (mode == MultiplayerMode.multicast){
+		if (mode == MultiplayerMode.client){
 			try {
-				peer =  new GameMulticastPeer();
+				peer =  new GameMulticastPeer(3031,3030);
 				peer.start();
+				peer.startClient();
 				
 				lock = new RAMutex(peer);
 				peer.registerListener(MessageType.LOCK_REQUEST, lock);
@@ -58,6 +59,31 @@ public class PacManGame extends Game {
 				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
 				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
+				
+				peer.sendMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
+				setScreen(gs);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+		}
+		if (mode == MultiplayerMode.multicast){
+			try {
+				peer =  new GameMulticastPeer(Settings.PORT,3031);
+				peer.start();
+				peer.startClient();
+				
+				lock = new RAMutex(peer);
+				peer.registerListener(MessageType.LOCK_REQUEST, lock);
+				peer.registerListener(MessageType.LOCK_REPLY, lock);
+				
+				GameScreen gs = new GameScreen(PacManGame.this);
+				peer.registerListener(MessageType.JOIN, gs);
+				peer.registerListener(MessageType.PEERS, gs);
+				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
+				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
+				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
+				
 				peer.sendMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
 				setScreen(gs);
 			} catch (IOException e) {
