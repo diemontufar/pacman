@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 		///
 		mp = (Process)game.lock;
-		mp.addPlayer(String.valueOf(Settings.getPID()), Settings.getPID());
+		mp.addPlayer(Settings.getPID(),"localhost");
 		///
 
 		worldListener = new WorldListener() {
@@ -295,18 +295,20 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 				String pid = m.getBody().split(",")[0];
 				System.out.println("PID: "+pid);
 				Long pidL = Long.valueOf(pid);
-				if (pidL!=Settings.getPID() && !mp.getPlayers().values().contains(pidL)){
+				if (pidL!=Settings.getPID() && !mp.getPlayers().containsKey(pidL)){
 					world.addPacman(pidL);
 
-					mp.addPlayer(String.valueOf(pidL), pidL);
+					mp.addPlayer(pidL, m.getAddress());
+					//Answer the JOIN with my curr address
+					game.peer.sendMessage(m.getAddress(),new Message("localhost",String.valueOf(Settings.getPID()), MessageType.JOIN));
 					//Multicast the current table					
-					StringBuilder sb = new StringBuilder();
-					for ( Long value : mp.getPlayers().values() ){
-						sb.append(value);
-						sb.append(",");
-					}
-					sb.deleteCharAt(sb.length()-1);
-					game.peer.sendMessage(new Message("localhost",sb.toString(),MessageType.PEERS));
+					//StringBuilder sb = new StringBuilder();
+					//for ( Long value : mp.getPlayers().keySet() ){
+					//	sb.append(value);
+					//	sb.append(",");
+					//}
+					//sb.deleteCharAt(sb.length()-1);
+					//game.peer.broadcastMessage(new Message("localhost",sb.toString(),MessageType.PEERS));
 				}
 			}
 			//world.setControlledPacman(1L);
@@ -315,9 +317,9 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 				String[] pids = m.getBody().split(",");
 				for(String pid : pids){
 					Long pidL = Long.valueOf(pid);
-					if (pidL!=Settings.getPID() && !mp.getPlayers().values().contains(pidL)){
+					if (pidL!=Settings.getPID() && !mp.getPlayers().containsKey(pidL)){
 						world.addPacman(pidL);
-						mp.addPlayer(String.valueOf(pidL), pidL);
+						mp.addPlayer(pidL,m.getAddress());
 					}
 				}			
 			}

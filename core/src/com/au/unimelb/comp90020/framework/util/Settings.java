@@ -20,7 +20,7 @@ public class Settings {
 	public static final int PORT = 3030;
 	
 	//public static final String PEER_ADDRESS = "10.9.185.51";
-	public static final String PEER_ADDRESS = "10.9.201.94";
+	public static final String PEER_ADDRESS = "localhost";
 	public static final String GROUP_ADDRESS = "224.0.0.3";
 	public static final int CONN_TIMEOUT = 20000;
 	

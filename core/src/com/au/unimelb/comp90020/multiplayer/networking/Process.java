@@ -3,6 +3,7 @@
  */
 package com.au.unimelb.comp90020.multiplayer.networking;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class Process {
 	public enum ProcessState {RELEASED,WANTED,HELD};
 	
 	private int numberOfPlayers;
-	private Map<String, Long> players;
+	private Map<Long, String> players;
 	protected Long myId;
 	private Long minId;
 	private ProcessState state;
@@ -28,7 +29,7 @@ public class Process {
 	
 	public Process(GameMulticastPeer peer){
 		this.numberOfPlayers = 0;
-		this.players = new HashMap<String, Long>();
+		this.players = new HashMap<Long, String>();
 		this.myId = Settings.getPID();
 		this.minId = 1000000L;
 		this.peer = peer;
@@ -39,18 +40,18 @@ public class Process {
 	public void setNumberOfPlayers(int numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 	}
-	public Map<String, Long> getPlayers() {
+	public Map<Long, String> getPlayers() {
 		return players;
 	}
-	public Set<String> getPlayerAdresses() {
-		return players.keySet();
+	public Collection<String> getPlayerAdresses() {
+		return players.values();
 	}
 
-	public void setPlayers(Map<String, Long> players) {
+	public void setPlayers(Map<Long, String> players) {
 		this.players = players;
 	}
-	public void addPlayer(String address, Long pid) {
-		players.put(address, pid);
+	public void addPlayer(Long pid, String address) {
+		players.put(pid, address);
 		if (pid<minId){
 			minId = pid;
 		}
@@ -58,7 +59,7 @@ public class Process {
 	}
 	public String getPlayerIds() {
 		StringBuffer sb = new StringBuffer();
-		for (String key : this.players.keySet()){
+		for (Long key : this.players.keySet()){
 			sb.append(players.get(key));
 			sb.append(",");
 		}
@@ -85,7 +86,7 @@ public class Process {
 		sb.append(",");
 		sb.append(msg);
 		Message m = new Message("localhost", sb.toString(), type);
-		peer.sendMessage(m);
+		peer.broadcastMessage(m);
 	}
 	public void sendMsg(Long destId, MessageType type, int msg) {
 		StringBuilder sb = new StringBuilder();
@@ -93,7 +94,8 @@ public class Process {
 		sb.append(",");
 		sb.append(msg);
 		Message m = new Message(String.valueOf(myId), sb.toString(), type);
-		peer.sendMessage(m);
+		
+		peer.sendMessage(players.get(destId),m);
 	}
 
 	public synchronized void myWait() {

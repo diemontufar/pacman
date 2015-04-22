@@ -29,21 +29,25 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  */
 public class GameMulticastPeer extends Thread{
-	Socket socket;
 	ServerSocket serverSocket;
 	
 	InetAddress group;
 
 	int serverPort;
 	int clientPort;
+	int clientPort2; 
+	
+	private Map<String,Socket> serverClients;
 	private Map<String,Socket> clients;
 	private Map<MessageType, ArrayList<MessageListener>> listeners;
 
-	public GameMulticastPeer(int serverPort, int clientPort) throws IOException{
+	public GameMulticastPeer(int serverPort, int clientPort, int clientPort2) throws IOException{
 		this.listeners = new HashMap<MessageType, ArrayList<MessageListener>>();
+		this.serverClients = new HashMap<String,Socket>();
 		this.clients = new HashMap<String,Socket>();
 		this.serverPort = serverPort;
 		this.clientPort = clientPort;
+		this.clientPort2 = clientPort2;
 	}
 	public void init(){		
 		// Socket Server 
@@ -61,37 +65,68 @@ public class GameMulticastPeer extends Thread{
 	        while (true){
 				Socket socket = serverSocket.accept(null);
 				 // Read data from the socket into a BufferedReader
-	            BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
-	            clients.put(socket.getRemoteAddress(),socket);
-	            try {            	
-	            	String line = buffer.readLine();
-	                System.out.println(socket.getRemoteAddress()+" Says "+line);
-	                processMessage(socket.getRemoteAddress(),line);
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
+				serverClients.put(socket.getRemoteAddress(),socket);
+	            //BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream())); 	            
+	            //try {            	
+	            //	String line = buffer.readLine();
+	            //    System.out.println(socket.getRemoteAddress()+" Says "+line);
+	            //    processMessage(socket.getRemoteAddress(),line);
+	            //} catch (IOException e) {
+	            //    e.printStackTrace();
+	            //}
 	            new GameServerThread(socket,this).start();
 	        }
 	}
-	public void startClient(){
+	public void startClients(){
 	    // Socket Client
 		SocketHints socketHints = new SocketHints();
 	    socketHints.connectTimeout = Settings.CONN_TIMEOUT;
 	    boolean isConnected = false;
 	    while (!isConnected){
+	    	Socket socket = null;
 	    	try{	    
+	    		System.out.println("Trying to connect to: "+Settings.PEER_ADDRESS+":"+clientPort);
 	    		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, clientPort, socketHints);
 	    		isConnected = true;
+	    		clients.put(socket.getRemoteAddress(), socket);
+	    		new GameServerThread(socket,this).start();
 	    	}
 	    	catch(GdxRuntimeException e){
-	    		
+	    		try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	    	}
 	    }
+	    isConnected = false;
+	    while (!isConnected){
+	    	Socket socket = null;
+	    	try{	    
+	    		System.out.println("Trying to connect to: "+Settings.PEER_ADDRESS+":"+clientPort2);
+	    		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, clientPort2, socketHints);
+	    		isConnected = true;
+	    		clients.put(socket.getRemoteAddress(), socket);
+	    		new GameServerThread(socket,this).start();
+	    	}
+	    	catch(GdxRuntimeException e){
+	    		try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	    	}
+	    }
+
 	}
 
-	public void sendMessage(Message message){
+	public void sendMessage(String address,Message message){
         try {
         	String msg = message.toProtocolString();
+        	System.out.println("SENDING > "+msg+"TO: "+address+" Keys:"+serverClients.keySet());
+        	Socket socket = serverClients.get(address)!=null?serverClients.get(address):clients.get(address);        	
         	System.out.println("SEND > "+msg);
 			socket.getOutputStream().write((msg+"\n").getBytes());
 		} catch (IOException e) {
@@ -99,7 +134,7 @@ public class GameMulticastPeer extends Thread{
 		}
 	}
 	void processMessage(String address, String line) {
-      System.out.println("RECV<"+line);
+      System.out.println("RECV "+address+"<"+line);
 
 		String mType = line.substring(0, line.indexOf(","));
 		String body = line.substring(line.indexOf(",")+1);
@@ -142,8 +177,46 @@ public class GameMulticastPeer extends Thread{
 		this.listeners.get(type).add(ml);
 	}
 
-	public void sendJoin() {
-		// TODO Auto-generated method stub
+	public void sendJoin(Message message) {
+		for (Socket s : clients.values()){
+			String msg = message.toProtocolString();
+        	System.out.println("SEND "+s.getRemoteAddress()+"> "+msg);
+			try {
+				s.getOutputStream().write((msg+"\n").getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		}
+	}
+	public void broadcastMessage(Message message) {
+		for (Socket s : clients.values()){
+			String msg = message.toProtocolString();
+        	System.out.println("BSEND > "+msg);
+			try {
+				s.getOutputStream().write((msg+"\n").getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
+	}
+	public void printRouteTable(Long myId) {
+		System.out.println("---------------------------------------------_");
+		System.out.println("Routing table: "+myId);
+		System.out.println("---------------------------------------------_");
+		System.out.println("Client Sockets ");
+		
+		for (String key:clients.keySet()){
+			Socket s = clients.get(key);
+			System.out.println(key+":"+s.getRemoteAddress());
+		}
+		System.out.println("Server Sockets ");
+		for (String key:serverClients.keySet()){
+			Socket s = serverClients.get(key);
+			System.out.println(key+":"+s.getRemoteAddress());
+		}
 	}
 }

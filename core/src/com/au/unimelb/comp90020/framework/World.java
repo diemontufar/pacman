@@ -200,7 +200,7 @@ public class World implements MessageListener {
 				sb.append(",");
 				sb.append(score);
 				Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);
-				this.screen.game.peer.sendMessage(m);
+				this.screen.game.peer.broadcastMessage(m);
 			}	
 			screen.game.lock.releaseCS();
 		}
@@ -253,7 +253,7 @@ public class World implements MessageListener {
 			StringBuilder sb = new StringBuilder();
 			toPositionString(sb,String.valueOf(this.screen.mp.getMyId()),pacman);
 			Message m = new Message("localhost", sb.toString(), MessageType.PACMAN_MOVEMENT);
-			this.screen.game.peer.sendMessage(m);
+			this.screen.game.peer.broadcastMessage(m);
 		}
 	}
 
@@ -278,10 +278,7 @@ public class World implements MessageListener {
 			sb.append(",");
 			toPositionString(sb,"INKY",this.inky);
 			Message m = new Message("localhost", sb.toString(), MessageType.GHOST_MOVEMENT);
-			for ( String address:this.screen.mp.getPlayerAdresses() ){
-				if (!address.equals("localhost"))
-				this.screen.game.peer.sendMessage(m);
-			}
+			this.screen.game.peer.broadcastMessage(m);
 		}
 	}
 
