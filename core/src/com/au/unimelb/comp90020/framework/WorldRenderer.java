@@ -25,7 +25,6 @@ public class WorldRenderer {
 	OrthographicCamera cam;
 	SpriteBatch batch;
 	TiledMapRenderer tiledMapRenderer;
-	TextureRegion oldPacmanDirection;
 	
 
 	/**
@@ -43,7 +42,6 @@ public class WorldRenderer {
         this.cam.update();
 		this.batch = batch;
         this.tiledMapRenderer = new OrthogonalTiledMapRenderer(this.world.map);
-        this.oldPacmanDirection = Assets.pacman_looking_right_1;
 	}
 
 	/**
@@ -97,52 +95,48 @@ public class WorldRenderer {
 
 		if (pacman.getCurrentState() == Movement.RIGTH){
 			if (pacman.getStateTime() > 0.5f){
-				currentKeyFrame = Assets.pacmanRight.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				currentKeyFrame = pacman.getPacmanAnimation()[3].getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
 				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH / 2,
 						Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, 
 						Pacman.PACMAN_HEIGHT,1f,1f,90f,false); //rotate to the right
 			}
-			oldPacmanDirection = Assets.pacman_looking_right_1;
 		}
 		
 		if (pacman.getCurrentState() == Movement.LEFT){
 			if (pacman.getStateTime() > 0.5f){
-				currentKeyFrame = Assets.pacmanLeft.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				currentKeyFrame = pacman.getPacmanAnimation()[2].getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
 				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, 
 						Pacman.PACMAN_HEIGHT);
 			}
-			oldPacmanDirection = Assets.pacman_looking_left_1;
 		}
 		
 		if (pacman.getCurrentState() == Movement.UP){
 			if (pacman.getStateTime() > 0.5f){
-				currentKeyFrame = Assets.pacmanUp.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				currentKeyFrame = pacman.getPacmanAnimation()[0].getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
 				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH / 2,
 						Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, 
 						Pacman.PACMAN_HEIGHT,1f,1f,180f,false);
 			}
-			oldPacmanDirection = Assets.pacman_looking_up_1;
 		}
 		
 		if (pacman.getCurrentState() == Movement.DOWN){
 			if (pacman.getStateTime() > 0.5f){
-				currentKeyFrame = Assets.pacmanDown.getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
+				currentKeyFrame = pacman.getPacmanAnimation()[1].getKeyFrame(pacman.getStateTime(), Animation.ANIMATION_LOOPING);	
 				batch.draw(currentKeyFrame, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH / 2,
 						Pacman.PACMAN_HEIGHT / 2,
 						Pacman.PACMAN_WIDTH, 
 						Pacman.PACMAN_HEIGHT,1f,1f,180,true);
 			}
-			oldPacmanDirection = Assets.pacman_looking_down_1;
 		}
 		
 		if (pacman.getCurrentState() == Movement.NONE){
-			batch.draw(oldPacmanDirection, pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
+			batch.draw(pacman.getDefaultDirection(), pacman.position.x - Pacman.PACMAN_WIDTH / 2, pacman.position.y - Pacman.PACMAN_HEIGHT / 2,
 					Pacman.PACMAN_WIDTH, 
 					Pacman.PACMAN_HEIGHT);
 		}

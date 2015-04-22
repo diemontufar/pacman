@@ -9,12 +9,14 @@ import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.actors.Ghost;
 import com.au.unimelb.comp90020.actors.Pacman;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
+import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.screens.GameScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -73,7 +75,12 @@ public class World implements MessageListener {
 		this.objectsLayer  = this.map.getLayers().get("Objects").getObjects();
 		this.pacmans = new HashMap<Long,Pacman>();
 		this.controlledPacman = Settings.getPID();
-		this.pacmans.put(this.controlledPacman,new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
+		Animation[] myAnimation = new Animation[4];
+		TextureRegion myDefaultTextureRegion;
+		myAnimation[0]=Assets.p1_pacmanUp;myAnimation[1]=Assets.p1_pacmanDown;
+		myAnimation[2]=Assets.p1_pacmanLeft;myAnimation[3]=Assets.p1_pacmanRight;
+		myDefaultTextureRegion = Assets.p1_pacman_looking_right_1;
+		this.pacmans.put(this.controlledPacman,new Pacman(Settings.PAC_INITIAL_POS_X,Settings.PAC_INITIAL_POS_Y,myAnimation,myDefaultTextureRegion,wallsLayer)); 
 		createGhosts();
 		createDots();
 		this.score = 0;
@@ -290,9 +297,36 @@ public class World implements MessageListener {
 		sb.append(ghost.position.y);
 	}
 
-	public void addPacman(Long pid) {
+	public synchronized void addPacman(Long pid) {
+		Animation[] myAnimation = new Animation[4];
+		TextureRegion myDefaultTextureRegion;
 		int x = (this.pacmans.values().size())*20;
-		this.pacmans.put(pid,new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,wallsLayer)); 
+		
+		int numPacmans = this.pacmans.values().size()+1;
+		
+		switch(numPacmans){
+			case 2:
+				myAnimation[0]=Assets.p2_pacmanUp;myAnimation[1]=Assets.p2_pacmanDown;
+				myAnimation[2]=Assets.p2_pacmanLeft;myAnimation[3]=Assets.p2_pacmanRight;
+				myDefaultTextureRegion = Assets.p2_pacman_looking_right_1;
+				break;
+			case 3:
+				myAnimation[0]=Assets.p3_pacmanUp;myAnimation[1]=Assets.p3_pacmanDown;
+				myAnimation[2]=Assets.p3_pacmanLeft;myAnimation[3]=Assets.p3_pacmanRight;
+				myDefaultTextureRegion = Assets.p3_pacman_looking_right_1;
+				break;
+			case 4:
+				myAnimation[0]=Assets.p4_pacmanUp;myAnimation[1]=Assets.p4_pacmanDown;
+				myAnimation[2]=Assets.p4_pacmanLeft;myAnimation[3]=Assets.p4_pacmanRight;
+				myDefaultTextureRegion = Assets.p4_pacman_looking_right_1;
+				break;
+			default:
+				myAnimation[0]=Assets.p1_pacmanUp;myAnimation[1]=Assets.p1_pacmanDown;
+				myAnimation[2]=Assets.p1_pacmanLeft;myAnimation[3]=Assets.p1_pacmanRight;
+				myDefaultTextureRegion = Assets.p1_pacman_looking_right_1;
+				break;
+		}
+		this.pacmans.put(pid,new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,myAnimation,myDefaultTextureRegion,wallsLayer)); 
 	}
 
 	public void setControlledPacman(Long pacmanIdx) {
