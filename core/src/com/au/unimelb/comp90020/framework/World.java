@@ -359,4 +359,9 @@ public class World implements MessageListener {
 
 	}
 
+	public void removePacman(Long key) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -105,5 +105,17 @@ public class Process {
 			System.err.println(e);
 		}
 	}
+	public void removePlayer(Long key) {
+		players.remove(key);
+		this.numberOfPlayers--;
+		long minId = 0;
+		for (Long pid : this.players.keySet()){
+			if (minId == 0)
+				minId = pid;
+			else if (pid<minId)
+				minId = pid;
+		}
+		this.minId = minId;
+	}
 	
 }

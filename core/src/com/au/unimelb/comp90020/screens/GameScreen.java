@@ -1,5 +1,7 @@
 package com.au.unimelb.comp90020.screens;
 
+import java.util.Map.Entry;
+
 import com.au.unimelb.comp90020.PacManGame;
 import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
@@ -311,8 +313,6 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 					//game.peer.broadcastMessage(new Message("localhost",sb.toString(),MessageType.PEERS));
 				}
 			}
-			//world.setControlledPacman(1L);
-
 			if(m.getType() == MessageType.PEERS){
 				String[] pids = m.getBody().split(",");
 				for(String pid : pids){
@@ -323,6 +323,20 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 					}
 				}			
 			}
+		}
+		if(m.getType() == MessageType.DISCONNECT){
+			boolean foundIt = false;
+			for(Entry<Long, String> address : mp.getPlayers().entrySet()){
+				if (address.getValue().equals(m.getAddress())){
+					System.out.println("PID: "+address.getKey()+" Died");
+					world.removePacman(address.getKey());
+					mp.removePlayer(address.getKey());
+					foundIt = true;
+					break;
+				}
+			}
+			if (!foundIt)				
+				System.out.println("not found!:"+m.getAddress());
 		}
 	}
 }
