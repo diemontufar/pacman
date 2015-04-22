@@ -29,6 +29,10 @@ public class Assets {
 	//public static Texture items; //Main Texture with game sprites
 	public static Texture itemsPacman; //Main Texture with game sprites
 	public static Texture itemsPacman2; //Main Texture with game sprites
+	public static Texture itemsPacman3; //Main Texture with game sprites
+	public static Texture itemsPacman4; //Main Texture with game sprites
+	public static Texture itemsPacman5; //Main Texture with game sprites
+	
 
 	/*Message Screens*/
 	public static TextureRegion errorMessage;
@@ -46,19 +50,18 @@ public class Assets {
 	public static TextureRegion pauseMenu;
 	
 	/*Here declare game Textures*/
-	public static TextureRegion pacman_looking_right_1;
-	public static TextureRegion pacman_looking_right_2;
-	public static TextureRegion pacman_looking_right_3;
-	public static TextureRegion pacman_looking_left_1;
-	public static TextureRegion pacman_looking_left_2;
-	public static TextureRegion pacman_looking_left_3;
-	public static TextureRegion pacman_looking_up_1;
-	public static TextureRegion pacman_looking_up_2;
-	public static TextureRegion pacman_looking_up_3;
-	public static TextureRegion pacman_looking_down_1;
-	public static TextureRegion pacman_looking_down_2;
-	public static TextureRegion pacman_looking_down_3;
-	public static TextureRegion green_pacman;
+	public static TextureRegion p1_pacman_looking_right_1,p2_pacman_looking_right_1,p3_pacman_looking_right_1,p4_pacman_looking_right_1;
+	public static TextureRegion p1_pacman_looking_right_2,p2_pacman_looking_right_2,p3_pacman_looking_right_2,p4_pacman_looking_right_2;
+	public static TextureRegion p1_pacman_looking_right_3,p2_pacman_looking_right_3,p3_pacman_looking_right_3,p4_pacman_looking_right_3;
+	public static TextureRegion p1_pacman_looking_left_1,p2_pacman_looking_left_1,p3_pacman_looking_left_1,p4_pacman_looking_left_1;
+	public static TextureRegion p1_pacman_looking_left_2,p2_pacman_looking_left_2,p3_pacman_looking_left_2,p4_pacman_looking_left_2;
+	public static TextureRegion p1_pacman_looking_left_3,p2_pacman_looking_left_3,p3_pacman_looking_left_3,p4_pacman_looking_left_3;
+	public static TextureRegion p1_pacman_looking_up_1,p2_pacman_looking_up_1,p3_pacman_looking_up_1,p4_pacman_looking_up_1;
+	public static TextureRegion p1_pacman_looking_up_2,p2_pacman_looking_up_2,p3_pacman_looking_up_2,p4_pacman_looking_up_2;
+	public static TextureRegion p1_pacman_looking_up_3,p2_pacman_looking_up_3,p3_pacman_looking_up_3,p4_pacman_looking_up_3;
+	public static TextureRegion p1_pacman_looking_down_1,p2_pacman_looking_down_1,p3_pacman_looking_down_1,p4_pacman_looking_down_1;
+	public static TextureRegion p1_pacman_looking_down_2,p2_pacman_looking_down_2,p3_pacman_looking_down_2,p4_pacman_looking_down_2;
+	public static TextureRegion p1_pacman_looking_down_3,p2_pacman_looking_down_3,p3_pacman_looking_down_3,p4_pacman_looking_down_3;
 	public static TextureRegion blinky,pinky,inky,clyde;
 	
 	
@@ -88,10 +91,10 @@ public class Assets {
 	public static BitmapFont font;
 
 	/* Animations */
-	public static Animation pacmanRight;
-	public static Animation pacmanLeft;
-	public static Animation pacmanUp;
-	public static Animation pacmanDown;
+	public static Animation p1_pacmanRight,p2_pacmanRight,p3_pacmanRight,p4_pacmanRight;
+	public static Animation p1_pacmanLeft,p2_pacmanLeft,p3_pacmanLeft,p4_pacmanLeft;
+	public static Animation p1_pacmanUp,p2_pacmanUp,p3_pacmanUp,p4_pacmanUp;
+	public static Animation p1_pacmanDown,p2_pacmanDown,p3_pacmanDown,p4_pacmanDown;
 	
 	/* Sounds & Music */
 	public static Music music;
@@ -124,25 +127,6 @@ public class Assets {
 
 	public static void load() {
 		
-		/*Here declare screen backgrounds*/
-		//defaultBackground = loadTexture("backgrounds/screens/default_background.png");
-		//defaultScreen = new TextureRegion(defaultBackground, 0, 0, 800, 1280);
-		
-//		menuBackground = loadTexture("backgrounds/screens/screen_menu.png");
-//		menuScreen = new TextureRegion(menuBackground, 0, 0, 800, 1280);
-//		
-//		splashBackground = loadTexture("backgrounds/screens/screen_splash.png");
-//		splashScreen = new TextureRegion(splashBackground, 0, 0, 800, 1280);
-//		
-//		background = loadTexture("backgrounds/background.png");
-//		gameBackground = new TextureRegion(background, 0, 0, 800, 1280);
-//		
-//		errorMessageB = loadTexture("backgrounds/errorBackground.png");
-//		errorMessage = new TextureRegion(errorMessageB, 0, 0, 800, 1280);
-//		
-//		infoMessageB = loadTexture("backgrounds/infoBackground.png");
-//		infoMessage = new TextureRegion(infoMessageB, 0, 0, 800, 1280);
-		
 		readyBackground = loadTexture("backgrounds/ready.png");
 		readyMessage = new TextureRegion(readyBackground, 0, 0, 896, 1080);
 		
@@ -159,70 +143,107 @@ public class Assets {
 		/*Here you should put all textures that comes from items.png*/
 		itemsPacman = loadTexture("textures/ChomperSprites.png");
 		itemsPacman2 = loadTexture("PacMan.png");
+		itemsPacman3 = loadTexture("PacMan2.png");
+		itemsPacman4 = loadTexture("PacMan3.png");
+		itemsPacman5 = loadTexture("PacMan4.png");
 		
-		pacman_looking_right_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
-		pacman_looking_right_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
-		pacman_looking_right_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		/* Player 1 */
+		p1_pacman_looking_right_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);
+		p1_pacman_looking_right_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		p1_pacman_looking_right_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
 		
-		pacman_looking_left_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
-		pacman_looking_left_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
-		pacman_looking_left_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		p1_pacman_looking_left_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);
+		p1_pacman_looking_left_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		p1_pacman_looking_left_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
 		
-		pacman_looking_up_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
-		pacman_looking_up_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
-		pacman_looking_up_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		p1_pacman_looking_up_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);
+		p1_pacman_looking_up_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		p1_pacman_looking_up_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
 		
-		pacman_looking_down_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);;
-		pacman_looking_down_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
-		pacman_looking_down_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
+		p1_pacman_looking_down_1 = new TextureRegion(itemsPacman2, 0, 48, 32, 32);
+		p1_pacman_looking_down_2 = new TextureRegion(itemsPacman2, 32, 48, 32, 32);
+		p1_pacman_looking_down_3 = new TextureRegion(itemsPacman2, 96, 48, 32, 32);
 		
 
-		pacmanRight = new Animation(1/3f, pacman_looking_right_1, pacman_looking_right_2, pacman_looking_right_3);
-		pacmanLeft = new Animation(1/3f, pacman_looking_left_1, pacman_looking_left_2,pacman_looking_left_3);
-		pacmanUp = new Animation(1/3f, pacman_looking_up_1, pacman_looking_up_2,pacman_looking_up_3);
-		pacmanDown = new Animation(1/3f, pacman_looking_down_1, pacman_looking_down_2,pacman_looking_down_3);
+		p1_pacmanRight = new Animation(1/3f, p1_pacman_looking_right_1, p1_pacman_looking_right_2, p1_pacman_looking_right_3);
+		p1_pacmanLeft = new Animation(1/3f, p1_pacman_looking_left_1, p1_pacman_looking_left_2,p1_pacman_looking_left_3);
+		p1_pacmanUp = new Animation(1/3f, p1_pacman_looking_up_1, p1_pacman_looking_up_2,p1_pacman_looking_up_3);
+		p1_pacmanDown = new Animation(1/3f, p1_pacman_looking_down_1, p1_pacman_looking_down_2,p1_pacman_looking_down_3);
+		
+		/* Player 2 */
+		p2_pacman_looking_right_1 = new TextureRegion(itemsPacman3, 0, 48, 32, 32);
+		p2_pacman_looking_right_2 = new TextureRegion(itemsPacman3, 32, 48, 32, 32);
+		p2_pacman_looking_right_3 = new TextureRegion(itemsPacman3, 96, 48, 32, 32);
+		
+		p2_pacman_looking_left_1 = new TextureRegion(itemsPacman3, 0, 48, 32, 32);
+		p2_pacman_looking_left_2 = new TextureRegion(itemsPacman3, 32, 48, 32, 32);
+		p2_pacman_looking_left_3 = new TextureRegion(itemsPacman3, 96, 48, 32, 32);
+		
+		p2_pacman_looking_up_1 = new TextureRegion(itemsPacman3, 0, 48, 32, 32);
+		p2_pacman_looking_up_2 = new TextureRegion(itemsPacman3, 32, 48, 32, 32);
+		p2_pacman_looking_up_3 = new TextureRegion(itemsPacman3, 96, 48, 32, 32);
+		
+		p2_pacman_looking_down_1 = new TextureRegion(itemsPacman3, 0, 48, 32, 32);
+		p2_pacman_looking_down_2 = new TextureRegion(itemsPacman3, 32, 48, 32, 32);
+		p2_pacman_looking_down_3 = new TextureRegion(itemsPacman3, 96, 48, 32, 32);
+		
+
+		p2_pacmanRight = new Animation(1/3f, p2_pacman_looking_right_1, p2_pacman_looking_right_2, p2_pacman_looking_right_3);
+		p2_pacmanLeft = new Animation(1/3f, p2_pacman_looking_left_1, p2_pacman_looking_left_2,p2_pacman_looking_left_3);
+		p2_pacmanUp = new Animation(1/3f, p2_pacman_looking_up_1, p2_pacman_looking_up_2,p2_pacman_looking_up_3);
+		p2_pacmanDown = new Animation(1/3f, p2_pacman_looking_down_1, p2_pacman_looking_down_2,p2_pacman_looking_down_3);
+		
+		/* Player 3 */
+		p3_pacman_looking_right_1 = new TextureRegion(itemsPacman4, 0, 48, 32, 32);
+		p3_pacman_looking_right_2 = new TextureRegion(itemsPacman4, 32, 48, 32, 32);
+		p3_pacman_looking_right_3 = new TextureRegion(itemsPacman4, 96, 48, 32, 32);
+		
+		p3_pacman_looking_left_1 = new TextureRegion(itemsPacman4, 0, 48, 32, 32);
+		p3_pacman_looking_left_2 = new TextureRegion(itemsPacman4, 32, 48, 32, 32);
+		p3_pacman_looking_left_3 = new TextureRegion(itemsPacman4, 96, 48, 32, 32);
+		
+		p3_pacman_looking_up_1 = new TextureRegion(itemsPacman4, 0, 48, 32, 32);
+		p3_pacman_looking_up_2 = new TextureRegion(itemsPacman4, 32, 48, 32, 32);
+		p3_pacman_looking_up_3 = new TextureRegion(itemsPacman4, 96, 48, 32, 32);
+		
+		p3_pacman_looking_down_1 = new TextureRegion(itemsPacman4, 0, 48, 32, 32);
+		p3_pacman_looking_down_2 = new TextureRegion(itemsPacman4, 32, 48, 32, 32);
+		p3_pacman_looking_down_3 = new TextureRegion(itemsPacman4, 96, 48, 32, 32);
+		
+
+		p3_pacmanRight = new Animation(1/3f, p3_pacman_looking_right_1, p3_pacman_looking_right_2, p3_pacman_looking_right_3);
+		p3_pacmanLeft = new Animation(1/3f, p3_pacman_looking_left_1, p3_pacman_looking_left_2,p3_pacman_looking_left_3);
+		p3_pacmanUp = new Animation(1/3f, p3_pacman_looking_up_1, p3_pacman_looking_up_2,p3_pacman_looking_up_3);
+		p3_pacmanDown = new Animation(1/3f, p3_pacman_looking_down_1, p3_pacman_looking_down_2,p3_pacman_looking_down_3);
+		
+		/* Player 4 */
+		p4_pacman_looking_right_1 = new TextureRegion(itemsPacman5, 0, 48, 32, 32);
+		p4_pacman_looking_right_2 = new TextureRegion(itemsPacman5, 32, 48, 32, 32);
+		p4_pacman_looking_right_3 = new TextureRegion(itemsPacman5, 96, 48, 32, 32);
+		
+		p4_pacman_looking_left_1 = new TextureRegion(itemsPacman5, 0, 48, 32, 32);
+		p4_pacman_looking_left_2 = new TextureRegion(itemsPacman5, 32, 48, 32, 32);
+		p4_pacman_looking_left_3 = new TextureRegion(itemsPacman5, 96, 48, 32, 32);
+		
+		p4_pacman_looking_up_1 = new TextureRegion(itemsPacman5, 0, 48, 32, 32);
+		p4_pacman_looking_up_2 = new TextureRegion(itemsPacman5, 32, 48, 32, 32);
+		p4_pacman_looking_up_3 = new TextureRegion(itemsPacman5, 96, 48, 32, 32);
+		
+		p4_pacman_looking_down_1 = new TextureRegion(itemsPacman5, 0, 48, 32, 32);
+		p4_pacman_looking_down_2 = new TextureRegion(itemsPacman5, 32, 48, 32, 32);
+		p4_pacman_looking_down_3 = new TextureRegion(itemsPacman5, 96, 48, 32, 32);
+		
+
+		p4_pacmanRight = new Animation(1/3f, p4_pacman_looking_right_1, p4_pacman_looking_right_2, p4_pacman_looking_right_3);
+		p4_pacmanLeft = new Animation(1/3f, p4_pacman_looking_left_1, p4_pacman_looking_left_2,p4_pacman_looking_left_3);
+		p4_pacmanUp = new Animation(1/3f, p4_pacman_looking_up_1, p4_pacman_looking_up_2,p4_pacman_looking_up_3);
+		p4_pacmanDown = new Animation(1/3f, p4_pacman_looking_down_1, p4_pacman_looking_down_2,p4_pacman_looking_down_3);
 		
 		
-		
-//		yellow_pacman = 
-//		green_pacman = 
 		blinky = new TextureRegion(itemsPacman, 0, 0, 30, 30);
 		pinky = new TextureRegion(itemsPacman, 60, 0, 30, 30);
 		inky = new TextureRegion(itemsPacman, 125, 0, 30, 30);
-		clyde = new TextureRegion(itemsPacman, 190, 0, 30, 30);
-
-		
-		/*Here you should put all textures that comes from itemsButtons.png*/
-		/*musicOn = new TextureRegion(items, 0, 512, 128, 128);
-		musicOff = new TextureRegion(items, 128, 512, 128, 128);
-		soundOn = new TextureRegion(items, 384, 512, 128, 128);
-		soundOff = new TextureRegion(items, 512, 512, 128, 128);
-		quit = new TextureRegion(items, 640, 512, 128, 128);
-		
-		settings = new TextureRegion(items, 0, 640, 128, 128);
-		pause = new TextureRegion(items, 128, 640, 128, 128);
-		back = new TextureRegion(items, 256, 640, 128, 128);
-		help = new TextureRegion(items, 384, 640, 128, 128);
-
-		soundGameOff = new TextureRegion(items, 128, 769, 128, 128);
-		soundGameOn = new TextureRegion(items, 256, 769, 128, 128);
-		pauseGame = new TextureRegion(items, 384, 769, 128, 128);*/
-		
-		/*Here load Transparent Textures*/
-		/*Texture defaultNotificationR = loadTransparentTexture(320, 480, "backgrounds/default_notification.png");
-		defaultNotification = new TextureRegion(defaultNotificationR, 0, 0, 320, 480);
-
-		Texture readyR = loadTransparentTexture(320, 480, "backgrounds/ready.png");
-		ready = new TextureRegion(readyR, 0, 0, 320, 480);
-		
-		Texture winR = loadTransparentTexture(800, 1280, "backgrounds/win.png");
-		win = new TextureRegion(winR, 0, 0, 800, 1280);
-
-		Texture gameOverR = loadTransparentTexture(800, 1280, "backgrounds/gameover.png");
-		gameOver = new TextureRegion(gameOverR, 0, 0, 800, 1280);
-
-		Texture pauseMenuR = loadTransparentTexture(800, 1280, "backgrounds/pausemenu.png");
-		pauseMenu = new TextureRegion(pauseMenuR, 0, 0, 800, 1280);*/		
+		clyde = new TextureRegion(itemsPacman, 190, 0, 30, 30);	
 		
 		/* BitmapFont*/
 		 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
@@ -232,24 +253,6 @@ public class Assets {
 		 font = generator.generateFont(parameter); 
 		 font.setColor(new Color(Color.GRAY));
 		 generator.dispose();
-		/*
-		music = Gdx.audio.newMusic(Gdx.files.internal("music/music.mp3"));
-		music.setLooping(true);
-		music.setVolume(0.5f);
-
-		if (Settings.musicEnabled){
-			music.play();
-		}else{
-			music.pause();
-		}
-		
-		lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("sound/lifeLost.ogg"));
-		gameOverSound = Gdx.audio.newSound(Gdx.files.internal("sound/gameOverSound.ogg"));
-		winnerSound = Gdx.audio.newSound(Gdx.files.internal("sound/winnerSound.wav"));
-		lifeBonusSound = Gdx.audio.newSound(Gdx.files.internal("sound/getLifeBonus.ogg"));
-		coinBonusSound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.wav"));
-		clickSound = Gdx.audio.newSound(Gdx.files.internal("sound/click.wav"));
-		toggleSound = Gdx.audio.newSound(Gdx.files.internal("sound/toggle.ogg"));*/
 		
 		wuacaSound = Gdx.audio.newSound(Gdx.files.internal("sounds/wuaca.mp3"));
 		lifeLostSound = Gdx.audio.newSound(Gdx.files.internal("sounds/lifelost.mp3"));

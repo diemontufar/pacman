@@ -1,6 +1,8 @@
 package com.au.unimelb.comp90020.actors;
 
+import com.au.unimelb.comp90020.framework.Animation;
 import com.au.unimelb.comp90020.framework.DynamicGameObject;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
@@ -21,11 +23,13 @@ public class Pacman extends DynamicGameObject {
 	float stateTime;
 	private TiledMapTileLayer collisionLayer;
 	private float oldX, oldY;
+	Animation[] pacmanAnimation;
+	TextureRegion defaultDirection;
 	
 	//To check when pacman collides with a wall
 	boolean collisionWallX = false, collisionWallY = false;
 
-	public Pacman(float x, float y,TiledMapTileLayer collisionLayer) {
+	public Pacman(float x, float y,Animation[] pacmanAnimation,TextureRegion defaultDirection,TiledMapTileLayer collisionLayer) {
 
 		super(x, y, PACMAN_WIDTH, PACMAN_HEIGHT);
 		this.collisionLayer = collisionLayer;
@@ -33,6 +37,8 @@ public class Pacman extends DynamicGameObject {
 		this.stateTime = 0.0f;
 		this.oldX = x;
 		this.oldY = y;
+		this.pacmanAnimation = pacmanAnimation;
+		this.defaultDirection = defaultDirection;
 
 	}
 
@@ -168,5 +174,21 @@ public class Pacman extends DynamicGameObject {
 
 	public void setOldY(float oldY) {
 		this.oldY = oldY;
+	}
+
+	public TextureRegion getDefaultDirection() {
+		return defaultDirection;
+	}
+
+	public void setDefaultDirection(TextureRegion defaultDirection) {
+		this.defaultDirection = defaultDirection;
+	}
+	
+	public Animation[] getPacmanAnimation() {
+		return pacmanAnimation;
+	}
+
+	public void setPacmanAnimation(Animation[] pacmanAnimation) {
+		this.pacmanAnimation = pacmanAnimation;
 	}
 }
