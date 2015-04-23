@@ -2,17 +2,13 @@ package com.au.unimelb.comp90020;
 
 import java.io.IOException;
 
-import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.concurrency.Lock;
 import com.au.unimelb.comp90020.multiplayer.concurrency.RAMutex;
-import com.au.unimelb.comp90020.multiplayer.networking.GameClient;
 import com.au.unimelb.comp90020.multiplayer.networking.GameMulticastPeer;
-import com.au.unimelb.comp90020.multiplayer.networking.GameServer;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
-import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
 import com.au.unimelb.comp90020.screens.GameScreen;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -27,8 +23,6 @@ public class PacManGame extends Game {
 	public SpriteBatch batcher;
 	public MultiplayerMode mode;
 	
-	public GameServer server;
-	public GameClient client;
 	public GameMulticastPeer peer;
 	public Lock lock = null;
 	
@@ -45,7 +39,9 @@ public class PacManGame extends Game {
 		////
 		if (mode == MultiplayerMode.client){
 			try {
-				peer =  new GameMulticastPeer(3031,3030,3032);
+				String[] clientAddresses = {"localhost","localhost"};
+				int[] clientPorts = {3030,3032};
+				peer =  new GameMulticastPeer(3031,2,clientAddresses,clientPorts);
 				mode = MultiplayerMode.multicast;
 				lock = new RAMutex(peer);
 				peer.registerListener(MessageType.LOCK_REQUEST, lock);
@@ -73,7 +69,7 @@ public class PacManGame extends Game {
 		}
 		else if (mode == MultiplayerMode.multicast){
 			try {
-				peer =  new GameMulticastPeer(Settings.PORT,3031, 3032);
+				peer =  new GameMulticastPeer(Settings.SERVERPORT,Settings.NUMCLIENTS, Settings.PEER_ADDRESSES, Settings.PEER_PORTS);
 				
 				lock = new RAMutex(peer);
 				peer.registerListener(MessageType.LOCK_REQUEST, lock);
@@ -86,6 +82,8 @@ public class PacManGame extends Game {
 				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
 				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
+				
+				
 				
 				//peer.broadcastMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
 				peer.start();
@@ -102,7 +100,10 @@ public class PacManGame extends Game {
 		}
 		else if (mode == MultiplayerMode.server){
 			try {
-				peer =  new GameMulticastPeer(3032,3031, Settings.PORT);
+				String[] clientAddresses = {"localhost","localhost"};
+				int[] clientPorts = {3030,3031};
+				peer =  new GameMulticastPeer(3032,2,clientAddresses,clientPorts);
+
 				
 				mode = MultiplayerMode.multicast;
 				lock = new RAMutex(peer);

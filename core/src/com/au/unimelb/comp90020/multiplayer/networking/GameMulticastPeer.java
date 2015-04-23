@@ -34,20 +34,22 @@ public class GameMulticastPeer extends Thread{
 	InetAddress group;
 
 	int serverPort;
-	int clientPort;
-	int clientPort2; 
+	int[] peerPorts;
+	int numPeers;
+	String[] peerAddresses;
 	
 	private Map<String,Socket> serverClients;
 	private Map<String,Socket> clients;
 	private Map<MessageType, ArrayList<MessageListener>> listeners;
 
-	public GameMulticastPeer(int serverPort, int clientPort, int clientPort2) throws IOException{
+	public GameMulticastPeer(int serverPort, int numClients, String[] peerAddresses, int[] peerPorts) throws IOException{
 		this.listeners = new HashMap<MessageType, ArrayList<MessageListener>>();
 		this.serverClients = new HashMap<String,Socket>();
 		this.clients = new HashMap<String,Socket>();
 		this.serverPort = serverPort;
-		this.clientPort = clientPort;
-		this.clientPort2 = clientPort2;
+		this.peerPorts = peerPorts;
+		this.peerAddresses = peerAddresses;
+		this.numPeers = numClients;
 	}
 	public void init(){		
 		// Socket Server 
@@ -70,47 +72,30 @@ public class GameMulticastPeer extends Thread{
 	}
 	public void startClients(){
 	    // Socket Client
-		SocketHints socketHints = new SocketHints();
-	    socketHints.connectTimeout = Settings.CONN_TIMEOUT;
-	    boolean isConnected = false;
-	    while (!isConnected){
-	    	Socket socket = null;
-	    	try{	    
-	    		System.out.println("Trying to connect to: "+Settings.PEER_ADDRESS+":"+clientPort);
-	    		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS, clientPort, socketHints);
-	    		isConnected = true;
-	    		clients.put(socket.getRemoteAddress(), socket);
-	    		new GameServerThread(socket,this).start();
-	    	}
-	    	catch(GdxRuntimeException e){
-	    		try {
-					Thread.sleep(500);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+		for (int i = 0; i < this.numPeers; i++){
+			SocketHints socketHints = new SocketHints();
+			String address = this.peerAddresses[i];
+			int clientPort = this.peerPorts[i];
+			socketHints.connectTimeout = Settings.CONN_TIMEOUT;
+			boolean isConnected = false;
+			while (!isConnected){
+				Socket socket = null;
+				try{	    
+					System.out.println("Trying to connect to: "+address+":"+clientPort);
+					socket = Gdx.net.newClientSocket(Protocol.TCP, address, clientPort, socketHints);
+					isConnected = true;
+					clients.put(socket.getRemoteAddress(), socket);
+					new GameServerThread(socket,this).start();
 				}
-	    	}
-	    }
-	    isConnected = false;
-	    while (!isConnected){
-	    	Socket socket = null;
-	    	try{	    
-	    		System.out.println("Trying to connect to: "+Settings.PEER_ADDRESS2+":"+clientPort2);
-	    		socket = Gdx.net.newClientSocket(Protocol.TCP, Settings.PEER_ADDRESS2, clientPort2, socketHints);
-	    		isConnected = true;
-	    		clients.put(socket.getRemoteAddress(), socket);
-	    		new GameServerThread(socket,this).start();
-	    	}
-	    	catch(GdxRuntimeException e){
-	    		try {
-					Thread.sleep(500);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				catch(GdxRuntimeException e){
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
 				}
-	    	}
-	    }
-
+			}
+		}
 	}
 
 	public void sendMessage(String address,Message message){
