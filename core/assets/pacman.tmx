@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="28" height="31" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="28" height="31" tilewidth="16" tileheight="16" nextobjectid="8">
  <tileset firstgid="1" name="PacMan" tilewidth="16" tileheight="16">
   <image source="PacMan.png" width="160" height="160"/>
   <tile id="26">
@@ -40,16 +40,15 @@
  </layer>
  <layer name="Collectables" width="28" height="31" opacity="0.93">
   <data encoding="base64" compression="zlib">
-   eJxjYKA/kCYRU0MfNjfgchsparCJydDBPhkC8rT0H6nxQC4mxT2EAKXm0do+UtI9qeLo8oTcSyogR++ofaP2jdo3ah819A739sRAtF9ICSty1BBqI1GrvsWnl1720bt+JyWvDVV99MADAQA7lRnB
+   eJztVkEKACAI6x/5/3d2j9JWuigceNHWTAMthY8KmgdvlMMsN+TMyCcEPTHike9D+7BrSD4WTu+L1kP+Perv41a+KHa4qZd6qZd6Htzf94kb+4tWq1VoNbd2JK95q3FZeuz5jvboRR7DbqABdPgY6Q==
   </data>
  </layer>
- <objectgroup name="Objects" width="0" height="0">
-  <object name="InkySpawnPoint" x="183" y="223" width="32" height="16"/>
-  <object name="PinkySpawnPoint" x="215" y="224" width="32" height="16"/>
-  <object name="ClydeSpawnPoint" x="246" y="223" width="32" height="16"/>
-  <object name="PacManSpawnPoint" x="208" y="368" width="32" height="16"/>
-  <object name="BlinkySpawnPoint" x="225" y="176" width="32" height="16"/>
-  <object name="FruitSpawnPoint" x="208" y="272" width="32" height="16"/>
-  <object name="HouseDoor" x="168" y="198" width="112" height="67"/>
+ <objectgroup name="Objects">
+  <object id="1" name="InkySpawnPoint" x="183" y="223" width="32" height="16"/>
+  <object id="2" name="PinkySpawnPoint" x="215" y="224" width="32" height="16"/>
+  <object id="3" name="ClydeSpawnPoint" x="246" y="223" width="32" height="16"/>
+  <object id="5" name="BlinkySpawnPoint" x="225" y="176" width="32" height="16"/>
+  <object id="6" name="FruitSpawnPoint" x="208" y="272" width="32" height="16"/>
+  <object id="7" name="HouseDoor" x="168" y="198" width="112" height="67"/>
  </objectgroup>
 </map>
