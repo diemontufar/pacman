@@ -383,10 +383,10 @@ public class World implements MessageListener {
 			if (pid!=screen.mp.getMyId()){
 				float x = Float.valueOf(movements[1]);
 				float y = Float.valueOf(movements[2]);
-				//I HAVE TO DO THIS TO AVOID LOCK
 				Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
 				if (cell!=null)cell.setTile(null);
-				score = Integer.valueOf(movements[3]);
+				//score = Integer.valueOf(movements[3]);
+				score++;
 			}
 		}
 

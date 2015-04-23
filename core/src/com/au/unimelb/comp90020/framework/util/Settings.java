@@ -20,6 +20,7 @@ public class Settings {
 	public static final int SERVERPORT = 3030;
 	public static final int NUMCLIENTS = 2;
 	
+	//public static final String[] PEER_ADDRESSES = {"10.9.201.233","10.9.185.51"};
 	public static final String[] PEER_ADDRESSES = {"localhost","localhost"};
 	public static final int[] PEER_PORTS = {3031,3032};
 	
