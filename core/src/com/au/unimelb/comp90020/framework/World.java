@@ -207,6 +207,9 @@ public class World implements MessageListener {
 				sb.append(currentY);
 				sb.append(",");
 				sb.append(score);
+				sb.append(",");
+				sb.append(screen.game.lock.getClockValue());
+
 				final Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);				
 				this.screen.game.peer.broadcastMessage(m);
 			}	
