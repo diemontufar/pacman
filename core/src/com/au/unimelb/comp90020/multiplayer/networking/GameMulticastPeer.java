@@ -99,6 +99,9 @@ public class GameMulticastPeer extends Thread{
 	}
 
 	public void sendMessage(String address,Message message){
+		if ( message.getType() == MessageType.FOOD_EATEN || message.getType() == MessageType.LOCK_REPLY || message.getType()== MessageType.LOCK_REQUEST)
+			System.out.println("SEND > "+message.toProtocolString());
+
         try {
         	String msg = message.toProtocolString();
         	//System.out.println("SENDING > "+msg+"TO: "+address+" Keys:"+serverClients.keySet());
@@ -109,8 +112,9 @@ public class GameMulticastPeer extends Thread{
 			e.printStackTrace();
 		}
 	}
-	void processMessage(String address, String line) {
-      System.out.println("RECV "+address+"<"+line);
+	synchronized void  processMessage(String address, String line) {
+		if (line.contains("FOOD") || line.contains("LOCK"))
+			System.out.println("RECV "+address+"<"+line);
 
 		String mType = line.substring(0, line.indexOf(","));
 		String body = line.substring(line.indexOf(",")+1);
@@ -167,6 +171,16 @@ public class GameMulticastPeer extends Thread{
 		}
 	}
 	public void broadcastMessage(Message message) {
+		if (message.getType() == MessageType.FOOD_EATEN){
+			try {
+			    Thread.sleep(300);               
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+		}
+		if ( message.getType() == MessageType.FOOD_EATEN || message.getType() == MessageType.LOCK_REPLY || message.getType()== MessageType.LOCK_REQUEST)
+			System.out.println("BSEND > "+message.toProtocolString());
+
 		for (Socket s : clients.values()){
 			String msg = message.toProtocolString();
         	//System.out.println("BSEND > "+msg);

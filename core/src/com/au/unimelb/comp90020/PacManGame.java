@@ -41,7 +41,7 @@ public class PacManGame extends Game {
 			try {
 				String[] clientAddresses = {"localhost","localhost"};
 				int[] clientPorts = {3030,3032};
-				peer =  new GameMulticastPeer(3031,2,clientAddresses,clientPorts);
+				peer =  new GameMulticastPeer(3031,1,clientAddresses,clientPorts);
 				mode = MultiplayerMode.multicast;
 				lock = new RAMutex(peer);
 				peer.registerListener(MessageType.LOCK_REQUEST, lock);

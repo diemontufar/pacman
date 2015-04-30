@@ -194,8 +194,9 @@ public class World implements MessageListener {
 	}
 
 	private void checkEaten(float currentX, float currentY) {
+		screen.game.lock.requestCS();
 		if (isCellFood(currentX, currentY)){
-			screen.game.lock.requestCS();
+			
 			removeFood(currentX, currentY);
 			if ( this.screen.game.mode == MultiplayerMode.multicast ){
 				StringBuilder sb = new StringBuilder();
@@ -206,25 +207,26 @@ public class World implements MessageListener {
 				sb.append(currentY);
 				sb.append(",");
 				sb.append(score);
-				Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);
+				final Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);				
 				this.screen.game.peer.broadcastMessage(m);
 			}	
-			screen.game.lock.releaseCS();
+			
 		}
+		screen.game.lock.releaseCS();
 	}
 
 	private boolean isCellFood(float x, float y) {
-		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
+		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
-	private boolean removeFood(float x, float y) {		
-		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
+	private void removeFood(float x, float y) {		
+		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
 		cell.setTile(null);
+		
 		this.score++;
 		this.dots_eaten++;
 		
-		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
 	private void checkGhostsCollisions() {
@@ -380,11 +382,10 @@ public class World implements MessageListener {
 			String body = m.getBody();
 			String[] movements = body.split(",");
 			long pid = Long.valueOf(movements[0]).longValue();
-			if (pid!=screen.mp.getMyId()){
+			if (pid!=screen.mp.getMyId()){				
 				float x = Float.valueOf(movements[1]);
 				float y = Float.valueOf(movements[2]);
-				Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));
-				if (cell!=null)cell.setTile(null);
+				removeFood(x, y);
 				//score = Integer.valueOf(movements[3]);
 				score++;
 			}

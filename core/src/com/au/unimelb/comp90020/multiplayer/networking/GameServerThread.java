@@ -30,13 +30,20 @@ public class GameServerThread extends Thread {
 		while(running){
 			try {            	
 				String line = buffer.readLine();
-				System.out.println(socket.getRemoteAddress()+" Says "+line);
+//				System.out.println(socket.getRemoteAddress()+" Says "+line);
 				if ( line == null || line.equals("null") || !socket.isConnected()){//Disconnection
-					System.out.println("Entreeeeeeeeeee");
+//					System.out.println("Entreeeeeeeeeee");
 					server.clientDisconnect(socket.getRemoteAddress());
 					running = false;
 				}
 				else{
+					if (line.contains("FOOD")){
+//						try {
+//						    Thread.sleep(300);               
+//						} catch(InterruptedException ex) {
+//						    Thread.currentThread().interrupt();
+//						}
+					}
 					server.processMessage(socket.getRemoteAddress(),line);	
 				}
 			} catch (IOException e) {
