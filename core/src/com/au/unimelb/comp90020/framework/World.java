@@ -193,29 +193,29 @@ public class World implements MessageListener {
 
 	}
 
-	private void checkEaten(float currentX, float currentY) {
-		screen.game.lock.requestCS();
+	private void checkEaten(float currentX, float currentY) {		
 		if (isCellFood(currentX, currentY)){
-			
-			removeFood(currentX, currentY);
-			if ( this.screen.game.mode == MultiplayerMode.multicast ){
-				StringBuilder sb = new StringBuilder();
-				sb.append(this.screen.mp.getMyId());
-				sb.append(",");
-				sb.append(currentX);
-				sb.append(",");
-				sb.append(currentY);
-				sb.append(",");
-				sb.append(score);
-				sb.append(",");
-				sb.append(screen.game.lock.getClockValue());
+			screen.game.lock.requestCS();
+			if (isCellFood(currentX, currentY)){
+				removeFood(currentX, currentY);
+				if ( this.screen.game.mode == MultiplayerMode.multicast ){
+					StringBuilder sb = new StringBuilder();
+					sb.append(this.screen.mp.getMyId());
+					sb.append(",");
+					sb.append(currentX);
+					sb.append(",");
+					sb.append(currentY);
+					sb.append(",");
+					sb.append(score);
+					sb.append(",");
+					sb.append(screen.game.lock.getClockValue());
 
-				final Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);				
-				this.screen.game.peer.broadcastMessage(m);
-			}	
-			
-		}
-		screen.game.lock.releaseCS();
+					final Message m = new Message("localhost", sb.toString(), MessageType.FOOD_EATEN);				
+					this.screen.game.peer.broadcastMessage(m);
+				}	
+			}
+			screen.game.lock.releaseCS();	
+		}		
 	}
 
 	private boolean isCellFood(float x, float y) {
@@ -388,7 +388,9 @@ public class World implements MessageListener {
 			if (pid!=screen.mp.getMyId()){				
 				float x = Float.valueOf(movements[1]);
 				float y = Float.valueOf(movements[2]);
-				removeFood(x, y);
+				Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
+				cell.setTile(null);
+
 				//score = Integer.valueOf(movements[3]);
 				score++;
 			}

@@ -171,13 +171,13 @@ public class GameMulticastPeer extends Thread{
 		}
 	}
 	public void broadcastMessage(Message message) {
-		if (message.getType() == MessageType.FOOD_EATEN){
-			try {
-			    Thread.sleep(300);               
-			} catch(InterruptedException ex) {
-			    Thread.currentThread().interrupt();
-			}
-		}
+//		if (message.getType() == MessageType.FOOD_EATEN){
+//			try {
+//			    Thread.sleep(300);               
+//			} catch(InterruptedException ex) {
+//			    Thread.currentThread().interrupt();
+//			}
+//		}
 		if ( message.getType() == MessageType.FOOD_EATEN || message.getType() == MessageType.LOCK_REPLY || message.getType()== MessageType.LOCK_REQUEST)
 			System.out.println("BSEND > "+message.toProtocolString());
 
