@@ -24,6 +24,7 @@ public class LamportClock {
 	}
 
 	public void receiveAction(Long src, int sentValue) {
-		c = Util.max(c, sentValue) + 1;
+		//c = Util.max(c, sentValue) + 1;
+		c = Util.max(c, sentValue);
 	}
 }
