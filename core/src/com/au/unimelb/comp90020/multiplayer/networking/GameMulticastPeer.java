@@ -12,6 +12,7 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
@@ -104,10 +105,16 @@ public class GameMulticastPeer extends Thread{
 
         try {
         	String msg = message.toProtocolString();
-        	//System.out.println("SENDING > "+msg+"TO: "+address+" Keys:"+serverClients.keySet());
-        	Socket socket = serverClients.get(address)!=null?serverClients.get(address):clients.get(address);        	
+        	String ipAddr = address.substring(0, address.indexOf(':'));
+        	for (Entry<String, Socket> e : clients.entrySet()){
+        		if(e.getKey().contains(ipAddr)){
+        			Socket socket = e.getValue();
+        			socket.getOutputStream().write((msg+"\n").getBytes());
+        		}
+        	}
+        		
         	//System.out.println("SEND > "+msg);
-			socket.getOutputStream().write((msg+"\n").getBytes());
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -171,13 +178,13 @@ public class GameMulticastPeer extends Thread{
 		}
 	}
 	public void broadcastMessage(Message message) {
-//		if (message.getType() == MessageType.FOOD_EATEN){
-//			try {
-//			    Thread.sleep(300);               
-//			} catch(InterruptedException ex) {
-//			    Thread.currentThread().interrupt();
-//			}
-//		}
+		if (message.getType() == MessageType.FOOD_EATEN){
+			try {
+			    Thread.sleep(300);               
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+		}
 		if ( message.getType() == MessageType.FOOD_EATEN || message.getType() == MessageType.LOCK_REPLY || message.getType()== MessageType.LOCK_REQUEST)
 			System.out.println("BSEND > "+message.toProtocolString());
 
