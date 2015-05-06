@@ -98,9 +98,9 @@ public class Process {
 		peer.sendMessage(players.get(destId),m);
 	}
 
-	public synchronized void myWait() {
+	public synchronized void myWait(long milliseconds) {
 		try {
-			wait();
+			wait(milliseconds);
 		} catch (InterruptedException e) {
 			System.err.println(e);
 		}

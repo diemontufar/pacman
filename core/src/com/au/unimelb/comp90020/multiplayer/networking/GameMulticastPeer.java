@@ -180,7 +180,7 @@ public class GameMulticastPeer extends Thread{
 	public void broadcastMessage(Message message) {
 		if (message.getType() == MessageType.FOOD_EATEN){
 			try {
-			    Thread.sleep(300);               
+			    Thread.sleep(100);               
 			} catch(InterruptedException ex) {
 			    Thread.currentThread().interrupt();
 			}
