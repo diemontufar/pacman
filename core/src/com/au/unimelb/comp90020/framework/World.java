@@ -393,6 +393,7 @@ public class World implements MessageListener {
 
 				//score = Integer.valueOf(movements[3]);
 				score++;
+				this.dots_eaten++;
 			}
 		}
 
