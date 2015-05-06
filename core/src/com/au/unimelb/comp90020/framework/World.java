@@ -2,7 +2,6 @@ package com.au.unimelb.comp90020.framework;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
@@ -15,7 +14,6 @@ import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.screens.GameScreen;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -31,40 +29,110 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
  * Represents the world where the game is performed. It updates the states of
  * every actor within it for each delta time.
  * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
+ *
  */
 public class World implements MessageListener {
 
+	/**
+	 * 
+	 */
 	public final WorldListener listener;
 
+	/**
+	 * 
+	 */
 	public Map<Long,Pacman> pacmans;
+	/**
+	 * 
+	 */
 	public Ghost inky;
+	/**
+	 * 
+	 */
 	public Ghost blinky;
+	/**
+	 * 
+	 */
 	public Ghost pinky;
+	/**
+	 * 
+	 */
 	public Ghost clyde;
 
+	/**
+	 * 
+	 */
 	public TiledMap map;
+	/**
+	 * 
+	 */
 	public TiledMapTileLayer wallsLayer;
+	/**
+	 * 
+	 */
 	public TiledMapTileLayer pacdotsLayer;
+	/**
+	 * 
+	 */
 	public MapObjects objectsLayer;
+	/**
+	 * 
+	 */
 	public int[] wallsLayerIndex = new int[]{0}, objectsLayerIndex = new int[]{1}, collectablesLayerIndex = new int[]{2};
 
+	/**
+	 * 
+	 */
 	TiledMapTileSet pacmanTileSet;
+	/**
+	 * 
+	 */
 	ArrayList<TiledMapTileLayer.Cell> dotCellsInScene;
+	/**
+	 * 
+	 */
 	ArrayList<TiledMapTileLayer.Cell> dotBonusCellsInScene;
+	/**
+	 * 
+	 */
 	Map<String,TiledMapTile> dotTile;
+	/**
+	 * 
+	 */
 	Map<String,TiledMapTile> dotBonusTile;
 
-	ArrayList<TiledMapTileLayer.Cell> eyesCellsInScene;
-	Map<String,TiledMapTile> eyesTiles;
+	/**
+	 * 
+	 */
 	float elapsedSinceAnimation = 0.0f;
 
+	/**
+	 * 
+	 */
 	public int score;
+	/**
+	 * 
+	 */
 	public int lives;
+	/**
+	 * 
+	 */
 	public int dots_eaten;
 
+	/**
+	 * 
+	 */
 	private Long controlledPacman;
+	/**
+	 * 
+	 */
 	private GameScreen screen;
 
+	/**
+	 * @param listener
+	 * @param screen
+	 */
 	public World(WorldListener listener, GameScreen screen) {
 		this.listener = listener;
 		this.screen = screen;
@@ -88,6 +156,9 @@ public class World implements MessageListener {
 		this.dots_eaten = 0;		
 	}
 
+	/**
+	 * 
+	 */
 	private void createGhosts() {
 		//Find the spot and create the ghosts
 		float x,y,width;
@@ -120,6 +191,9 @@ public class World implements MessageListener {
 	 * Here we are creating pacdots and pacdotbonuses so that then you can access them by 
 	 * looping over the ArrayLists dotCellsInScene and dotBonusCellsInScene and do something like
 	 * layer.getCell(0, 1).setTile(null);
+	 */
+	/**
+	 * 
 	 */
 	public void createDots(){
 
@@ -162,6 +236,10 @@ public class World implements MessageListener {
 	 * 
 	 * @param deltaTime
 	 */
+	/**
+	 * @param deltaTime
+	 * @param move
+	 */
 	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
 		updateGhosts(deltaTime);
@@ -173,6 +251,9 @@ public class World implements MessageListener {
 	/**
 	 * Check every possible collision event within the world.
 	 */
+	/**
+	 * 
+	 */
 	private void checkCollisions() {
 
 		checkDotsCollisions();
@@ -180,6 +261,9 @@ public class World implements MessageListener {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void checkDotsCollisions() {
 
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
@@ -193,6 +277,10 @@ public class World implements MessageListener {
 
 	}
 
+	/**
+	 * @param currentX
+	 * @param currentY
+	 */
 	private void checkEaten(float currentX, float currentY) {		
 		if (isCellFood(currentX, currentY)){
 			screen.game.lock.requestCS();
@@ -218,11 +306,20 @@ public class World implements MessageListener {
 		}		
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private boolean isCellFood(float x, float y) {
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 */
 	private void removeFood(float x, float y) {		
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
 		cell.setTile(null);
@@ -232,6 +329,9 @@ public class World implements MessageListener {
 		
 	}
 
+	/**
+	 * 
+	 */
 	private void checkGhostsCollisions() {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		if (pacman.bounds.overlaps(this.inky.bounds) 
@@ -245,6 +345,9 @@ public class World implements MessageListener {
 
 	}
 
+	/**
+	 * 
+	 */
 	private void resetPositions(){
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		//Pacman go back to the starting point!
@@ -257,6 +360,10 @@ public class World implements MessageListener {
 	}
 
 
+	/**
+	 * @param deltaTime
+	 * @param move
+	 */
 	private void updatePacman(float deltaTime,Movement move) {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);
 		pacman.update(deltaTime,move);
@@ -269,6 +376,9 @@ public class World implements MessageListener {
 		}
 	}
 
+	/**
+	 * @param deltaTime
+	 */
 	private void updateGhosts(float deltaTime) {
 		if (this.screen.mp.isMinPlayerId()){
 			Pacman pacman = this.pacmans.get(this.controlledPacman);
@@ -278,6 +388,8 @@ public class World implements MessageListener {
 			this.inky.update(deltaTime,pacman.position.x, pacman.position.y);
 		}
 		//Update Ghost positions
+
+		
 		if (this.screen.game.mode == MultiplayerMode.multicast && this.screen.mp.isMinPlayerId()){			  
 			StringBuilder sb = new StringBuilder();
 			sb.append(this.screen.mp.getMyId());
@@ -294,6 +406,11 @@ public class World implements MessageListener {
 		}
 	}
 
+	/**
+	 * @param sb
+	 * @param name
+	 * @param ghost
+	 */
 	private void toPositionString(StringBuilder sb, String name, DynamicGameObject ghost) {
 		sb.append(name);
 		sb.append(",");
@@ -302,6 +419,9 @@ public class World implements MessageListener {
 		sb.append(ghost.position.y);
 	}
 
+	/**
+	 * @param pid
+	 */
 	public synchronized void addPacman(Long pid) {
 		Animation[] myAnimation = new Animation[4];
 		TextureRegion myDefaultTextureRegion;
@@ -334,11 +454,17 @@ public class World implements MessageListener {
 		this.pacmans.put(pid,new Pacman(Settings.PAC_INITIAL_POS_X+x,Settings.PAC_INITIAL_POS_Y,myAnimation,myDefaultTextureRegion,wallsLayer)); 
 	}
 
+	/**
+	 * @param pacmanIdx
+	 */
 	public void setControlledPacman(Long pacmanIdx) {
 		this.controlledPacman = pacmanIdx;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.au.unimelb.comp90020.multiplayer.networking.MessageListener#listen(com.au.unimelb.comp90020.multiplayer.networking.Message)
+	 */
 	@Override
 	public void listen(Message m) {
 		if (m.getType() == MessageType.GHOST_MOVEMENT){
@@ -399,10 +525,4 @@ public class World implements MessageListener {
 
 
 	}
-
-	public void removePacman(Long key) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

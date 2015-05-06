@@ -7,30 +7,94 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Rectangle;
 
+/**
+ * Ghost actor represent the different ghosts in the game
+ * Ghost spawn in their home and then gradually go out to chase Pacmans. Ghost can have two different
+ * operating modes, SCATTER where the ghosts walk toward a specific zone or CHASE where they chase the controller Pacman.
+ * They are often changing mode to make the game more challenging
+ * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
+ *
+ */
 public class Ghost extends DynamicGameObject {
 
+	/**
+	 * Ghost height in world's dimensions
+	 */
 	public static final float GHOST_HEIGHT = 16;
+	/**
+	 * Ghost width in world's dimensions
+	 */
 	public static final float GHOST_WIDTH = 16;
 
+	/**
+	 * Speed of the actor
+	 */
 	private float speed = 60 ;
 	
+	/**
+	 * A flag that indicates whether the ghost is in its house or not
+	 */
 	private boolean isInHouse;
 	
+	/**
+	 * Enumeration that represent the operating mode of the Ghost
+	 */
 	private enum MODE {SCATTER, CHASE}
+	/**
+	 * Ghost behaviour mode
+	 */
 	private MODE mode;
+	/**
+	 * Last behaviour change time 
+	 */
 	private long timeLastChange;
 	
+	/**
+	 * Current direction of the Ghost
+	 */
 	public Movement currentDirection;
+	/**
+	 * Last direction of the Ghost
+	 */
 	public Movement lastDirection;
 	
+	/**
+	 * TiledMap with the map
+	 */
 	private TiledMapTileLayer collisionLayer;
 	
+	/**
+	 * Starting position of the ghost (x,y)
+	 */
 	float startX, startY;
+	/**
+	 * Target position to chase in Scatter mode
+	 */
 	float targetX, targetY;
+	/**
+	 * Last recorded position of the ghost
+	 */
 	float lastX, lastY;
+	/**
+	 * The position of the house door to direct the ghost to the exit
+	 */
 	MapObject houseDoor;
+	/**
+	 * A rectangle representing the house door to ensure that when a ghost leaves the house never enters again
+	 */
 	Rectangle house;
 
+	/**
+	 * Class constructor
+	 * @param x Start X coordinate
+	 * @param y Start Y coordinate
+	 * @param targetX Target X when Scattering
+	 * @param targetY Target Y when Scattering
+	 * @param width Width of the ghost
+	 * @param collisionLayer Collision layer of objects (map)
+	 * @param houseDoor An object representing the object houseDoor in the map
+	 */
 	public Ghost(float x, float y, float targetX, float targetY, float width, TiledMapTileLayer collisionLayer, MapObject houseDoor) {
 		super(x, y, GHOST_WIDTH, GHOST_HEIGHT);
 		timeLastChange = System.currentTimeMillis();
@@ -48,6 +112,16 @@ public class Ghost extends DynamicGameObject {
 		float wh = (Float)houseDoor.getProperties().get("width");
 		this.house = new Rectangle(xh, yh, wh, hh);
 	}
+	/**
+	 * @param x Start X coordinate
+	 * @param y Start Y coordinate
+	 * @param targetX Target X when Scattering
+	 * @param targetY Target Y when Scattering
+	 * @param width Width of the ghost
+	 * @param collisionLayer Collision layer of objects (map)
+	 * @param houseDoor An object representing the object houseDoor in the map
+	 * @param isInHouse A flag indicating if the ghost spawns inside the house or not
+	 */
 	public Ghost(float x, float y, float targetX, float targetY, float width, TiledMapTileLayer collisionLayer, MapObject houseDoor, boolean isInHouse) {
 		this(x,y,targetX,targetY,width,collisionLayer, houseDoor);
 		this.isInHouse = false;
@@ -56,8 +130,11 @@ public class Ghost extends DynamicGameObject {
 	/**
 	 * Updates the velocity, position and bounds of the ghost according to the
 	 * acceleration on X axis and the elapsed time.
-	 * @param pacmanY 
-	 * @param pacmanX 
+	 * Initially the focus is on get the Ghost out of the house, then it switch between Scatter and Chase behaviour
+	 * In scatter mode the ghost tries to reach the target coordinates
+	 * In Chase mode the ghost tries to reach the Pacman coordinates and also accelerates
+	 * @param pacmanY Y position of the Pacman
+	 * @param pacmanX X position of the Pacman
 	 */
 	public void update(float deltaTime, float pacmanX, float pacmanY) {
 		float targetX, targetY;
@@ -133,7 +210,6 @@ public class Ghost extends DynamicGameObject {
 		y[3] = position.y;
 		position.x = oldX;
 		position.y = oldY;
-		int isIntersection = (!collision[0]?1:0)+(!collision[1]?1:0)+(!collision[2]?1:0)+(!collision[3]?1:0);
 		
 		if (!isInHouse && this.currentDirection == Movement.UP && mode!=MODE.CHASE){
 			position.add(0f, newY);
@@ -212,6 +288,13 @@ public class Ghost extends DynamicGameObject {
 		bounds.y = position.y - bounds.height / 2;
 	}
 
+	/**
+	 * A method to decide the step given the possible steps and the direction 
+	 * @param collision Whether the ghost collides or not in that direction (up down left right)
+	 * @param distance How the distance to the target is reduced if that step is chosen
+	 * @param step Step taken
+	 * @return
+	 */
 	private int getNextStep(boolean[] collision, double[] distance, int step) {
 		double oldDistance = 10000;
 		for (int i = 0; i < 4; i++){
@@ -225,18 +308,30 @@ public class Ghost extends DynamicGameObject {
 		return step;
 	}
 
+	/**
+	 * A method to check if the Ghost collides to the right
+	 * @return Whether the ghost collides
+	 */
 	public boolean collidesRight() {
 		if(isCellBlocked(position.x + GHOST_WIDTH/2, position.y))
 			return true;
 		return false;
 	}
 
+	/**
+	 * A method to check if the Ghost collides to the left
+	 * @return Whether the ghost collides
+	 */
 	public boolean collidesLeft() {
 		if(isCellBlocked(position.x - GHOST_WIDTH/2 , position.y))
 			return true;
 		return false;
 	}
 
+	/**
+	 * A method to check if the Ghost collides to the top
+	 * @return Whether the ghost collides
+	 */
 	public boolean collidesTop() {
 		if(isCellBlocked(position.x, position.y + GHOST_HEIGHT/2) || (!this.isInHouse && this.house.contains(position.x, position.y)))
 			return true;
@@ -244,12 +339,22 @@ public class Ghost extends DynamicGameObject {
 
 	}
 
+	/**
+	 * A method to check if the Ghost collides to the bottom
+	 * @return Whether the ghost collides
+	 */
 	public boolean collidesBottom() {
 		if(isCellBlocked(position.x, position.y - GHOST_HEIGHT/2) || (!this.isInHouse && this.house.contains(position.x, position.y-20)))
 			return true;
 		return false;
 	}
 
+	/**
+	 * A method to check if the future cell is blocked by a wall or other object
+	 * @param x Target X
+	 * @param y Target y
+	 * @return Whether there is or not a blocking object
+	 */
 	private boolean isCellBlocked(float x, float y) {
 		Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
 		return cell != null && cell.getTile() != null && cell.getTile()!=null;

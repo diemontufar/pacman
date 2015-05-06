@@ -16,122 +16,85 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
+/**
+ * PacManGame is the main Game controller
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
+ *
+ */
 public class PacManGame extends Game {
 	
-	public enum MultiplayerMode {none, server, client, multicast};
+	/**
+	 * Multiplayer enumeration
+	 */
+	public enum MultiplayerMode {none, multicast};
 
+	/**
+	 * SpriteBatcher to draw the game
+	 */
 	public SpriteBatch batcher;
+	/**
+	 * Mode of game
+	 */
 	public MultiplayerMode mode;
 	
+	/**
+	 * GameMulticastPeer object to handle networking in P2P schema
+	 */
 	public GameMulticastPeer peer;
-	public Lock lock = null;
 	
+	/**
+	 * Locking object
+	 */
+	public Lock lock;
+	
+	/**
+	 * Class constructor
+	 * @param mode Game type
+	 */
 	public PacManGame(MultiplayerMode mode) {
 		this.mode = mode;		
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.ApplicationListener#create()
+	 */
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		batcher = new SpriteBatch();
 		Assets.load();
-		
-		////
-		if (mode == MultiplayerMode.client){
+		if (mode == MultiplayerMode.multicast){
 			try {
-				String[] clientAddresses = {"localhost","localhost"};
-				int[] clientPorts = {3030,3032};
-				peer =  new GameMulticastPeer(3031,1,clientAddresses,clientPorts);
-				mode = MultiplayerMode.multicast;
-				lock = new RAMutex(peer);
-				peer.registerListener(MessageType.LOCK_REQUEST, lock);
-				peer.registerListener(MessageType.LOCK_REPLY, lock);
-				
-				GameScreen gs = new GameScreen(PacManGame.this);
-				peer.registerListener(MessageType.JOIN, gs);
-				peer.registerListener(MessageType.PEERS, gs);
-				peer.registerListener(MessageType.DISCONNECT, gs);
-				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
-				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
-				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
-				
-				//peer.broadcastMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				peer.start();
-				peer.startClients();
-
-				peer.printRouteTable(gs.mp.getMyId());
-				peer.sendJoin(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				setScreen(gs);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-		}
-		else if (mode == MultiplayerMode.multicast){
-			try {
+				//Start the networking object with the topology defined in Settings class
 				peer =  new GameMulticastPeer(Settings.SERVERPORT,Settings.NUMCLIENTS, Settings.PEER_ADDRESSES, Settings.PEER_PORTS);
-				
+				//Initialize the lock with the networking Peer
 				lock = new RAMutex(peer);
-				peer.registerListener(MessageType.LOCK_REQUEST, lock);
+				//Register the different objects to the different messages
+				peer.registerListener(MessageType.LOCK_REQUEST, lock); //Lock Messages go to the Lock object
 				peer.registerListener(MessageType.LOCK_REPLY, lock);
-				
+				//Instantiate the Game screen
 				GameScreen gs = new GameScreen(PacManGame.this);
-				peer.registerListener(MessageType.JOIN, gs);
+				
+				peer.registerListener(MessageType.JOIN, gs); //JOIN, PEERS and DISCONNECT messages are handled by the Game Screen 
 				peer.registerListener(MessageType.PEERS, gs);
 				peer.registerListener(MessageType.DISCONNECT, gs);
-				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
+				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world); //Ghost movement, pacman movement and food eaten are handled by world
 				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
 				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
 				
 				
-				
-				//peer.broadcastMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				peer.start();
-				peer.startClients();
+				peer.start(); //Start the server
+				peer.startClients(); //Start the clients
 
-				peer.printRouteTable(gs.mp.getMyId());
-				peer.sendJoin(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				
+				//peer.printRouteTable(gs.mp.getMyId());
+				peer.sendJoin(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));//Send first JOIN
+				//All good, render the game screen!
 				setScreen(gs);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		else if (mode == MultiplayerMode.server){
-			try {
-				String[] clientAddresses = {"localhost","localhost"};
-				int[] clientPorts = {3030,3031};
-				peer =  new GameMulticastPeer(3032,2,clientAddresses,clientPorts);
-
-				
-				mode = MultiplayerMode.multicast;
-				lock = new RAMutex(peer);
-				peer.registerListener(MessageType.LOCK_REQUEST, lock);
-				peer.registerListener(MessageType.LOCK_REPLY, lock);
-				
-				GameScreen gs = new GameScreen(PacManGame.this);
-				peer.registerListener(MessageType.JOIN, gs);
-				peer.registerListener(MessageType.PEERS, gs);
-				peer.registerListener(MessageType.DISCONNECT, gs);
-				peer.registerListener(MessageType.GHOST_MOVEMENT, gs.world);
-				peer.registerListener(MessageType.PACMAN_MOVEMENT, gs.world);
-				peer.registerListener(MessageType.FOOD_EATEN, gs.world);
-				
-				//peer.broadcastMessage(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				peer.start();
-				peer.startClients();
-
-				peer.printRouteTable(gs.mp.getMyId());
-				peer.sendJoin(new Message("localhost",String.valueOf(Settings.getPID()),MessageType.JOIN));
-				setScreen(gs);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-		}
-
-		////
 	}
 	
 }

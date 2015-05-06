@@ -329,7 +329,7 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 			for(Entry<Long, String> address : mp.getPlayers().entrySet()){
 				if (address.getValue().equals(m.getAddress())){
 					System.out.println("PID: "+address.getKey()+" Died");
-					world.removePacman(address.getKey());
+					//world.removePacman(address.getKey()); //To remove the pacman if desired
 					mp.removePlayer(address.getKey());
 					foundIt = true;
 					break;

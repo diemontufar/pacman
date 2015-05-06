@@ -7,21 +7,38 @@ import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Extension of Rectangle class in order to control which side(s) of the object
- * was(were) hit. 
+ * was(were) hit.
  * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
+ *
  */
 public class GenericRectangle extends Rectangle {
 
 	private static final long serialVersionUID = 1954831445984396570L;
 
+	/**
+	 * Possible sides
+	 */
 	public enum RectangleSide {
 		Right, Top, Left, Bottom
 	}
 
+	/**
+	 * Class constructor
+	 * @param x X position
+	 * @param y Y position
+	 * @param width Width of the rectangle
+	 * @param height Height of the rectangle
+	 */
 	public GenericRectangle(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 
+	/**
+	 * Detects which side is overlapping
+	 * @param The rectangle to compare
+	 * @return A list of sides where the two rectangles overlap
+	 */
 	public List<RectangleSide> whichSidesOverlapMe(Rectangle r) {
 
 		List<RectangleSide> sides = new ArrayList<RectangleSide>();
