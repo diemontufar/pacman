@@ -35,45 +35,45 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 public class World implements MessageListener {
 
 	/**
-	 * 
+	 * WorldListener for sound effects 
 	 */
 	public final WorldListener listener;
 
 	/**
-	 * 
+	 * Map of Pacman players, the key is the ProcessId
 	 */
 	public Map<Long,Pacman> pacmans;
 	/**
-	 * 
+	 * Inky Ghost
 	 */
 	public Ghost inky;
 	/**
-	 * 
+	 * Blinky Ghost
 	 */
 	public Ghost blinky;
 	/**
-	 * 
+	 * Pinky Ghost
 	 */
 	public Ghost pinky;
 	/**
-	 * 
+	 * Clyde Ghost
 	 */
 	public Ghost clyde;
 
 	/**
-	 * 
+	 * Map of the world
 	 */
 	public TiledMap map;
 	/**
-	 * 
+	 * Layer of walls of the world (to check collision)
 	 */
 	public TiledMapTileLayer wallsLayer;
 	/**
-	 * 
+	 * Layer of Pacman food
 	 */
 	public TiledMapTileLayer pacdotsLayer;
 	/**
-	 * 
+	 * Layer of map objects
 	 */
 	public MapObjects objectsLayer;
 	/**
@@ -103,35 +103,36 @@ public class World implements MessageListener {
 	Map<String,TiledMapTile> dotBonusTile;
 
 	/**
-	 * 
+	 * Counter variable to change Animation
 	 */
 	float elapsedSinceAnimation = 0.0f;
 
 	/**
-	 * 
+	 * Collaborative score
 	 */
 	public int score;
 	/**
-	 * 
+	 * Player's Lives
 	 */
 	public int lives;
 	/**
-	 * 
+	 * Number of Pacman dots eaten
 	 */
 	public int dots_eaten;
 
 	/**
-	 * 
+	 * Process ID of the Controlled Pacman
 	 */
 	private Long controlledPacman;
 	/**
-	 * 
+	 * Screen object that renders the world state
 	 */
 	private GameScreen screen;
 
 	/**
-	 * @param listener
-	 * @param screen
+	 * Class constructor
+	 * @param listener WorldListener
+	 * @param screen Screen where the world is rendered
 	 */
 	public World(WorldListener listener, GameScreen screen) {
 		this.listener = listener;
@@ -157,7 +158,7 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * 
+	 * Ghost object initialization
 	 */
 	private void createGhosts() {
 		//Find the spot and create the ghosts
@@ -187,13 +188,10 @@ public class World implements MessageListener {
 
 	}
 
-	/*
+	/**
 	 * Here we are creating pacdots and pacdotbonuses so that then you can access them by 
 	 * looping over the ArrayLists dotCellsInScene and dotBonusCellsInScene and do something like
-	 * layer.getCell(0, 1).setTile(null);
-	 */
-	/**
-	 * 
+	 * layer.getCell(0, 1).setTile(null); 
 	 */
 	public void createDots(){
 
@@ -232,13 +230,10 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * Updates every actor within it based on the elapsed time
-	 * 
-	 * @param deltaTime
-	 */
-	/**
-	 * @param deltaTime
-	 * @param move
+	 * Updates every actor within it based on the elapsed time. After moving Pacman and  
+	 * check collisions
+	 * @param deltaTime Elapsed time
+	 * @param move Movement
 	 */
 	public void update(float deltaTime,Movement move) {		
 		updatePacman(deltaTime,move);
@@ -249,20 +244,16 @@ public class World implements MessageListener {
 
 
 	/**
-	 * Check every possible collision event within the world.
-	 */
-	/**
-	 * 
+	 * Check every possible collision event within the world. Possible collision are:
+	 * Ghost - Pacman and Pacman - Pacman Food
 	 */
 	private void checkCollisions() {
-
 		checkDotsCollisions();
 		checkGhostsCollisions();
-
 	}
 
 	/**
-	 * 
+	 * Check collisions between Pacman and Pacman food
 	 */
 	private void checkDotsCollisions() {
 
@@ -278,8 +269,11 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * @param currentX
-	 * @param currentY
+	 * Check if a food would be eaten if the Pacman moves to X and Y, if there is food,
+	 * the game ask for the Mutual exclusion lock, eats the food, notifies the peers and
+	 * then releases the lock
+	 * @param currentX Pacman X position
+	 * @param currentY Pacman Y position
 	 */
 	private void checkEaten(float currentX, float currentY) {		
 		if (isCellFood(currentX, currentY)){
@@ -307,9 +301,10 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * @param x
-	 * @param y
-	 * @return
+	 * Check if in a specific cell there is Pacman food
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @return True if there is food, otherwise false
 	 */
 	private boolean isCellFood(float x, float y) {
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
@@ -317,8 +312,9 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * @param x
-	 * @param y
+	 * Remove a specific food at the specified location, increases Score and Food eaten
+	 * @param x X coordinate
+	 * @param y Y coordinate
 	 */
 	private void removeFood(float x, float y) {		
 		Cell cell = this.pacdotsLayer.getCell((int) (x / this.pacdotsLayer.getTileWidth()), (int) (y / this.pacdotsLayer.getTileHeight()));		
@@ -330,7 +326,8 @@ public class World implements MessageListener {
 	}
 
 	/**
-	 * 
+	 * Check if the Pacman collided with a Ghost, substracts one live
+	 * and reset Pacman position
 	 */
 	private void checkGhostsCollisions() {
 		Pacman pacman = this.pacmans.get(this.controlledPacman);

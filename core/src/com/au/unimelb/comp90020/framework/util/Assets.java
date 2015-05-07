@@ -13,9 +13,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
- * Handles all assets: Textures, sounds, music and Animations.
- * @author Diego
- *
+ * Class that represents all assets: Textures, sounds, music and Animations.
+ * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
  */
 public class Assets {
 
@@ -105,6 +105,11 @@ public class Assets {
 	public static Sound gameOverSound;
 	public static Sound winnerSound;
 
+	/**
+	 * Creates a texture object from a file name
+	 * @param file File name
+	 * @return A Texture object
+	 */
 	public static Texture loadTexture(String file) {
 		return new Texture(Gdx.files.internal(file));
 	}
@@ -125,6 +130,9 @@ public class Assets {
 		return texture;
 	}
 
+	/**
+	 * Load all textures from the file system 
+	 */
 	public static void load() {
 		
 		readyBackground = loadTexture("backgrounds/ready.png");

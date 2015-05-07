@@ -13,25 +13,37 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
- * We were trying to apply MVC model, thus this class is the VIEW part whereas
- * the World is a kind of CONTROLLER. libGDX concepts like
- * Orthographic camera are managed within this class. We made the dimensions of
+ * WorldRenderer is the class that render the view in out MVC architectured Pacman.
+ * libGDX concepts like Orthographic camera are managed within this class. We made the dimensions of
  * the World and the dimensions of the TARGET device coincide only for reasons
  * of convenience.
  */
 public class WorldRenderer {
 
+	/**
+	 * World representation
+	 */
 	World world;
+	/**
+	 * Camera to manage perspective 
+	 */
 	OrthographicCamera cam;
+	/**
+	 * Batcher to draw on
+	 */
 	SpriteBatch batch;
+	/**
+	 * Renderer for the TiledMap
+	 */
 	TiledMapRenderer tiledMapRenderer;
 	
 
 	/**
+	 * Class constructor
 	 * Initialise the camera's position on the center of the FRUSTRUM.
 	 * 
-	 * @param batch
-	 * @param world
+	 * @param batch Batcher to draw
+	 * @param world World to render
 	 */
 	public WorldRenderer(SpriteBatch batch, World world) {
 		this.world = world;		
@@ -84,12 +96,19 @@ public class WorldRenderer {
 		batch.end();
 	}
 	
+	/**
+	 * Render Pacman players
+	 */
 	private void renderPacmans() {
 		for (Pacman pacman : world.pacmans.values() ){
 			renderPacman(pacman);
 		}
 	}
 
+	/**
+	 * Render one Pacman
+	 * @param pacman 
+	 */
 	private void renderPacman(Pacman pacman){
 		TextureRegion currentKeyFrame;
 
@@ -141,6 +160,9 @@ public class WorldRenderer {
 					Pacman.PACMAN_HEIGHT);
 		}
 	}
+	/**
+	 * Draw the ghosts
+	 */
 	private void renderGhosts() {
 		batch.draw(Assets.blinky, world.blinky.position.x - Ghost.GHOST_WIDTH / 2, world.blinky.position.y - Ghost.GHOST_HEIGHT / 2,
 					Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
@@ -152,11 +174,17 @@ public class WorldRenderer {
 				Ghost.GHOST_WIDTH, Ghost.GHOST_HEIGHT);
 	}
 
+	/**
+	 * Draw the score
+	 */
 	private void renderScore() {
 		Assets.font.setScale(0.5f, 0.5f);
 		Assets.font.draw(batch, "SCORE: " + world.score, 10, Settings.TARGET_HEIGHT - 20);
 	}
 
+	/**
+	 * Draw available lives
+	 */
 	private void renderLives() {
 
 		Assets.font.setScale(0.5f, 0.5f);
