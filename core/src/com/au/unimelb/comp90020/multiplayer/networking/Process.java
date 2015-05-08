@@ -6,27 +6,51 @@ package com.au.unimelb.comp90020.multiplayer.networking;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.au.unimelb.comp90020.framework.util.Settings;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 
 
 /**
- * @author achaves
- *
+ * Process handle the topology of the multipeer game. Is the parent class of all the Mutex implementations
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
  */
 public class Process {
 	
+	/**
+	 * Possible status regarding the critical section
+	 */
 	public enum ProcessState {RELEASED,WANTED,HELD};
 	
+	/**
+	 * Number of players
+	 */
 	private int numberOfPlayers;
+	/**
+	 * A map PID-IpAddress of players
+	 */
 	private Map<Long, String> players;
+	/**
+	 * Process ID
+	 */
 	protected Long myId;
+	/**
+	 * What is the minimum PID between all peers
+	 */
 	private Long minId;
+	/**
+	 * Current status regarding the critical section
+	 */
 	private ProcessState state;
+	/**
+	 * Peer Networking Class
+	 */
 	GameMulticastPeer peer;
 	
+	/**
+	 * Class constructor
+	 * @param peer The networking low level handler
+	 */
 	public Process(GameMulticastPeer peer){
 		this.numberOfPlayers = 0;
 		this.players = new HashMap<Long, String>();
@@ -34,22 +58,39 @@ public class Process {
 		this.minId = 1000000L;
 		this.peer = peer;
 	}
+	/**
+	 * Get the number of players
+	 * @return The number of players
+	 */
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
 	}
+	/**
+	 * @param numberOfPlayers
+	 */
 	public void setNumberOfPlayers(int numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 	}
+	/**
+	 * Get the map of players in the game
+	 * @return The map of Pid-IpAddress of the players
+	 */
 	public Map<Long, String> getPlayers() {
 		return players;
 	}
+	/**
+	 * Get Player ip addresses
+	 * @return Ip addresses of the players
+	 */
 	public Collection<String> getPlayerAdresses() {
 		return players.values();
 	}
 
-	public void setPlayers(Map<Long, String> players) {
-		this.players = players;
-	}
+	/**
+	 * Add a player to the Game
+	 * @param pid Process Id
+	 * @param address Remote Address
+	 */
 	public void addPlayer(Long pid, String address) {
 		players.put(pid, address);
 		if (pid<minId){
@@ -57,6 +98,10 @@ public class Process {
 		}
 		numberOfPlayers++;
 	}
+	/**
+	 * Get a comma separated string with all the process IDs of the peers
+	 * @return A string with the PIDs
+	 */
 	public String getPlayerIds() {
 		StringBuffer sb = new StringBuffer();
 		for (Long key : this.players.keySet()){
@@ -66,20 +111,40 @@ public class Process {
 		sb.deleteCharAt(sb.length()-1);
 		return sb.toString();
 	}
+	/**
+	 * Test if the current process id is the lower ranked in the multiplayer group
+	 * @return True if the pid is the minimum between the group, false otherwise
+	 */
 	public boolean isMinPlayerId() {
 		return myId <= minId;
 	}
+	/**
+	 * Ger my current PID
+	 * @return Current PID
+	 */
 	public Long getMyId() {
-		// TODO Auto-generated method stub
 		return myId;
 	}
+	/**
+	 * Get my current Lock state
+	 * @return The current state
+	 */
 	public ProcessState getMyState() {
 		return state;
 	}
 
+	/**
+	 * Change the Lock state
+	 * @param state The new state
+	 */
 	public void setState(ProcessState state) {
 		this.state = state;
 	}
+	/**
+	 * Broadcast a message to all Peers
+	 * @param type Type of message
+	 * @param msg Message body
+	 */
 	public void broadcastMsg(MessageType type, int msg) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(myId);
@@ -88,6 +153,12 @@ public class Process {
 		Message m = new Message("localhost", sb.toString(), type);
 		peer.broadcastMessage(m);
 	}
+	/**
+	 * Send a message to an specific Peer
+	 * @param destId PID of the destination
+	 * @param type Type of message
+	 * @param msg Message body
+	 */
 	public void sendMsg(Long destId, MessageType type, int msg) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(destId);
@@ -98,6 +169,10 @@ public class Process {
 		peer.sendMessage(players.get(destId),m);
 	}
 
+	/**
+	 * Block a number of milliseconds waiting for a lock reply
+	 * @param milliseconds
+	 */
 	public synchronized void myWait(long milliseconds) {
 		try {
 			wait(milliseconds);
@@ -105,6 +180,10 @@ public class Process {
 			System.err.println(e);
 		}
 	}
+	/**
+	 * Remove a player from the topology. This is for fault tolerance
+	 * @param key PID of the Peer in fail
+	 */
 	public void removePlayer(Long key) {
 		players.remove(key);
 		this.numberOfPlayers--;

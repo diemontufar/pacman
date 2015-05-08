@@ -6,7 +6,16 @@ import com.au.unimelb.comp90020.PacManGame;
 import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.framework.util.Settings;
 
+/**
+ * Helper class to launch the game in Desktop mode  
+ * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
+ */
 public class DesktopLauncher {
+	/**
+	 * Main method
+	 * @param arg Whether the game is in multiplayer or not
+	 */
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Collaborative PacMan - Distributed Algorithms";

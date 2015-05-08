@@ -3,14 +3,12 @@ package com.au.unimelb.comp90020.screens;
 import java.util.Map.Entry;
 
 import com.au.unimelb.comp90020.PacManGame;
-import com.au.unimelb.comp90020.PacManGame.MultiplayerMode;
 import com.au.unimelb.comp90020.actors.Pacman.Movement;
 import com.au.unimelb.comp90020.framework.World;
 import com.au.unimelb.comp90020.framework.WorldListener;
 import com.au.unimelb.comp90020.framework.WorldRenderer;
 import com.au.unimelb.comp90020.framework.util.Assets;
 import com.au.unimelb.comp90020.framework.util.Settings;
-import com.au.unimelb.comp90020.multiplayer.concurrency.Lock;
 import com.au.unimelb.comp90020.multiplayer.networking.Message;
 import com.au.unimelb.comp90020.multiplayer.networking.Message.MessageType;
 import com.au.unimelb.comp90020.multiplayer.networking.MessageListener;
@@ -28,32 +26,70 @@ import com.badlogic.gdx.math.Vector3;
 /**
  * Screen where the game is performed. It receives the input from the player and
  * communicates it to the World.
- * 
+ * @author Andres Chaves, Diego Montufar, Ilkan Esiyok (ID’s: 706801, 661608, 616394)
  */
+
 public class GameScreen extends ScreenAdapter implements TextInputListener, MessageListener {
 
+	//Possible game states
 	static final int GAME_READY = 0;
 	static final int GAME_RUNNING = 1;
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
 
+	/**
+	 * Parent class
+	 */
 	public PacManGame game;
 
+	/**
+	 * Current state
+	 */
 	int state;
+	/**
+	 * OrtographicCamera to handle perspective 
+	 */
 	OrthographicCamera guiCam;
+	/**
+	 * 
+	 */
 	Vector3 touchPoint;
+	/**
+	 * World state object
+	 */
 	public World world;
+	/**
+	 * World listener object
+	 */
 	WorldListener worldListener;
+	/**
+	 * World renderer
+	 */
 	WorldRenderer renderer;
+	/**
+	 * Rectangles for pausing, resume, quit, continue, win and game over messages
+	 */
 	Rectangle resumeBounds, quitBounds, continueWin, playAgainGameOver, quitGameOver;
+	/**
+	 * Whether sound is active or not
+	 */
 	boolean toggleSound;
 
+	/**
+	 * 
+	 */
 	float elapsedSinceAnimation = 0.0f;
-	///
+	/**
+	 * Topology Process object
+	 */
 	public Process mp;
-	///
 
+
+	/**
+	 * Class constructor
+	 * @param game The game running the screen
+	 */
 	public GameScreen(PacManGame game) {
 
 		this.game = game;
@@ -64,10 +100,8 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 		touchPoint = new Vector3();
 
-		///
 		mp = (Process)game.lock;
 		mp.addPlayer(Settings.getPID(),"localhost");
-		///
 
 		worldListener = new WorldListener() {
 
@@ -156,11 +190,17 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 			state = GAME_RUNNING;
 	}
 
+	/**
+	 * Check if the game has finished 
+	 */
 	private void checkLevelEnd(){
 		if (this.world.dots_eaten == Settings.MAX_NUM_DOTS)
 			state = GAME_LEVEL_END;
 	}
 
+	/**
+	 * Check if the game is over
+	 */
 	private void checkGameOver(){
 		if (this.world.lives == 0){
 			state = GAME_OVER;
@@ -251,18 +291,30 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 		game.batcher.end();
 	}
 
+	/**
+	 * Draw a ready message before playing the game
+	 */
 	private void presentReady() {
 		game.batcher.draw(Assets.readyMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
+	/**
+	 * Draw a paused message
+	 */
 	private void presentPaused() {
 		game.batcher.draw(Assets.pauseMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
+	/**
+	 * Draw a level end message
+	 */
 	private void presentLevelEnd() {
 		game.batcher.draw(Assets.endOfLevelMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 	}
 
+	/**
+	 * Draw a game over message
+	 */
 	private void presentGameOver() {
 		game.batcher.draw(Assets.gameOverMessage, 0, 0, Settings.TARGET_WIDTH, Settings.TARGET_HEIGHT);
 		if (this.elapsedSinceAnimation > 0.5f){
@@ -272,6 +324,10 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 	}
 
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.ScreenAdapter#pause()
+	 */
+	//Pause the game
 	@Override
 	public void pause() {
 		if (state == GAME_RUNNING)
@@ -284,12 +340,18 @@ public class GameScreen extends ScreenAdapter implements TextInputListener, Mess
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Input.TextInputListener#canceled()
+	 */
 	@Override
 	public void canceled() {
 		if (state == GAME_RUNNING)
 			state = GAME_OVER;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.au.unimelb.comp90020.multiplayer.networking.MessageListener#listen(com.au.unimelb.comp90020.multiplayer.networking.Message)
+	 */
 	@Override
 	public void listen(Message m) {
 		if (state == GAME_READY){				
