@@ -32,39 +32,70 @@ if you have a problem loading assets, follow this walkthrough:
 
 ### Folder structure:
 
-    └── core            
-        └── 
-            ├── AndroidLauncher.java 			: Main android activity
-            ├── BrickBreaker.java 				: Game Activity that starts the main thread
-            ├── actors
-            │   ├── Ghost.java 					  : 
-            │   ├── Pacman.java 					: Object Bonus, could be a coin, extra life, etc.
-            ├── framework
-            │   ├── DynamicGameObject.java 		: Generic class for dynamic objects with accel and velocity
-            │   ├── GameObject.java 			: Every GameObject has associated position and bounds. Bounds helps to keep track of collisions.
-            │   ├── Rectangle2.java 			: Extension of Rectangle class in order to control which side(s) of the object were hit
-            │   ├── World.java 					: Represents the world where the game is performed. It updates the states of every actor within it for each delta time.
-            │   ├── WorldListener.java 			: Basic listeners while the game is running
-            │   ├── WorldRenderer.java 			: We were trying to apply MVC model, thus this class is the VIEW part whereas the World is a kind of CONTROLLER.
-            │   ├── network
-            │   │   └── LevelDownloader.java 	: Manage access to the network, level and high score downlading and uploading and ile system reading. Manages also XML parsing.
-            │   └── util
-            │       ├── Assets.java 			: This class handles all assests like textures, sounds, animations and music.
-            │       ├── Player.java 			: Creates and manages a file (brickbreaker.data) that contains player name, level score and status of each level.
-            │       ├── Settings.java 			: Static class with some configuration parameters like sound enable, accelerometer, etc.
-            │       └── TextureRegionSet.java 	: Used for asign textures to Objects
-            └── screens
-                ├── CreateUserScreen.java 		: It let us create the user with an input (actually deprecated) 
-                ├── GameScreen.java 			: It loads the main game
-                ├── HelpScreen.java 			: It show us the how-to-play guide
-                ├── LevelScreen.java 			: It let us select the levels unlocked
-                ├── MenuScreen.java 			: It show us the main menu option
-                ├── MessageScreen.java 			: Message Screen to display errors
-                ├── MultiplayerScreen.java 		: It lets select from server or client (currently disabled).
-                ├── OptionScreen.java 			: This screen let us activate/unactivate sound, music and accelerometer.
-                ├── ScoreScreen.java 			: It shows the top ten players, this top ten players are loaded from the remote server.
-                ├── SelectScreen.java 			:  It let us choose multiplayer/singleplayer (actually deprecated) 
-                └── SplashScreen.java 			: This is the first screen that appears, downdload level runs on background.
+├── core
+│   ├── assets
+│   │   ├── backgrounds
+│   │   │   ├── completed.png
+│   │   │   ├── gameover.png
+│   │   │   ├── pause.png
+│   │   │   └── ready.png
+│   │   ├── fonts
+│   │   │   └── font.ttf
+│   │   ├── PacMan2.png
+│   │   ├── PacMan3.png
+│   │   ├── PacMan4.png
+│   │   ├── PacMan.png
+│   │   ├── pacman.tmx
+│   │   ├── sounds
+│   │   │   ├── gameover.mp3
+│   │   │   ├── lifelost.mp3
+│   │   │   ├── opening.mp3
+│   │   │   └── wuaca.mp3
+│   │   └── textures
+│   │       └── ChomperSprites.png
+└── src
+│       └── com
+│           └── au
+│               └── unimelb
+│                   └── comp90020
+│                       ├── actors
+│                       │   ├── Ghost.java
+│                       │   └── Pacman.java
+│                       ├── framework
+│                       │   ├── Animation.java
+│                       │   ├── DynamicGameObject.java
+│                       │   ├── GameObject.java
+│                       │   ├── GenericRectangle.java
+│                       │   ├── util
+│                       │   │   ├── Assets.java
+│                       │   │   ├── LongLinkedList.java
+│                       │   │   ├── Settings.java
+│                       │   │   └── Util.java
+│                       │   ├── World.java
+│                       │   ├── WorldListener.java
+│                       │   └── WorldRenderer.java
+│                       ├── multiplayer
+│                       │   ├── concurrency
+│                       │   │   ├── LamportClock.java
+│                       │   │   ├── Lock.java
+│                       │   │   └── RAMutex.java
+│                       │   └── networking
+│                       │       ├── GameMulticastPeer.java
+│                       │       ├── GameServerThread.java
+│                       │       ├── Message.java
+│                       │       ├── MessageListener.java
+│                       │       └── Process.java
+│                       ├── PacManGame.java
+│                       └── screens
+│                           └── GameScreen.java
+├── desktop
+│   └── src
+│       └── com
+│           └── au
+│               └── unimelb
+│                   └── comp90020
+│                       └── desktop
+│                           └── DesktopLauncher.java
 
 ##Developers:
 
