@@ -31,7 +31,11 @@ if you have a problem loading assets, follow this walkthrough:
 [Link](http://stackoverflow.com/questions/22822767/new-libgdx-setup-receive-file-not-found)
 
 ### Folder structure:
+<<<<<<< HEAD
 
+=======
+```
+>>>>>>> 1cd6740797b437ba8296b7c6241c0b0cae540e87
  ├── core
  │   ├── assets
  │   │   ├── backgrounds
@@ -96,7 +100,11 @@ if you have a problem loading assets, follow this walkthrough:
  │                   └── comp90020
  │                       └── desktop
  │                           └── DesktopLauncher.java
+<<<<<<< HEAD
  
+=======
+```
+>>>>>>> 1cd6740797b437ba8296b7c6241c0b0cae540e87
 ##Developers:
 
 +Andres Chaves (706801)
