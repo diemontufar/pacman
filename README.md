@@ -32,71 +32,71 @@ if you have a problem loading assets, follow this walkthrough:
 
 ### Folder structure:
 
-├── core
-│   ├── assets
-│   │   ├── backgrounds
-│   │   │   ├── completed.png
-│   │   │   ├── gameover.png
-│   │   │   ├── pause.png
-│   │   │   └── ready.png
-│   │   ├── fonts
-│   │   │   └── font.ttf
-│   │   ├── PacMan2.png
-│   │   ├── PacMan3.png
-│   │   ├── PacMan4.png
-│   │   ├── PacMan.png
-│   │   ├── pacman.tmx
-│   │   ├── sounds
-│   │   │   ├── gameover.mp3
-│   │   │   ├── lifelost.mp3
-│   │   │   ├── opening.mp3
-│   │   │   └── wuaca.mp3
-│   │   └── textures
-│   │       └── ChomperSprites.png
-└── src
-│       └── com
-│           └── au
-│               └── unimelb
-│                   └── comp90020
-│                       ├── actors
-│                       │   ├── Ghost.java
-│                       │   └── Pacman.java
-│                       ├── framework
-│                       │   ├── Animation.java
-│                       │   ├── DynamicGameObject.java
-│                       │   ├── GameObject.java
-│                       │   ├── GenericRectangle.java
-│                       │   ├── util
-│                       │   │   ├── Assets.java
-│                       │   │   ├── LongLinkedList.java
-│                       │   │   ├── Settings.java
-│                       │   │   └── Util.java
-│                       │   ├── World.java
-│                       │   ├── WorldListener.java
-│                       │   └── WorldRenderer.java
-│                       ├── multiplayer
-│                       │   ├── concurrency
-│                       │   │   ├── LamportClock.java
-│                       │   │   ├── Lock.java
-│                       │   │   └── RAMutex.java
-│                       │   └── networking
-│                       │       ├── GameMulticastPeer.java
-│                       │       ├── GameServerThread.java
-│                       │       ├── Message.java
-│                       │       ├── MessageListener.java
-│                       │       └── Process.java
-│                       ├── PacManGame.java
-│                       └── screens
-│                           └── GameScreen.java
-├── desktop
-│   └── src
-│       └── com
-│           └── au
-│               └── unimelb
-│                   └── comp90020
-│                       └── desktop
-│                           └── DesktopLauncher.java
-
+ ├── core
+ │   ├── assets
+ │   │   ├── backgrounds
+ │   │   │   ├── completed.png
+ │   │   │   ├── gameover.png
+ │   │   │   ├── pause.png
+ │   │   │   └── ready.png
+ │   │   ├── fonts
+ │   │   │   └── font.ttf
+ │   │   ├── PacMan2.png
+ │   │   ├── PacMan3.png
+ │   │   ├── PacMan4.png
+ │   │   ├── PacMan.png
+ │   │   ├── pacman.tmx
+ │   │   ├── sounds
+ │   │   │   ├── gameover.mp3
+ │   │   │   ├── lifelost.mp3
+ │   │   │   ├── opening.mp3
+ │   │   │   └── wuaca.mp3
+ │   │   └── textures
+ │   │       └── ChomperSprites.png
+ └── src
+ │       └── com
+ │           └── au
+ │               └── unimelb
+ │                   └── comp90020
+ │                       ├── actors
+ │                       │   ├── Ghost.java
+ │                       │   └── Pacman.java
+ │                       ├── framework
+ │                       │   ├── Animation.java
+ │                       │   ├── DynamicGameObject.java
+ │                       │   ├── GameObject.java
+ │                       │   ├── GenericRectangle.java
+ │                       │   ├── util
+ │                       │   │   ├── Assets.java
+ │                       │   │   ├── LongLinkedList.java
+ │                       │   │   ├── Settings.java
+ │                       │   │   └── Util.java
+ │                       │   ├── World.java
+ │                       │   ├── WorldListener.java
+ │                       │   └── WorldRenderer.java
+ │                       ├── multiplayer
+ │                       │   ├── concurrency
+ │                       │   │   ├── LamportClock.java
+ │                       │   │   ├── Lock.java
+ │                       │   │   └── RAMutex.java
+ │                       │   └── networking
+ │                       │       ├── GameMulticastPeer.java
+ │                       │       ├── GameServerThread.java
+ │                       │       ├── Message.java
+ │                       │       ├── MessageListener.java
+ │                       │       └── Process.java
+ │                       ├── PacManGame.java
+ │                       └── screens
+ │                           └── GameScreen.java
+ ├── desktop
+ │   └── src
+ │       └── com
+ │           └── au
+ │               └── unimelb
+ │                   └── comp90020
+ │                       └── desktop
+ │                           └── DesktopLauncher.java
+ 
 ##Developers:
 
 +Andres Chaves (706801)
