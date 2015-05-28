@@ -31,7 +31,7 @@ if you have a problem loading assets, follow this walkthrough:
 [Link](http://stackoverflow.com/questions/22822767/new-libgdx-setup-receive-file-not-found)
 
 ### Folder structure:
-
+```
  ├── core
  │   ├── assets
  │   │   ├── backgrounds
@@ -96,7 +96,7 @@ if you have a problem loading assets, follow this walkthrough:
  │                   └── comp90020
  │                       └── desktop
  │                           └── DesktopLauncher.java
-
+```
 ##Developers:
 
 +Andres Chaves (706801)
