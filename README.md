@@ -32,11 +32,11 @@ if you have a problem loading assets, follow this walkthrough:
 
 ##Developers:
 
-+Andres Chaves
++Andres Chaves (706801)
 
-+Ilkan Esiyok
++Ilkan Esiyok (616394)
 
-+Diego Montufar
++Diego Montufar (661608)
 
 ______________________________________________________________________________________________________
 The University of Melboure - 2015
