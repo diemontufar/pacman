@@ -57,34 +57,34 @@ if you have a problem loading assets, follow this walkthrough:
  │   └── com.au.unimelb.comp90020
  │       ├── actors
  │       │   ├── Ghost.java                      :Ghost actor class (incl Ghost movement)
- │           └── Pacman.java                     :Pacman actor class
- │           ├── framework
- │           │   ├── Animation.java              :Animation class for Pacman walking effects
- │           │   ├── DynamicGameObject.java      :Dynamic game object class
- │           │   ├── GameObject.java             :Static game object class
- │           │   ├── GenericRectangle.java       :Rectangle bound class
- │           │   ├── util
- │           │   │   ├── Assets.java             :Class to handle sounds and sprites
- │           │   │   ├── LongLinkedList.java     :Queue of Longs (Queue used for RA-Mutex)
- │           │   │   ├── Settings.java           :Game Settings class
- │           │   │   └── Util.java               :Class with handy generic methods
- │           │   ├── World.java                  :Class that represents the World State
- │           │   ├── WorldListener.java          :Listener world class (for sound effects)
- │           │   └── WorldRenderer.java          :Renderer of the world state within the screen
- │           ├── multiplayer
- │           │   ├── concurrency
- │           │   │   ├── LamportClock.java       :Class that controls LamportClock ticking
- │           │   │   ├── Lock.java               :Interface for distributed locking
- │           │   │   └── RAMutex.java            :Implementation of the RiccartAgrawal Lock
- │           │   └── networking
- │           │       ├── GameMulticastPeer.java  :PeerToPeer networking class (client and server)
- │           │       ├── GameServerThread.java   :Socket listener thread
- │           │       ├── Message.java            :Message class that holds our communication protocol
- │           │       ├── MessageListener.java    :Listener pattern to decloupe messages from actions
- │           │       └── Process.java            :Class that holds the topology of the network
- │           ├── PacManGame.java                 :Main game class
- │           └── screens
- │               └── GameScreen.java             :Game Screen
+ │       |   └── Pacman.java                     :Pacman actor class
+ │       ├── framework
+ │       │   ├── Animation.java              :Animation class for Pacman walking effects
+ │       │   ├── DynamicGameObject.java      :Dynamic game object class
+ │       │   ├── GameObject.java             :Static game object class
+ │       │   ├── GenericRectangle.java       :Rectangle bound class
+ │       │   ├── util
+ │       │   │   ├── Assets.java             :Class to handle sounds and sprites
+ │       │   │   ├── LongLinkedList.java     :Queue of Longs (Queue used for RA-Mutex)
+ │       │   │   ├── Settings.java           :Game Settings class
+ │       │   │   └── Util.java               :Class with handy generic methods
+ │       │   ├── World.java                  :Class that represents the World State
+ │       │   ├── WorldListener.java          :Listener world class (for sound effects)
+ │       |   └── WorldRenderer.java          :Renderer of the world state within the screen
+ │       ├── multiplayer
+ │       │   ├── concurrency
+ │       │   │   ├── LamportClock.java       :Class that controls LamportClock ticking
+ │       │   │   ├── Lock.java               :Interface for distributed locking
+ │       │   │   ├── RAMutex.java            :Implementation of the RiccartAgrawal Lock
+ │       │   ├── networking
+ │       │   │   ├── GameMulticastPeer.java  :PeerToPeer networking class (client and server)
+ │       │   │   ├── GameServerThread.java   :Socket listener thread
+ │       │   │   ├── Message.java            :Message class that holds our communication protocol
+ │       │   │   ├── MessageListener.java    :Listener pattern to decloupe messages from actions
+ │       │   │   └── Process.java            :Class that holds the topology of the network
+ │       ├── PacManGame.java                 :Main game class
+ │       └── screens
+ │           └── GameScreen.java             :Game Screen
  ├── desktop
  │   └── src
  │       └── com.au.unimelb.comp900200.desktop
